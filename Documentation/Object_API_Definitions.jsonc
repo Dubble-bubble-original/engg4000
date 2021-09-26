@@ -29,11 +29,7 @@ General response codes:
         "Message": {
             "ID": 76543, // Type: Integer
 
-            "Author": { 
-                "ID": 83,
-                // OR // -> ID if user is logged in, just Name if not
-                "Name": "Alfredo" // Type: String
-            },
+            "Author": {}, // Type: User object
             "Title": "Having a break", // Type: String
             "Body": "Today I went on a hike and had a picnic with ...", // String (Plain text)
             "Image": "/images/DF382BA75K2_01.png", // Type: String (Image URL on the server) [Optional]
@@ -63,8 +59,7 @@ General response codes:
             "ID": 83, // Type: Integer
             "Name": "Fred", // Type: String
             "Avatar": "/images/avatars/G57HA12K55L23S_12.png", // Type: String (Image URL on the server) [Optional]
-            "Email": "fverret@unb.ca", // Type: String
-            "Password": "5hjkafj213hjlafm1lk142" // Type: String
+            "Email": "fverret@unb.ca" // Type: String [Optional]
         }
     },
 
@@ -166,23 +161,23 @@ General response codes:
                 "ID": 12 // ID of created user
             }
         },
-        "Update User": {
+        "Upload Image": {
+            // Upload given image to the server (Can this be done at the same time as Create User/Message?)
             "request": {
                 "Type": "POST",
-                "User": {} // User object (including ID)
+                "File": {} // Image file
             }
-            // Note: if avatar image changed, can delete the old image from server
         },
 
         // ----------------------------
         // PUT requests
         // ----------------------------
-        "Upload Image": {
-            // Upload given image to the server (Can this be done at the same time as Create User/Message?)
+        "Update User": {
             "request": {
                 "Type": "PUT",
-                "File": {} // Image file
+                "User": {} // User object (including ID)
             }
+            // Note: if avatar image changed, can delete the old image from server
         },
 
         // ----------------------------
