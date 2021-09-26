@@ -51,8 +51,11 @@ This document is a record of all of our team scheduled meetings, which normally 
 - Nathaniel: 
 - Fred: 
 ### Dicussions <!-- omit in toc -->
-- Fred suggestion: add rule on github to delete branches once merged
-- Trello board "Ready to test" column?
+- Fred suggestions: 
+  - add rule on github to delete branches once merged
+  - future meeting notes updates will be commited directly to dev branch without pr & reviews
+  - create separate Trello "Done" columns for each sprint
+- How does the Trello board "Ready to test" column work?
 ### Decisions <!-- omit in toc -->
 - 
 ### Todo <!-- omit in toc -->
