@@ -9,3 +9,7 @@ To run the Express service locally, use the following commands inside of the Ser
 ## Frontend
 
 ## Testing
+## Karate Tests
+Feature files can be run in Intellij IDEA by right-clicking on the feature and selecting the green play button.
+
+Tests results reports can be found here: Automation/target/karate-reports/karate-summary.html

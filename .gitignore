@@ -39,6 +39,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+build/
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -102,3 +103,35 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Intellij IDEA
+out/
+.idea/
+.idea_modules/
+*.iml
+*.ipr
+*.iws
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+pom.xml.bak
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Visual Studio Code
+.vscode/
+.code-workspace
