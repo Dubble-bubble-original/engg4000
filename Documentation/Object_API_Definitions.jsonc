@@ -1,0 +1,202 @@
+/*
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Object Data Structure Definitions
+            &
+    API Endpoint Definitions
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+NOTES:
+- The image URL might be something different if images stored in amazon S3 container.
+
+General response codes: 
+- 200 (OK)
+- 400 (Bad Request) ex: didn't give proper fields in request
+- 401 (Unauthenticated) ex: requires log in and user is not
+- 404 (Not Found) ex: requested message/user doesn't exist
+- 500 (Internal Server Error) ex: db error
+
+*/
+
+{
+    // ===============================================================================
+    // ===============================================================================
+    // ===============================================================================
+    "Objects": {
+
+        // ----------------------------
+        // Message object
+        // ----------------------------
+        "Message": {
+            "ID": 76543, // Type: Integer
+
+            "Author": { 
+                "ID": 83,
+                // OR // -> ID if user is logged in, just Name if not
+                "Name": "Alfredo" // Type: String
+            },
+            "Title": "Having a break", // Type: String
+            "Body": "Today I went on a hike and had a picnic with ...", // String (Plain text)
+            "Image": "/images/DF382BA75K2_01.png", // Type: String (Image URL on the server) [Optional]
+            "DateTime": "2021-09-23 9:56:23 UTC", // Type: DateTime string (specific format to be determined)
+
+            "Location": { 
+                "Latitude": 37.423021, // Type: Double
+                "Longitude": -122.083739 // Type: Double
+            }, // Note: We can use Google's geocoding service to convert between lat/long and addresses (it has limitations).
+            "TrueLocation": true, // Type: Boolean (true=user's current location, false=selected on the map)
+
+            "Tags": [ // Type: Array(String)
+                "Tag1", 
+                "tag2", 
+                "Tag3"
+                // ...
+            ],
+            
+            "AccessKey": "AV421H31JB412IO12CAUN124WCU1IWP12" // Type: String 
+            // ^ (bit string used to delete this message if Author.ID not set, sent to user by email after posting)
+        },
+
+        // ----------------------------
+        // User object
+        // ----------------------------
+        "User": {
+            "ID": 83, // Type: Integer
+            "Name": "Fred", // Type: String
+            "Avatar": "/images/avatars/G57HA12K55L23S_12.png", // Type: String (Image URL on the server) [Optional]
+            "Email": "fverret@unb.ca", // Type: String
+            "Password": "5hjkafj213hjlafm1lk142" // Type: String
+        }
+    },
+
+
+    // ===============================================================================
+    // ===============================================================================
+    // ===============================================================================
+    "API Endpoints":{
+
+        // ----------------------------
+        // GET requests
+        // ----------------------------
+        "Get User": {
+            // Get single user by ID
+            "request": {
+                "Type": "GET",
+                "ID": 83
+            },
+            "response": {} // User object (see above)
+        },
+        "Get Message by ID": {
+            // Get single message by ID or access key
+            "request": {
+                "Type": "GET",
+                "ID": 76543,
+                // OR //
+                "AccessKey": "AV421H31JB412IO12CAUN124WCU1IWP12"
+            },
+            "response": {} // Message object (see above)
+        },
+        "Get User Messages": {
+            // Get all messages for given user ID
+            "request": {
+                "Type": "GET",
+                "User": {
+                    "ID": 83
+                }
+            },
+            "response": [{}] // Array of message object (see above)
+        },
+        "Get Messages by Tag": {
+            // Get all messages that matches the given Tag(s)
+            "request": {
+                "Type": "GET",
+                "Tags": ["Tag1", "Tag2"] // 1 or more tags
+            },
+            "response": [{}] // Array of message object (see above)
+        },
+        "Get Messages by Date": {
+            // Get all messages inside given date range
+            "request": {
+                "Type": "GET",
+                "StartDateTime": "2021-09-23 1:00:00 UTC",
+                "EndDateTime": "2021-09-23 23:00:00 UTC"
+            },
+            "response": [{}] // Array of message object (see above)
+        },
+        "Get Messages by Distance": {
+            // Get all messages inside given distance range (in Km) from given location
+            "request": {
+                "Type": "GET",
+                "Distance": 5,
+                "Location": {
+                    "Latitude": 7.423021,
+                    "Longitude": 82.083739
+                }
+            },
+            "response": [{}] // Array of message object (see above)
+        },
+        "Get Newest Messages": {
+            // Get the latest X messages posted before given date
+            "request": {
+                "Type": "GET",
+                "Limit": 50, // Max number of messages to return
+                "DateTime": "2021-09-23 9:56:23 UTC"
+            },
+            "response": [{}] // Array of message object (see above)
+        },
+
+        // ----------------------------
+        // POST requests
+        // ----------------------------
+        "Create Message": {
+            "request": {
+                "Type": "POST",
+                "Message": {} // Message object (excluding fields: ID, DateTime, AccessKey -> those are generated in backend or db)
+            },
+            "response": {
+                "ID": 105, // ID of created message
+                "AccessKey": "AV421H31JB412IO12CAUN124WCU1IWP12" // (if applicable)
+            }
+        },
+        "Create User": {
+            "request": {
+                "Type": "POST",
+                "User": {} // User object (excluding fields: ID -> generated in db)
+            },
+            "response": {
+                "ID": 12 // ID of created user
+            }
+        },
+        "Update User": {
+            "request": {
+                "Type": "POST",
+                "User": {} // User object (including ID)
+            }
+            // Note: if avatar image changed, can delete the old image from server
+        },
+
+        // ----------------------------
+        // PUT requests
+        // ----------------------------
+        "Upload Image": {
+            // Upload given image to the server (Can this be done at the same time as Create User/Message?)
+            "request": {
+                "Type": "PUT",
+                "File": {} // Image file
+            }
+        },
+
+        // ----------------------------
+        // DELETE requests
+        // ----------------------------
+        "Delete Message": {
+            // Delete single message by ID or access key
+            "request": {
+                "Type": "DELETE",
+                "ID": 76543,
+                // OR //
+                "AccessKey": "AV421H31JB412IO12CAUN124WCU1IWP12"
+            }
+            // Note: if message had image, can also delete the image from server
+        }
+    }
+}
