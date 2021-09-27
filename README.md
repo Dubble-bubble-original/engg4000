@@ -23,13 +23,13 @@ Builds the app for production to the `build` folder.\
 ## Testing
 ## Jest Unit Tests
 To run all the unit test use the following command
-`npm run unit_test`/
+`npm run test`/
 
 To run jest covearge for the entier product run the following command
-`npm run unit_test:coverage`
+`npm run test:coverage`
 
 To see the unit test changes in real time, and to automatically run the tests when the files are changed use the follwoing command.
-`npm run unit_test:watch`
+`npm run test:watch`
 
 ## Karate Tests
 Feature files can be run in Intellij IDEA by right-clicking on the feature and selecting the green play button.
