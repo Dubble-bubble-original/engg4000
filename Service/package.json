@@ -4,10 +4,9 @@
   "description": "Senior Design Project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "unit_test": "jest",
-    "unit_test:watch": "jest --watch",
-    "unit_test:coverage": "jest --coverage",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "dev": "nodemon app.js"
   },
   "repository": {
