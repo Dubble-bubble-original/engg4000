@@ -1,25 +1,19 @@
 const EXPRESS = require('express');
 const APP = EXPRESS();
 const mongoose = require('mongoose');
-const dbConfig = require('./config').db;
 
 // Get environment
 require('dotenv').config();
 const ENV = process.env;
 
-//DB Credentials
-const username = dbConfig.username;
-const password = dbConfig.password;
-const dbName = dbConfig.name;
-const connectionString = `mongodb+srv://${username}:${password}@cluster0.pa1un.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+//DB Connection
+const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(connectionString);
-
-//Form DB connection
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   // we're connected!
-  console.log("Mongodb connection successful");
+  logger.info('Mongodb connection successful');
 });
 
 // Define all routes in routes.js
