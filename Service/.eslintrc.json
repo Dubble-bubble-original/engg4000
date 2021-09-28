@@ -1,0 +1,21 @@
+{
+    "extends": "airbnb-base",
+    "env": {
+        "es6": true,
+        "browser": true
+    },
+    "rules": {
+        "brace-style": [ "error", "stroustrup" ],
+        "comma-dangle": [ "error", "never" ],
+        "no-unused-vars": [ "warn" ],
+        "no-var": [ "off" ],
+        "one-var": [ "off" ],
+        "import/newline-after-import": [ "off" ],
+        "no-console": [ "off" ],
+        "prefer-arrow-callback": [ "off" ],
+        "func-names": [ "off", "always" ],
+        "space-before-function-paren": [ "off" ],
+        // "no-use-before-define": [ "off" ], // Will have to update this one afterwards
+        "no-undef": [ "off" ]
+    }
+}
