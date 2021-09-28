@@ -1,6 +1,47 @@
-# engg4000
+# ENGG4000
 Senior Design Project
 
+# Development Process Workflow
+
+## 1. Make a new feature branch from `dev`
+```
+git fetch
+git checkout -b <new_branch_name> origin/dev
+git push -u origin HEAD
+```
+- Replace `<new_branch_name>` with the name of your branch. Your branch name should include the ticket number (e.g., `DBO-4`) along with optional descriptive words (e.g., `DBO-5-refactor-authentication`, `DBO-8-user-content-cache-key`, `DBO-15-make-retina-avatars`) so that others can see what is being worked on.
+- `push -u` is an easy way to push the branch to the remote repository and get the "upstream tracking" set up correctly.
+- Remember to move the Trello card to "In progress".
+
+## 2. Implement feature
+- Remember to commit & push often as you make changes and work on the feature.
+- If others are also working on the same branch as you, you might need to pull their changes using `git pull` (or `git pull --rebase`).
+- If other PRs are merged into `dev` before yours, you will need to pull the new changes from `dev` using `git pull origin dev`.
+
+## 3. Create pull request
+Go to our repository page, select your branch, then select "Compare & pull request".
+1. Make sure the base branch is `dev` (this means your work will be merged into `dev`).
+2. Add a title (what feature did you work on?), and a description if you have details to add.
+3. If your code is ready for review, click "Create Pull Request". If you are not done working on it, use the dropdown and select "Create Draft Pull Request" (once you are done, you can mark it as ready for review).
+- Remember to move the Trello card to "In PR"
+
+## 4. Review process
+1. Wait for at least 1 dev review (another dev does an overview of your code to make sure there are no major issues/things missing). After at least 1 dev review, you can move the Trello card to "Ready for test".
+2. The designated tester will pull the branch locally, run all automated tests, do some manual testing to verify the functionality, and record the testing results in a comment on the PR.
+   1. If tester found issues, they will tell the developer (Trello card moves back to "In progress" until issue is fixes, then the review process restarts).
+   2. If tester has not found issues, they will approve the request & merge it into `dev`.
+3. Once merged, move the Trello card to "Done"
+4. Good job!
+
+## Final Notes:
+When setting up your environment for the first time I recommend installing `npm-merge-driver`. This will auto-resolve any conflicts that happen in the package-lock.json file when merging with someone else's changes (those conflicts are a pain to do manually). Just run this command once you have installed `node.js` on your computer: (The `--global` will install it globally for your computer so you will have it for all projects)
+```
+npx npm-merge-driver install --global
+```
+- Note: If there are also conflicts in `package.json`, you will have to solve those manually. Once you have fixed it, run `npm install --package-lock-only` to fix the `package-lock.json` accordingly.
+- Source: https://npm.community/t/dealing-with-package-lock-json-conflicts/902
+
+# Codebase Sections
 ## Backend
 To run the Express service locally, use the following commands inside of the Service directory:\
 `npm install`\
