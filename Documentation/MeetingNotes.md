@@ -5,6 +5,7 @@
   - [[Sept 21, 2021] First Official Meeting](#sept-21-2021-first-official-meeting)
   - [[Sept 23, 2021] Sprint 1 Planning](#sept-23-2021-sprint-1-planning)
   - [[Sept 28, 2021] Genesis (#1)](#sept-28-2021-genesis-1)
+  - [[Sept 30, 2021] Genesis (#1)](#sept-30-2021-genesis-1)
   - [::TEMPLATE:: [Month day, year] SPRINT NAME (#SprintNum)](#template-month-day-year-sprint-name-sprintnum)
 
 # What is this document?
@@ -13,7 +14,7 @@ This document is a record of all of our team scheduled meetings, which normally 
 # Meeting Notes
 
 ## [Sept 21, 2021] First Official Meeting
-1h 20m
+40m
 - Discussed Project Scope Document
 - Distributed initialization tasks (setup frontend, backend, db, server, and define data structure)
 - Initial project leader decided: Fred
@@ -43,6 +44,36 @@ This document is a record of all of our team scheduled meetings, which normally 
 - Carter will create users for AWS (remember to activate 2 factor auth)
 
 ## [Sept 28, 2021] Genesis (#1)
+1h
+### Standup <!-- omit in toc -->
+- Sahil: Added eslint & jest to backend (todo: add eslint settings)
+- Carter: Setup jenkins EC2 instance, will research more about how to setup pipeline
+- Joao: Added connection setup with mongoose to MongoDB cluster
+- Nathaniel: Prepared to work on API token endpoint
+- Fred: Added bootstrap-react & eslint for frontend
+### Dicussions <!-- omit in toc -->
+- When running tests with DB will probably need to have separate DB instance (or at least unique objects created so tests don't conflict)
+- Project plan document posted on D2L (will talk about it later)
+### Decisions <!-- omit in toc -->
+- Will delete branches once merged (Nathaniel will look into setting the repo rule so it happens automatically)
+- Future meeting note updates will be commited directly to dev branch w/o pr & reviews
+- When creating a feature branch, add the ticket number at begining of the branch name (same as the one on Trello card, e.g. "DBO-2")
+- Further clarified dev process (will be copied to the main README later)
+  1. Create branch from `dev` (add the ticker number, e.g. DBO-1 in the branch name) & move Trello card to "In progress"
+  2. Do you work, committing locally
+  3. Push to repo & create PR (create a "Draft" PR if not ready for review) & move Trello card to "In PR"
+  4. Wait for at least 1 dev to review (quick overview of code to make sure no major issues)
+  5. Once at least 1 dev review, move Trello card to "Ready for test"
+  6. Designated tester pulls the branch, runs automated and manual tests, records relevant results in a comment on the PR. If all good, tester approves the PR and merges the branch.
+  7. Once merged, move Trello card to "Done"
+  8. Good job! You are done for this feature branch!
+### Todo <!-- omit in toc -->
+- UI meeting thursday (bring your ideas!)
+- Carter will create users for AWS (remember to activate 2 factor auth)
+- Fred fix merge issue
+- Joao will send .env file (includes db user/password) on slack
+
+## [Sept 30, 2021] Genesis (#1)
 0h
 ### Standup <!-- omit in toc -->
 - Sahil: 
@@ -51,11 +82,7 @@ This document is a record of all of our team scheduled meetings, which normally 
 - Nathaniel: 
 - Fred: 
 ### Dicussions <!-- omit in toc -->
-- Fred suggestions: 
-  - add rule on github to delete branches once merged
-  - future meeting notes updates will be commited directly to dev branch without pr & reviews
-  - create separate Trello "Done" columns for each sprint
-- How does the Trello board "Ready to test" column work?
+- 
 ### Decisions <!-- omit in toc -->
 - 
 ### Todo <!-- omit in toc -->
