@@ -2,7 +2,7 @@
   "name": "engg4000",
   "version": "1.0.0",
   "description": "Senior Design Project",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -27,6 +27,7 @@
     "jest": "^27.2.2",
     "mongoose": "^6.0.7",
     "nodemon": "^2.0.12",
+    "uuid": "^8.3.2",
     "winston": "^3.3.3"
   }
 }

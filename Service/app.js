@@ -10,7 +10,7 @@ APP.use('/', require('./routes/routes'))
 
 // Setup logger
 const WINSTON = require('winston');
-const logger = WINSTON.createLogger({
+global.logger = WINSTON.createLogger({
     level: 'info',
     format: WINSTON.format.json(),
     transports: [
@@ -25,9 +25,13 @@ if (ENV.NODE_ENV === 'dev') {
     logger.info('Service logger initialized');
 }
 
+// Setup Authorization Token map
+// format: uuid - timestamp
+// e.g., '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d' - 1519211809934
+global.auth_tokens = new Map();
+
 // Start listening
 const PORT = ENV.PORT || 9000;
 APP.listen(PORT, () => {
-    // TODO: Replace this with logger statement
     logger.info(`Service running on port ${PORT}`);
 });
