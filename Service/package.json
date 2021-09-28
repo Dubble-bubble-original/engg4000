@@ -4,9 +4,7 @@
   "description": "Senior Design Project",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js"
   },
   "repository": {
@@ -22,9 +20,7 @@
   "homepage": "https://github.com/nathanielcaron/engg4000#readme",
   "dependencies": {
     "dotenv": "^10.0.0",
-    "eslint": "^7.32.0",
     "express": "^4.17.1",
-    "jest": "^27.2.2",
     "mongoose": "^6.0.7",
     "nodemon": "^2.0.12",
     "winston": "^3.3.3"
