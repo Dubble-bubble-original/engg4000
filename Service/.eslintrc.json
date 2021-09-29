@@ -15,7 +15,7 @@
         "prefer-arrow-callback": [ "off" ],
         "func-names": [ "off", "always" ],
         "space-before-function-paren": [ "off" ],
-        // "no-use-before-define": [ "off" ], // Will have to update this one afterwards
-        "no-undef": [ "off" ]
+        "no-undef": [ "off" ],
+        "linebreak-style": [ "off" ]
     }
 }
