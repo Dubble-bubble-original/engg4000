@@ -1,9 +1,20 @@
 const EXPRESS = require('express');
 const APP = EXPRESS();
+const mongoose = require('mongoose');
 
 // Get environment
 require('dotenv').config();
 const ENV = process.env;
+
+//DB Connection
+const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
+mongoose.connect(connectionString);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  // we're connected!
+  logger.info('Mongodb connection successful');
+});
 
 // Define all routes in routes.js
 APP.use('/', require('./routes/routes'))
