@@ -30,6 +30,11 @@ jobs:
       matrix:
         directory: [application, Service]
         command: [lint, test]
+    
+    defaults:
+      # Set working directory where commands are run
+      run:
+        working-directory: ${{ matrix.directory }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,9 +47,8 @@ jobs:
         with:
           node-version: '12.x'
       
-      # Run commands using the runner's shell
+      # Run single commands using the runner's shell
+      - name: Install dependencies
+        run: npm install
       - name: Run ${{ matrix.command }} command in ${{ matrix.directory }} directory
-        run: |
-          npm install
-          cd ${{ matrix.directory }}
-          npm run ${{ matrix.command }}
+        run: npm run ${{ matrix.command }}
