@@ -42,10 +42,9 @@ jobs:
         with:
           node-version: '12.x'
       
-      # Run single commands using the runner's shell
-      - name: Install dependencies
-        run: npm install
+      # Run commands using the runner's shell
       - name: Run ${{ matrix.command }} command in ${{ matrix.directory }} directory
         run: |
+          npm install
           cd ${{ matrix.directory }}
           npm run ${{ matrix.command }}
