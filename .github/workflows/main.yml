@@ -45,9 +45,7 @@ jobs:
       # Run single commands using the runner's shell
       - name: Install dependencies
         run: npm install
-      - name: Move into directory
-        run: cd ${{ matrix.directory }}
-      - name: Debug current directory
-        run: ls
-      - name: Run ${{ matrix.command }} command
-        run: npm run ${{ matrix.command }}
+      - name: Run ${{ matrix.command }} command in ${{ matrix.directory }} directory
+        run: |
+          cd ${{ matrix.directory }}
+          npm run ${{ matrix.command }}
