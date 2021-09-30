@@ -15,6 +15,12 @@ git push -u origin HEAD
 
 ## 2. Implement feature
 - Remember to commit & push often as you make changes and work on the feature.
+- Before pushing changes to the repo, make sure you run the unit tests & code linting and fix any issues:
+   ```
+   npm run test
+   npm run lint
+   ```
+   > Remember that both backend & frontend have their own tests & lint settings so if you modify both you should run these commands in both directories.
 - If others are also working on the same branch as you, you might need to pull their changes using `git pull` (or `git pull --rebase`).
 - If other PRs are merged into `dev` before yours, you will need to pull the new changes from `dev` using `git pull origin dev`.
 
