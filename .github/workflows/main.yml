@@ -28,8 +28,8 @@ jobs:
       fail-fast: false
       # This job will run for each of these cases (each combination of values for the variables `directory` & `command`)
       matrix:
-        directory: ['application', 'Service']
-        command: ['lint', 'test']
+        directory: [application, Service]
+        command: [lint, test]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -47,5 +47,7 @@ jobs:
         run: npm install
       - name: Move into directory
         run: cd ${{ matrix.directory }}
+      - name: Debug current directory
+        run: ls
       - name: Run ${{ matrix.command }} command
         run: npm run ${{ matrix.command }}
