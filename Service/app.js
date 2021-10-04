@@ -10,7 +10,7 @@ const ENV = process.env;
 const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(connectionString);
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', logger.error('Mongodb connection error'));
 db.once('open', function() {
   // we're connected!
   // eslint-disable-next-line no-use-before-define
@@ -23,7 +23,7 @@ APP.use('/', require('./routes/routes'));
 
 // Setup logger
 const WINSTON = require('winston');
-const logger = WINSTON.createLogger({
+global.logger = WINSTON.createLogger({
   level: 'info',
   format: WINSTON.format.json(),
   transports: [
@@ -38,10 +38,13 @@ if (ENV.NODE_ENV === 'dev') {
   logger.info('Service logger initialized');
 }
 
+// Setup Authorization Token map
+// format: uuid - timestamp
+// e.g., '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d' - 1519211809934
+global.auth_tokens = new Map();
+
 // Start listening
 const PORT = ENV.PORT || 9000;
 APP.listen(PORT, () => {
-  // TODO: Replace this with logger statement
-  // console.log(process.env);
   logger.info(`Service running on port ${PORT}`);
 });
