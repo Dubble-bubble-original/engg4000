@@ -49,6 +49,6 @@ jobs:
       
       # Run single commands using the runner's shell
       - name: Install dependencies
-        run: npm install --no-optional
+        run: npm install --no-optional -f
       - name: Run ${{ matrix.command }} command in ${{ matrix.directory }} directory
         run: npm run ${{ matrix.command }}
