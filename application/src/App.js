@@ -1,7 +1,16 @@
 import './App.css';
 import Button from 'react-bootstrap/Button';
+import logger from './logger/logger';
 
 function App() {
+
+  const message = () => {
+    logger.info("Info logger");
+    logger.warn("Warning logger");
+    logger.error("Error logger");
+    logger.debug("Debug logger");
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -17,7 +26,7 @@ function App() {
           Learn React
         </a>
         <br/>
-        <Button>Bootsrap button</Button>
+        <Button onClick={message}>Bootsrap button</Button>
       </header>
     </div>
   );
