@@ -39,7 +39,7 @@ Go to our repository page, select your branch, then select "Compare & pull reque
 
 ## 4. Review process
 1. Wait for at least 1 dev review (another dev does an overview of your code to make sure there are no major issues/things missing). After at least 1 dev review, you can move the Trello card to "Ready for test".
-2. The designated tester will pull the branch locally, run all automated tests, do some manual testing to verify the functionality, and record the testing results in a comment on the PR.
+2. The designated tester will pull the branch locally, run all automated tests, do some manual testing to verify the functionality, and record the testing results in a comment on the PR. (the tester will add themselves to the Trello card and move the card to "In Test" so we know who is doing it)
    1. If tester found issues, they will tell the developer (Trello card moves back to "In progress" until issue is fixes, then the review process restarts).
    2. If tester has not found issues, they will approve the request & merge it into `dev`.
 3. Once merged, move the Trello card to "Done"
