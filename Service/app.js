@@ -6,18 +6,6 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const ENV = process.env;
 
-// DB Connection
-const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
-mongoose.connect(connectionString);
-const db = mongoose.connection;
-db.on('error', logger.error('Mongodb connection error'));
-db.once('open', function() {
-  // we're connected!
-  // eslint-disable-next-line no-use-before-define
-  logger.info('Mongodb connection successful');
-  // Move the logger setup before DB Connection. (After Nathaniel's PR is merged)
-});
-
 // Define all routes in routes.js
 APP.use('/', require('./routes/routes'));
 
@@ -37,6 +25,17 @@ if (ENV.NODE_ENV === 'dev') {
   }));
   logger.info('Service logger initialized');
 }
+
+// DB Connection
+const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
+mongoose.connect(connectionString);
+const db = mongoose.connection;
+db.on('error', function() {
+  logger.error('Mongodb connection error');
+});
+db.once('open', function() {
+  logger.info('Mongodb connection successful');
+});
 
 // Setup Authorization Token map
 // format: uuid - timestamp
