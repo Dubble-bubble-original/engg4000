@@ -18,7 +18,7 @@ This list of best practices will grow organically as we continue to work on the 
 - Make sure your test cases are independent. This means:
   - The outcome of a test should not influence others.
   - Tests should not share data (if they are modifying it).
-  - See the documentation on [Setup and Teardown for Jest](https:jestjs.io/docs/setup-teardown).
+  - See the documentation on [Setup and Teardown for Jest](https://jestjs.io/docs/setup-teardown).
 - Always aim for 100% code coverage (use the Jest coverage tool to check: `npm run test:coverage`)
 - Group unit tests together in a logical manner using `describe` blocks.
   - Remember: you can have `describe` blocks inside `describe` blocks!
