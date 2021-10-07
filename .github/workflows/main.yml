@@ -1,0 +1,54 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+# Get .env variables from our repository's secrets
+env:
+  NODE_ENV: dev
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASS: ${{ secrets.DB_PASS }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+
+# Run CI on pull request for the main branches
+on:
+  pull_request:
+    branches:
+      - 'master'
+      - 'dev'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  LintAndTest :
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    strategy:
+      # Continue even if a case fails
+      fail-fast: false
+      # This job will run for each of these cases (each combination of values for the variables `directory` & `command`)
+      matrix:
+        directory: [application, Service]
+        command: [lint, test]
+    
+    defaults:
+      # Set working directory where commands are run
+      run:
+        working-directory: ${{ matrix.directory }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      # Setup node
+      - name: Setup Node.js v14
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      
+      # Run single commands using the runner's shell
+      - name: Install dependencies
+        run: npm install --no-optional -f
+      - name: Run ${{ matrix.command }} command in ${{ matrix.directory }} directory
+        run: npm run ${{ matrix.command }}
