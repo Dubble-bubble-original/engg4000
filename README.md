@@ -75,16 +75,31 @@ Builds the app for production to the `build` folder.
 
 ## Testing
 ### Jest Unit Tests
-To run all the unit test use the following command
+To run all the unit test use the following command:\
 `npm run test`
 
-To run jest covearge for the entier product run the following command
+To run jest covearge for the entier product run the following command:\
 `npm run test:coverage`
 
-To see the unit test changes in real time, and to automatically run the tests when the files are changed use the follwoing command.
+To see the unit test changes in real time, and to automatically run the tests when the files are changed use the follwoing command:\
 `npm run test:watch`
 
 ### Karate Tests
-Feature files can be run in Intellij IDEA by right-clicking on the feature and selecting the green play button.
+#### Command line:
+All API feature files can be run using the following maven command inside of the automation directory:\
+`mvn test -Dtest=ServiceTests  -Dkarate.env="dev"`
 
-Tests results reports can be found here: Automation/target/karate-reports/karate-summary.html
+All UI feature files can be run using the following maven command inside of the automation directory:\
+`mvn test -Dtest=UiTests -Dkarate.env="dev"`
+
+#### Intellij Idea:
+Feature files can be run individually in Intellij IDEA by right-clicking on the feature and selecting the green play button (a run configureation is required).
+
+#### Reports:
+Tests results reports can be found here:\
+Automation/target/karate-reports/
+
+#### Important:
+All API feature files should be placed in the `api` directory.\
+All UI feature files should be placed in the `ui` directory.\
+All UI feature files should have the `@ui` tag at the top of the file.
