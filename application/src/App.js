@@ -1,32 +1,30 @@
 import './App.css';
-import Button from 'react-bootstrap/Button';
-import logger from './logger/logger';
+import { useState } from 'react';
+import WelcomePage from './components/WelcomePage';
+import Header from './components/HeaderComponent';
+import HomePage from './components/HomePage';
+import { If, Then, Else } from 'react-if';
 
-function App() {
-
-  const message = () => {
-    logger.info("Info logger");
-    logger.warn("Warning logger");
-    logger.error("Error logger");
-    logger.debug("Debug logger");
-  }
+const App = () => {
+  // The state that determines what page we are on
+  const [page, setPage] = useState('welcome_page');
 
   return (
     <div className="App">
+      <If condition={page === 'home_page'}>
+        <Then>
+          <Header />
+        </Then>
+      </If>
       <header className="App-header">
-        <p>
-          Frontend for the product
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <br/>
-        <Button onClick={message}>Bootsrap button</Button>
+        <If condition={page === 'welcome_page'}>
+          <Then>
+            <WelcomePage data={setPage}/>
+          </Then>
+        <Else>
+          <HomePage />
+        </Else>
+        </If>
       </header>
     </div>
   );
