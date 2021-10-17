@@ -5,13 +5,6 @@ const dbName = db.generateDBName();
 const testUserIDs = [];
 
 beforeAll(async () => db.connectTest(dbName));
-afterEach(async () => {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const id of testUserIDs) {
-    // eslint-disable-next-line no-await-in-loop
-    await User.findByIdAndDelete(id);
-  }
-});
 afterAll(async () => db.closeDatabase());
 
 describe('CRUD User Collection Tests', () => {
