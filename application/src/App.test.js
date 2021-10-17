@@ -42,15 +42,6 @@ describe('Welcome Page', () => {
     // Check to see if the 'Enter Site' button is enabled
     expect(welcomeButton).toBeEnabled();
   });
-})
-
-describe('HomePage', () => {
-
-  beforeEach(() => {
-    render(<App />);
-    checkBox = screen.getByTestId("agree_checkbox");
-    welcomeButton = screen.getByTestId("welcome_button");
-  })
 
   test("when checkbox is not selected and enter site button is pressed", () => {
     // Click the Welcome button
