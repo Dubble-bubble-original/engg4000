@@ -2,7 +2,6 @@
 const db = require('./dbLib');
 const { User } = require('./dbSchema');
 const dbName = db.generateDBName();
-const testUserIDs = [];
 
 beforeAll(async () => db.connectTest(dbName));
 afterAll(async () => db.closeDatabase());
@@ -23,7 +22,6 @@ describe('CRUD User Collection Tests', () => {
   test('Creating and Reading a User Document', async () => {
     // Send testUser1 to db
     await testUser1.save();
-    testUserIDs.push(testUser1._id);
     const testUserCheck = await User.findById(testUser1._id);
 
     expect(testUserCheck.name).toBe(testUser1.name);
@@ -32,7 +30,6 @@ describe('CRUD User Collection Tests', () => {
   test('Updating and Reading a User Document', async () => {
     // Send testUser2 to db
     await testUser2.save();
-    testUserIDs.push(testUser2._id);
     const update = { email: 'UserTest@unb.ca' };
 
     // Update testUser2's email
