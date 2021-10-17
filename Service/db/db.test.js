@@ -1,8 +1,17 @@
 /* eslint-disable no-underscore-dangle */
 const db = require('./dbLib');
 const { User } = require('./dbSchema');
+const dbName = db.generateDBName();
+const testUserIDs = [];
 
-beforeAll(async () => db.connectTest());
+beforeAll(async () => db.connectTest(dbName));
+afterEach(async () => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const id of testUserIDs) {
+    // eslint-disable-next-line no-await-in-loop
+    await User.findByIdAndDelete(id);
+  }
+});
 afterAll(async () => db.closeDatabase());
 
 describe('CRUD User Collection Tests', () => {
@@ -21,17 +30,16 @@ describe('CRUD User Collection Tests', () => {
   test('Creating and Reading a User Document', async () => {
     // Send testUser1 to db
     await testUser1.save();
+    testUserIDs.push(testUser1._id);
     const testUserCheck = await User.findById(testUser1._id);
 
     expect(testUserCheck.name).toBe(testUser1.name);
-
-    // Delete testUser1 from db
-    await User.findByIdAndDelete(testUser1._id);
   });
 
   test('Updating and Reading a User Document', async () => {
     // Send testUser2 to db
     await testUser2.save();
+    testUserIDs.push(testUser2._id);
     const update = { email: 'UserTest@unb.ca' };
 
     // Update testUser2's email
@@ -39,17 +47,5 @@ describe('CRUD User Collection Tests', () => {
     const testUserCheck = await User.findById(testUser2._id);
 
     expect(testUserCheck.email).toBe(update.email);
-
-    // Delete testUser2 from db
-    await User.findByIdAndDelete(testUser2._id);
-  });
-});
-
-describe('Ensuring Clean DB After Tests', () => {
-  test('Check User Collection', async () => {
-    // Get the whole user collection
-    const UserCollection = await User.find();
-
-    expect(UserCollection).toEqual([]);
   });
 });

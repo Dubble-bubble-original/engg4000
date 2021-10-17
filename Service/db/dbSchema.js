@@ -1,15 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const postSchema = new Schema({
-  date_created: { type: Date, default: Date.now },
-  body: { type: String },
-  tags: [{ type: String }],
-  title: { type: String },
-  imgURL: { type: String }
-});
-const Post = mongoose.model('Post', postSchema, 'Post');
-
 const messageSchema = new Schema({
   author: { type: mongoose.ObjectId },
   body: { type: String },
@@ -33,6 +24,6 @@ const userSchema = new Schema({
 });
 const User = mongoose.model('User', userSchema, 'User');
 
-module.exports = { Post, Message, User };
+module.exports = { Message, User };
 
 //  Check the Documentation folder for best practices on developing with schemas

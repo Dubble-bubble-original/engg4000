@@ -28,7 +28,12 @@ if (ENV.NODE_ENV === 'dev') {
 // DB Connection
 const mongoose = require('mongoose');
 const db = require('./db/dbLib');
-db.connectDev(); // change to db.connectProd() when appropriate
+if (ENV.NODE_ENV === 'production') {
+  db.connectProd();
+}
+else {
+  db.connectDev();
+}
 const dbConnection = mongoose.connection;
 dbConnection.on('error', function() {
   logger.error('Mongodb connection error');
