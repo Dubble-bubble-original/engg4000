@@ -12,10 +12,14 @@ function WelcomePage(props) {
     }
   }
 
+  // Handler function for terms and conditions
+
+
   // Thsi variable will hold the terms and condition for the application
-  var termsAndConditions = "The terms and conditions will\ngo here.";
+  var termsAndConditions = <a href="" target="_blank" rel="noreferrer">terms and conditions</a>;
 
   const [agree, setAgree] = useState(false);
+
   // This is the handler for the checkbox
   const checkBoxHandler = () => {
     setAgree(!agree)
@@ -23,17 +27,19 @@ function WelcomePage(props) {
 
   return (
     <div>
-      <div className="terms_and_conditions" data-testid="terms_conditions"> {termsAndConditions} </div>
+      <div className="terms_and_conditions" data-testid="terms_conditions">
+        By entering this website you are ageering to our {termsAndConditions} 
+      </div>
       <div className="i-agree">
         <Form.Check
           type="checkbox"
           data-testid="agree_checkbox"
-          label="I agree"
+          label="I have read and accept the terms and conditions"
           onChange={checkBoxHandler}
         />
       </div>
-      <Button data-testid="welcome-button" className="welcome" disabled={!agree} onClick={buttonHandler}>
-        Welcome to Nota!!
+      <Button data-testid="welcome_button" className="welcome" disabled={!agree} onClick={buttonHandler}>
+        Enter Site
       </Button>
     </div>
   )

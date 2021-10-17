@@ -1,7 +1,6 @@
 import './App.css';
 import { useState } from 'react';
 import WelcomePage from './components/WelcomePage';
-import Header from './components/HeaderComponent';
 import HomePage from './components/HomePage';
 import { If, Then, Else } from 'react-if';
 
@@ -11,11 +10,6 @@ const App = () => {
 
   return (
     <div className="App">
-      <If condition={page === 'home_page'}>
-        <Then>
-          <Header />
-        </Then>
-      </If>
       <header className="App-header">
         <If condition={page === 'welcome_page'}>
           <Then>
