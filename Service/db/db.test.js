@@ -38,4 +38,11 @@ describe('CRUD User Collection Tests', () => {
 
     expect(testUserCheck.email).toBe(update.email);
   });
+
+  test('Deleting a User Document', async () => {
+    await User.findByIdAndDelete(testUser1._id);
+    const testUserCheck = await User.findById(testUser1._id);
+
+    expect(testUserCheck).toBe(null);
+  });
 });
