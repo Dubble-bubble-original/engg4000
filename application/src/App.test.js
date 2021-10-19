@@ -1,14 +1,68 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+// Clear the setup before each test
+afterEach(cleanup);
 
-test('renders bootstrap button', () => {
-  render(<App />);
-  const buttonElement = screen.getByText(/Bootsrap button/i);
-  expect(buttonElement).toBeInTheDocument();
-});
+let checkBox = null, welcomeButton = null;
+
+describe('Welcome Page', () => {
+
+  beforeEach(() => {
+    render(<App />);
+    checkBox = screen.getByTestId("agree_checkbox");
+    welcomeButton = screen.getByTestId("welcome_button");
+  })
+
+  test("renders the checkbox", () => {
+    expect(checkBox).toBeInTheDocument();
+    expect(checkBox).not.toBeChecked();
+  });
+
+  test("renders terms and conditions", () => {
+    const terms_conditions = screen.getByTestId("terms_conditions");
+    expect(terms_conditions).toBeInTheDocument();
+  });
+
+  test("renders 'Enter Site' button", () => {
+    expect(welcomeButton).toBeInTheDocument();
+  });
+
+  test("check to see the 'Enter Site' button is disabled when the checkbox is not selected", () => {
+    expect(welcomeButton).toBeDisabled();
+  });
+
+  test("check to see the 'Enter Site' button is enabled when the checkbox is selected", () => {
+    // Click the checkbox
+    userEvent.click(checkBox);
+
+    // Check to see if the checkbox is selected
+    expect(checkBox).toBeChecked();
+    // Check to see if the 'Enter Site' button is enabled
+    expect(welcomeButton).toBeEnabled();
+  });
+
+  test("when checkbox is not selected and enter site button is pressed", () => {
+    // Click the Welcome button
+    fireEvent.click(welcomeButton);
+
+    // If the checkbox is not selected the welcome button should still be on the page
+    expect(checkBox).not.toBeChecked();
+    expect(welcomeButton).toBeInTheDocument();
+  });
+
+  test("when checkbox is selected and welcome button is pressed", () => {
+    // Select the checkBox    
+    userEvent.click(checkBox);
+    // Click the button
+    fireEvent.click(welcomeButton);
+    // After the button is pressed it should not be on the screen
+    expect(welcomeButton).not.toBeInTheDocument();
+
+    // Get homepage components from the screen
+    const homepage = screen.getByTestId("home_page");
+    // Check to see if the "Homepage" is on the screen
+    expect(homepage).toBeInTheDocument();
+  });
+})

@@ -1,0 +1,40 @@
+.terms_and_conditions {
+    border: 2.5;
+    padding-left: 25px;
+    padding-right: 25px;
+    border-color: rgb(0, 0, 0);
+    border-style: solid;
+    white-space: pre-wrap;
+    color: black;
+    font-size: 15px;
+}
+
+label {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.i-agree {
+    display: flex;
+    padding-bottom: 10px;
+    justify-content: center;
+    color: rgb(12, 0, 0);
+    font-size: 20px;
+}
+
+.welcome:disabled {
+    font-size: 20px;
+    background-color: gray;
+    border-color: gray;
+}
+
+.welcome:enabled {
+    font-size: 20px;
+    background-color: #296efd;
+    border-color: #296efd;
+
+}
+
+.homepage {
+    color: black;
+}

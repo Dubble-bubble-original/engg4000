@@ -22,6 +22,7 @@
         "jest"
     ],
     "rules": {
+        "react/prop-types": 0
     },
 
     // Basic Settings taken from https://github.com/yannickcr/eslint-plugin-react#configuration
