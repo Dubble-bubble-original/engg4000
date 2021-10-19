@@ -12,10 +12,7 @@ function WelcomePage(props) {
     }
   }
 
-  // Handler function for terms and conditions
-
-
-  // Thsi variable will hold the terms and condition for the application
+  // This variable will hold the terms and condition for the application
   var termsAndConditions = <a href="" target="_blank" rel="noreferrer">terms and conditions</a>;
 
   const [agree, setAgree] = useState(false);
