@@ -1,6 +1,5 @@
 const EXPRESS = require('express');
 const APP = EXPRESS();
-const mongoose = require('mongoose');
 
 // Get environment
 require('dotenv').config();
@@ -27,13 +26,19 @@ if (ENV.NODE_ENV === 'dev') {
 }
 
 // DB Connection
-const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
-mongoose.connect(connectionString);
-const db = mongoose.connection;
-db.on('error', function() {
+const mongoose = require('mongoose');
+const db = require('./db/dbUtils');
+if (ENV.NODE_ENV === 'production') {
+  db.connectProd();
+}
+else {
+  db.connectDev();
+}
+const dbConnection = mongoose.connection;
+dbConnection.on('error', function() {
   logger.error('Mongodb connection error');
 });
-db.once('open', function() {
+dbConnection.once('open', function() {
   logger.info('Mongodb connection successful');
 });
 
