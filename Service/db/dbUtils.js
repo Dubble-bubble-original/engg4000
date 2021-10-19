@@ -17,8 +17,16 @@ module.exports.connectProd = async () => {
   await mongoose.connect(prodConnectionString);
 };
 
-module.exports.closeDatabase = async () => {
+module.exports.deleteDatabase = async () => {
+  if (mongoose.connection.name === ENV.DB_DEV_NAME
+    || mongoose.connection.name === ENV.DB_PROD_NAME) {
+    throw new Error('Cannot delete \'Production\' or \'Dev\' Database');
+  }
   await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
+};
+
+module.exports.closeDatabase = async () => {
   await mongoose.connection.close();
 };
 

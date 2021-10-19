@@ -4,7 +4,7 @@ const { User } = require('./dbSchema');
 const dbName = db.generateDBName();
 
 beforeAll(async () => db.connectTest(dbName));
-afterAll(async () => db.closeDatabase());
+afterAll(async () => db.deleteDatabase());
 
 describe('CRUD User Collection Tests', () => {
   // Create Users for the tests (One for each test)
