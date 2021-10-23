@@ -54,26 +54,15 @@ a {
 }
 
 #agree-checkbox:checked {
-    outline: none !important;
+    outline: none;
     background-color:#EC4038;
     border-color: #333333;
-    box-shadow: 0px 2px 2px #EC4038 inset;
 }
 
-#agree-checkbox:active {
-    outline: none !important;
-    border-color: #333333;
-    box-shadow: 0px 2px 2px #EC4038;
-}
-
-#agree-checkbox:focus {
-    outline: none !important;
-    border-color: #333333;
-    box-shadow: 0px 2px 2px #EC4038;
-}
-
+#agree-checkbox:active,
+#agree-checkbox:focus,
 #agree-checkbox:before {
-    outline: none !important;
+    outline: none;
     border-color: #333333;
     box-shadow: 0px 2px 2px #EC4038;
 }
