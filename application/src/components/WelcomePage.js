@@ -1,21 +1,26 @@
+// React
 import { useState } from 'react';
-import './components.css';
 import { Button, Form } from 'react-bootstrap';
+import PropTypes from 'prop-types'
 
-// Welcome page component for the application
+// Stylesheet
+import './components.css';
+
+// Resources
+import logo from '../resources/images/nota-logo.png';
+
 function WelcomePage(props) {
+  // State variables
+  const [agree, setAgree] = useState(false);
 
   // Handler function for the welcome button
-  const buttonHandler = () => {
+  const enterButtonHandler = () => {
     if (agree == true) {
-      props.data("home_page");
+      props.data('home_page');
     }
   }
 
-  // This variable will hold the terms and condition for the application
-  var termsAndConditions = <a href="" target="_blank" rel="noreferrer">terms and conditions</a>;
-
-  const [agree, setAgree] = useState(false);
+  let termsAndConditions = <a href="" target="_blank" rel="noreferrer">terms and conditions</a>;
 
   // This is the handler for the checkbox
   const checkBoxHandler = () => {
@@ -23,23 +28,29 @@ function WelcomePage(props) {
   }
 
   return (
-    <div>
-      <div className="terms_and_conditions" data-testid="terms_conditions">
-        By entering this website you are ageering to our {termsAndConditions} 
+    <div className="container">
+      <img className="logo" src={logo} alt="Logo" />
+      <div className="terms-conditions" data-testid="terms-conditions">
+        <p>By entering this website, you are ageering to our {termsAndConditions}.</p>
       </div>
       <div className="i-agree">
         <Form.Check
+          data-testid="agree-checkbox"
+          id="agree-checkbox"
           type="checkbox"
-          data-testid="agree_checkbox"
           label="I have read and accept the terms and conditions"
           onChange={checkBoxHandler}
         />
       </div>
-      <Button data-testid="welcome_button" className="welcome" disabled={!agree} onClick={buttonHandler}>
+      <Button data-testid="enter-btn" id="enter-btn" disabled={!agree} onClick={enterButtonHandler}>
         Enter Site
       </Button>
     </div>
   )
+}
+
+WelcomePage.propTypes = {
+  data: PropTypes.function
 }
 
 export default WelcomePage;
