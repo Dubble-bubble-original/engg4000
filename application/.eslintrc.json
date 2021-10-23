@@ -22,7 +22,9 @@
         "jest"
     ],
     "rules": {
-        "react/prop-types": 0
+        "react/prop-types": "error",
+        "no-var": "error",
+        "quotes": ["error", "single"]
     },
 
     // Basic Settings taken from https://github.com/yannickcr/eslint-plugin-react#configuration
