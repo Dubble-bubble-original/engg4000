@@ -85,11 +85,10 @@ jobs:
       - name: Start service
         run: |
           cd Service
-          npm install
+          npm install --no-optional -f
           npm run dev
-          cd ../
       # Run Karate API tests
       - name: Run Karate API Tests
         run: |
-          cd Automation
+          cd ../Automation
           mvn test -Dtest=ServiceTests -Dkarate.env="dev"
