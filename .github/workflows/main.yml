@@ -82,6 +82,5 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       # Start service and Run Karate API tests
-      - name: Start service And Run Karate API Tests
-        run: cd Service && npm install --no-optional -f && npm run dev
-        run: cd Automation && mvn test -Dtest=ServiceTests -Dkarate.env="dev"
+      - run: cd Service && npm install --no-optional -f && npm run dev
+      - run: cd Automation && mvn test -Dtest=ServiceTests -Dkarate.env="dev"
