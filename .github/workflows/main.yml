@@ -42,7 +42,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      # Setup node
+      # Setup Node
       - name: Setup Node.js v14
         uses: actions/setup-node@v1
         with:
@@ -68,23 +68,27 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
       
-      # Setup node
+      # Setup Node
       - name: Setup Node.js v14
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
+
       # Setup JDK
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
           java-version: '8'
           distribution: 'adopt'
-      # Start service and Run Karate API tests
+
+      # Start service
       - name: Start Service
         run: |
           cd Service
           npm install --no-optional -f
           npm run dev &
+
+      # Run Karate API Tests
       - name: Run Karate API Tests
         run: |
           cd Automation
