@@ -86,7 +86,7 @@ jobs:
         run: |
           cd Service
           npm install --no-optional -f
-          nohup npm run dev
+          npm run dev &
       - name: Run Karate API Tests
         run: |
           cd ../Automation
