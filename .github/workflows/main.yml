@@ -12,8 +12,6 @@ env:
 
 # Run CI on pull request for the main branches
 on:
-  # TODO: REMOVE THIS
-  push:
   pull_request:
     branches:
       - 'master'
