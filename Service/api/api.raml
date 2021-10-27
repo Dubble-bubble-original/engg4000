@@ -1,0 +1,44 @@
+#%RAML 1.0
+---
+title: Nota API
+baseUri: http://localhost:9000
+version: v1
+mediaType: application/json
+types:
+  UUID:
+    type: string
+    pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+  Token:
+    type: object
+    properties:
+      token:
+        required: true
+        type: UUID
+      timestamp:
+        required: true
+        type: number
+
+/auth:
+  post:
+    description: Creates an authorization token to be used for authorizing API calls.
+    responses:
+      200:
+        body:
+          application/json:
+            type: Token
+            example: {
+              'token': '6bf73119-ff54-40d6-bbd5-a2590b9eb66f',
+              'timestamp': 1635366449733
+            }
+/version:
+  get:
+    description: Returns the version of the APP.
+    responses:
+      200:
+        body:
+          type: string
+          example: 'Service v0.0.0'
+      401:
+        body:
+          type: string
+          example: 'No Authentication Token Provided'

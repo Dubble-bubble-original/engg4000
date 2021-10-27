@@ -28,11 +28,11 @@ if (ENV.NODE_ENV === 'dev') {
 // DB Connection
 const mongoose = require('mongoose');
 const db = require('./db/dbUtils');
-if (ENV.NODE_ENV === 'production') {
-  db.connectProd();
+if (ENV.NODE_ENV === 'dev') {
+  db.connectDev();
 }
 else {
-  db.connectDev();
+  db.connectProd();
 }
 const dbConnection = mongoose.connection;
 dbConnection.on('error', function() {
