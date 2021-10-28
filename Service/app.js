@@ -28,12 +28,7 @@ if (ENV.NODE_ENV === 'dev') {
 // DB Connection
 const mongoose = require('mongoose');
 const db = require('./db/dbUtils');
-if (ENV.NODE_ENV === 'dev') {
-  db.connectDev();
-}
-else {
-  db.connectProd();
-}
+db.connectDatabase();
 const dbConnection = mongoose.connection;
 dbConnection.on('error', function() {
   logger.error('Mongodb connection error');
