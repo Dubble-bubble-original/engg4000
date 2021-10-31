@@ -14,9 +14,8 @@ function HomePage() {
         <b>Sample Icons</b><br/>
         <IconContext.Provider value={{color:'#EC4038'}} style={{textAlign:'left'}}>
         <div>Material Design: <MdHome/><MdSearch/><MdAddLocation/><MdRefresh/><MdMoreHoriz/></div>
-        <div>Fontawesome: <span style={{marginRight:'10px'}}><FaHome/><FaSearch/><FaSearchLocation/><FaMapMarkerAlt/><FaRedoAlt/><FaEllipsisH/></span></div>
+        <div>Fontawesome: <FaHome/><FaSearch/><FaSearchLocation/><FaMapMarkerAlt/><FaRedoAlt/><FaEllipsisH/></div>
         </IconContext.Provider>
-        <div>Available icons: <a href='https://react-icons.github.io/react-icons/'>https://react-icons.github.io/react-icons/</a></div>
       </div>
     </div>
   )
