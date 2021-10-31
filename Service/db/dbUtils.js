@@ -1,25 +1,19 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 const ENV = process.env;
-const devConnectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_DEV_NAME}?retryWrites=true&w=majority`;
-const prodConnectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_PROD_NAME}?retryWrites=true&w=majority`;
 
 module.exports.connectTest = async (name) => {
   const testConnectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${name}?retryWrites=true&w=majority`;
   await mongoose.connect(testConnectionString);
 };
 
-module.exports.connectDev = async () => {
-  await mongoose.connect(devConnectionString);
-};
-
-module.exports.connectProd = async () => {
-  await mongoose.connect(prodConnectionString);
+module.exports.connectDatabase = async () => {
+  const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
+  await mongoose.connect(connectionString);
 };
 
 module.exports.deleteDatabase = async () => {
-  if (mongoose.connection.name === ENV.DB_DEV_NAME
-    || mongoose.connection.name === ENV.DB_PROD_NAME) {
+  if (mongoose.connection.name === ENV.DB_NAME) {
     throw new Error('Cannot delete \'Production\' or \'Dev\' Database');
   }
   await mongoose.connection.dropDatabase();
