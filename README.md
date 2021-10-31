@@ -1,5 +1,9 @@
 # Production Ready Web Application
 
+[![Node.js CI](https://github.com/Dubble-bubble-original/engg4000/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/Dubble-bubble-original/engg4000/blob/dev/.github/workflows/main.yml)
+
+[![Node.js CD](https://github.com/Dubble-bubble-original/engg4000/actions/workflows/DeployToAWS.yml/badge.svg?branch=main)](https://github.com/Dubble-bubble-original/engg4000/blob/dev/.github/workflows/DeployToAWS.yml)
+
 ## Contributors
 Nathaniel Caron\
 Carter James MacLennan\
