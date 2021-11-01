@@ -20,5 +20,12 @@ jobs:
       - name: List images
         run: docker images
         
-      - name: Build Images
-        run: docker-compose push --ignore-push-failures cartermaclennan/engg4000   
+      - name: Push Client Image to Docker Hub
+        run: docker push cartermaclennan/engg4000:engg4000_client
+      
+      - name: Push Backend Image to Docker Hub
+        run: docker push cartermaclennan/engg4000:engg4000_backend
+        
+      - name: Push Nginx Image to Docker Hub
+        run: docker push cartermaclennan/engg4000:engg4000_nginx
+ 
