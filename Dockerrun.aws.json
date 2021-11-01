@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "nginx",
-            "image": "engg4000-dev_nginx",
+            "image": "cartermaclennan/engg4000:nginx",
             "hostname": "nginx",
             "essential": true,
             "portMappings": [
@@ -17,14 +17,14 @@
         },
         {
             "name": "client",
-            "image": "engg4000-dev_client",
+            "image": "cartermaclennan/engg4000:client",
             "hostname": "client",
             "essential": false,
             "memory": 300
         },
         {
             "name": "backend",
-            "image": "engg4000-dev_backend",
+            "image": "cartermaclennan/engg4000:backend",
             "hostname": "backend",
             "essential": false,
             "memory": 300
