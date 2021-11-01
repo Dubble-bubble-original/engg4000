@@ -16,8 +16,6 @@ services:
       dockerfile: Dockerfile
       context: ./Service
     container_name: backend
-    env_file:
-      - ./Service/.env
   mongo:
     image: "mongo"
     container_name: "mongo-db"
