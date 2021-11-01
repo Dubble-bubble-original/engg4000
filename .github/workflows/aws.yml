@@ -7,5 +7,27 @@ jobs:
     steps:
       - name: Checkout Latest Repo
         uses: actions/checkout@v2
+        
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        
       - name: Build Images
-        run: docker-compose up --build
+        run: docker-compose build
+      
+      - name: List images
+        run: docker images
+        
+      - name: Tag Images 
+        run: |
+          docker tag engg4000_backend:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:backend
+          docker tag engg4000_client:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:client
+          docker tag engg4000_nginx:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:nginx
+
+      - name: Push Images to Docker Hub
+        run: | 
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:backend 
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:client 
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:nginx 
