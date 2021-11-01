@@ -19,9 +19,6 @@ jobs:
       
       - name: List images
         run: docker images
-        
-      - name: Push Client Image to Docker Hub
-        run: docker push cartermaclennan/engg4000:engg4000_client
       
       - name: Tag Backend Image 
         run: docker tag engg4000_backend:latest ${{ secrets.DOCKER_USERNAME }}/engg4000_backend:latest
