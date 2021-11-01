@@ -21,4 +21,4 @@ jobs:
         run: docker images
         
       - name: Build Images
-        run: docker-compose push --ignore-push-failures   
+        run: docker-compose push --ignore-push-failures cartermaclennan/engg4000   
