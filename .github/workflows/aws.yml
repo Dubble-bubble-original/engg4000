@@ -1,13 +1,11 @@
 name: Dev deployment from Github to AWS
-on:
-  push:
-    branches:
-      - 'docker-overhaul'
+on: push
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Latest Repo
-        uses: actions/checkout@docker-overhaul
-
+        uses: actions/checkout@v2
+      - name: Build Images
+        run: docker-compose up --build
