@@ -19,9 +19,15 @@ jobs:
       
       - name: List images
         run: docker images
-      
-      - name: Tag Backend Image 
-        run: docker tag engg4000_backend:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:latest
-      
-      - name: Push Backend Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:latest 
+        
+      - name: Tag Images 
+        run: |
+          docker tag engg4000_backend:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:backend
+          docker tag engg4000_client:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:client
+          docker tag engg4000_nginx:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:nginx
+
+      - name: Push Images to Docker Hub
+        run: | 
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:backend 
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:client 
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:nginx 
