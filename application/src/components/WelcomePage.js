@@ -14,11 +14,16 @@ function WelcomePage(props) {
   // State variables
   const [agree, setAgree] = useState(false);
 
+  // Make auth token API Call
+  const getToken = async () => {
+    await getAuthToken();
+  }
+
   // Handler function for the welcome button
-  const enterButtonHandler = async () => {
+  const enterButtonHandler = () => {
     if (agree == true) {
       // Generate New Authtoken
-      await getAuthToken();
+      getToken();
       props.data('home_page');
     }
   }
