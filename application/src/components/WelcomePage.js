@@ -8,14 +8,17 @@ import './components.css';
 
 // Resources
 import logo from '../resources/images/nota-logo.png';
+import { getAuthToken } from '../api/api';
 
 function WelcomePage(props) {
   // State variables
   const [agree, setAgree] = useState(false);
 
   // Handler function for the welcome button
-  const enterButtonHandler = () => {
+  const enterButtonHandler = async () => {
     if (agree == true) {
+      // Generate New Authtoken
+      await getAuthToken();
       props.data('home_page');
     }
   }
@@ -50,7 +53,7 @@ function WelcomePage(props) {
 }
 
 WelcomePage.propTypes = {
-  data: PropTypes.function
+  data: PropTypes.func
 }
 
 export default WelcomePage;
