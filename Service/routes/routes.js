@@ -3,14 +3,14 @@ const ROUTER = EXPRESS.Router();
 const API = require('../api/api');
 
 ROUTER.post(
-    '/auth',
-    API.createAuthToken
+  '/auth',
+  API.createAuthToken
 );
 
 ROUTER.get(
-    '/version',
-    API.verifyAuthToken,
-    API.version
+  '/version',
+  API.verifyAuthToken,
+  API.version
 );
 
 module.exports = ROUTER;

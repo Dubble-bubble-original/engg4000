@@ -16,6 +16,9 @@
         "func-names": [ "off", "always" ],
         "space-before-function-paren": [ "off" ],
         "no-undef": [ "off" ],
-        "linebreak-style": [ "off" ]
+        "linebreak-style": [ "off" ],
+        "no-plusplus": ["error", {
+            "allowForLoopAfterthoughts": true
+        }]
     }
 }
