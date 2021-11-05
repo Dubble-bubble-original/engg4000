@@ -21,7 +21,6 @@ export const getAuthToken = async () => {
       url: serviceUrl+'/auth'
     })
     authToken = response.data.token;
-    console.log('Token Created: '+authToken);
   } catch(error) {
     logger.warn(error);
   }
