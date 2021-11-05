@@ -21,8 +21,9 @@ export const getAuthToken = async () => {
       url: serviceUrl+'/auth'
     })
     authToken = response.data.token;
+    console.log('Token Created: '+authToken);
   } catch(error) {
-    logger.info(error);
+    logger.warn(error);
   }
 }
 
@@ -39,7 +40,8 @@ export const getVersion = async () => {
 
     return response.data;
   } catch(error) {
-    console.log(error);
+    logger.warn(error);
+
     if(error.response.status === 401) {
       // Get New Auth Token
       await getAuthToken();

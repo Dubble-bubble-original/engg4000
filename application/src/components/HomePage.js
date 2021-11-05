@@ -24,7 +24,7 @@ function HomePage() {
     }
 
     fetchData();
-  }, [version]);
+  }, [version, isLoading]);
 
   // Render is loading page until version gets its value
   if(isLoading) {
