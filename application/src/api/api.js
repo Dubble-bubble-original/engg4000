@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
 import axios from 'axios';
 import logger from '../logger/logger';
 
@@ -41,7 +39,7 @@ export const getVersion = async () => {
   } catch(error) {
     logger.warn(error);
 
-    if(error.response.status === 401) {
+    if(error?.response?.status === 401) {
       // Get New Auth Token
       await getAuthToken();
       return null;

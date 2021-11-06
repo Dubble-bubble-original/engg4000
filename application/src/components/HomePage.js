@@ -13,18 +13,18 @@ function HomePage() {
 
   // State variables
   const [isLoading, setLoading] = useState(true);
-  const [version, setVersion] = useState(undefined);
+  const [version, setVersion] = useState(null);
+
+  const fetchData = async () => {
+    // Get app version
+    let appVersion = await getVersion();
+    setVersion(appVersion);
+    setLoading(false);
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Get app version
-      let appVersion = await getVersion();
-      setVersion(appVersion);
-      setLoading(false);
-    }
-
     fetchData();
-  }, [version, isLoading]);
+  }, []);
 
   // Render is loading page until version gets its value
   if(isLoading) {
