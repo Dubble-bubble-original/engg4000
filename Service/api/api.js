@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const uuidv4 = require('uuid').v4;
 const UTILS = require('../utils/utils');
 const { UserPost } = require('../db/dbSchema');
@@ -12,6 +11,7 @@ exports.createAuthToken = (req, res) => {
   return res.send(response);
 };
 
+// eslint-disable-next-line consistent-return
 exports.verifyAuthToken = (req, res, next) => {
   const token = req.header('token');
   const currentTime = Date.now();
@@ -40,7 +40,7 @@ exports.version = (req, res, next) => {
 
 exports.createUserPost = (req, res) => {
   const newUserPost = new UserPost({
-    author: req.body.author,
+    author: req.body.authorID,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
@@ -62,7 +62,7 @@ exports.createUserPost = (req, res) => {
     return res.status(201).json({
       post: {
         _id: newUserPost._id,
-        author: newUserPost.author,
+        author: newUserPost.authorID,
         body: newUserPost.body,
         tags: newUserPost.tags,
         title: newUserPost.title,
@@ -77,14 +77,18 @@ exports.createUserPost = (req, res) => {
 };
 
 exports.deleteUserPost = (req, res) => {
+  // Find the userpost with the matching ID
   UserPost.findById(req.params.id)
     .then((doc) => {
       if (!doc) {
         return res.status(404).send('User Post not found.');
       }
+
       if (!('access_key' in req.body)) {
         return res.status(400).send('Client body does NOT contain an access-key.');
       }
+
+      // Check if the req & userpost access_key's match for deletion
       if (doc.access_key === req.body.access_key) {
         UserPost.findByIdAndDelete(req.params.id)
           .catch((err) => {
@@ -93,7 +97,7 @@ exports.deleteUserPost = (req, res) => {
           });
         return res.status(200).end();
       }
-      return res.status(401).send('Client access-key does NOT match the user post.');
+      return res.status(403).send('Client access-key does NOT match the user post.');
     })
     .catch((err) => {
       logger.error(err);
