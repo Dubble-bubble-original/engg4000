@@ -11,7 +11,6 @@ exports.createAuthToken = (req, res) => {
   return res.send(response);
 };
 
-// eslint-disable-next-line consistent-return
 exports.verifyAuthToken = (req, res, next) => {
   const token = req.header('token');
   const currentTime = Date.now();
@@ -30,7 +29,7 @@ exports.verifyAuthToken = (req, res, next) => {
     logger.info('Invalid Authentication Token Provided');
     return res.status(401).send('Invalid Authentication Token Provided');
   }
-  next();
+  return next();
 };
 
 exports.version = (req, res, next) => {
