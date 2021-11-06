@@ -58,6 +58,6 @@ const requestWithToken = async (request) => {
           }
       }
   }
-  logger.warn('Unable to get auth token after '+MAX_RETRY+' tries.');
+  logger.warn('Unable to get auth token after '+MAX_RETRY_LIMIT+' tries.');
   return null;
 }
