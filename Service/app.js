@@ -5,6 +5,10 @@ const APP = EXPRESS();
 require('dotenv').config();
 const ENV = process.env;
 
+// API middleware
+APP.use(EXPRESS.json());
+APP.use(EXPRESS.urlencoded({ extended: true }));
+
 // Define all routes in routes.js
 APP.use('/', require('./routes/routes'));
 

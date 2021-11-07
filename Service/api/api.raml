@@ -17,6 +17,36 @@ types:
       timestamp:
         required: true
         type: number
+  Post:
+    type: object
+    properties:
+      _id:
+        type: number
+      author:
+        type: string
+      body:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      title:
+        type: string
+      imgURL:
+        type: string
+      date_created:
+        type: number
+      location:
+        type: object
+        properties:
+          latitude:
+            type: number
+          longitude:
+            type: number
+      true_location:
+        type: boolean
+      access_key:
+        type: string
 
 /auth:
   post:
@@ -42,3 +72,53 @@ types:
         body:
           type: string
           example: 'No Authentication Token Provided'
+/userpost:
+  post:
+    description: Creates a new post document and returns it
+    responses:
+      201:
+        body:
+          application/json:
+            type: Post
+      400:
+        description: A required field in the request is missing.
+        body:
+          type: string
+          example: UserPost validation failed: author: Path `author` is required.
+      500:
+        body:
+          type: string
+  /{id}:
+    get: 
+      description: Returns the post with the matching id
+      responses:
+        200:
+          body:
+            application/json:
+              type: Post
+        404:
+          body:
+            type: string
+            example: User not found.
+        500:
+          body:
+            type: string
+    delete:
+      description: Delete the post if the request body has the matching access-key
+      responses:
+        200:
+        400:
+          body:
+            type: string
+            example: Client body does NOT contain an access-key.
+        403:
+          body:
+            type: string
+            example: Client access-key does NOT match the user post.
+        404:
+          body:
+            type: string
+            example: User not found.
+        500:
+          body:
+            type: string
