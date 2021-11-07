@@ -32,7 +32,7 @@ exports.verifyAuthToken = (req, res, next) => {
   return next();
 };
 
-exports.version = (req, res, next) => {
+exports.version = (req, res) => {
   const { VERSION } = process.env;
   return res.send(`Service v${VERSION}`);
 };
