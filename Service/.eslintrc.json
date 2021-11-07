@@ -17,6 +17,9 @@
         "space-before-function-paren": [ "off" ],
         "no-undef": [ "off" ],
         "linebreak-style": [ "off" ],
-        "no-underscore-dangle": [ "off" ]
+        "no-underscore-dangle": [ "off" ],
+        "no-plusplus": ["error", {
+            "allowForLoopAfterthoughts": true
+        }]
     }
 }
