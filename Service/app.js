@@ -14,6 +14,13 @@ const corsOptions = {
 // Allow the app to uase CORS with the defined routes in routes.js
 APP.use(cors(corsOptions), require('./routes/routes'));
 
+// API middleware
+APP.use(EXPRESS.json());
+APP.use(EXPRESS.urlencoded({ extended: true }));
+
+// Define all routes in routes.js
+APP.use('/', require('./routes/routes'));
+
 // Setup logger
 const WINSTON = require('winston');
 global.logger = WINSTON.createLogger({
