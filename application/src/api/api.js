@@ -9,7 +9,7 @@ require('dotenv').config();
 const ENV = process.env;
 
 // Retry Variables
-const MAX_RETRY_LIMIT = 3;
+const MAX_RETRY_LIMIT = 2;
 
 // Get the service url from the environment file
 const serviceUrl = ENV.REACT_APP_SERVICE_URL;
