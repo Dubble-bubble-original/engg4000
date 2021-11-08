@@ -61,12 +61,8 @@ jobs:
           
 
       - name: Slack Notification
-        uses: |
-          rtCamp/action-slack-notify@v2
-          LTLA/actions-anime-gif-slackbot@master  
+        uses: rtCamp/action-slack-notify@v2
         env:
-          sentiment: celebrate, love
-          rating: 1
           SLACK_CHANNEL: devops
           SLACK_COLOR: '#00FF00'
           SLACK_ICON: 'https://senior-design-img-bucket.s3.amazonaws.com/elastic-beanstalk-icon.png'
@@ -74,5 +70,12 @@ jobs:
           SLACK_TITLE: 'Successfully Deployed to Production Server'
           SLACK_USERNAME: Deploy_Bot
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          
+      - name: Post celebratory GIF 
+        uses: LTLA/actions-anime-gif-slackbot@master
+        with:
+          webhook: ${{ secrets.SLACK_WORK_WEBHOOK }}
+          sentiment: thumbs_up,celebrate
+          rating: 1
 
 
