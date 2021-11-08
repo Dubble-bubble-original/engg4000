@@ -65,7 +65,7 @@ jobs:
         env:
           SLACK_CHANNEL: devops
           SLACK_COLOR: '#00FF00'
-          SLACK_ICON: https://senior-design-img-bucket.s3.amazonaws.com/aws-icon.png
+          SLACK_ICON: https://senior-design-img-bucket.s3.amazonaws.com/aws-sm-icon.png
           SLACK_MESSAGE: 'prod-app-${{ steps.format-time.outputs.replaced }}'
           SLACK_TITLE: 'Successfully Deployed to Production'
           SLACK_USERNAME: Deploy_Bot
