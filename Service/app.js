@@ -1,9 +1,18 @@
 const EXPRESS = require('express');
+const cors = require('cors');
 const APP = EXPRESS();
 
 // Get environment
 require('dotenv').config();
 const ENV = process.env;
+
+// options for cross-origin resource sharing
+const corsOptions = {
+  origin: ENV.FRONTEND_URL
+};
+
+// Allow the app to uase CORS with the defined routes in routes.js
+APP.use(cors(corsOptions), require('./routes/routes'));
 
 // API middleware
 APP.use(EXPRESS.json());
