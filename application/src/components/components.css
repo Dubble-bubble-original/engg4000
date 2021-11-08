@@ -45,12 +45,27 @@ a {
     padding-bottom: 35px;
 }
 
+.nav-tabs .nav-link,
+.nav-tabs .nav-link:hover {
+    color: #EC4038;
+}
+
 /* IDs */
 
-#enter-btn {
+#enter-btn, #close-btn {
     font-size: 20px;
     background-color: #EC4038;
     border-color: #EC4038;
+}
+
+#terms-conditions-link {
+    cursor:pointer;
+    color:#EC4038;
+     text-decoration:underline;
+}
+
+#terms-conditions {
+    font-family: 'Times New Roman', Times, serif;
 }
 
 #agree-checkbox:checked {
