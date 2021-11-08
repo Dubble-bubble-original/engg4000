@@ -30,4 +30,16 @@ ROUTER.get(
   API.verifyAuthToken,
   API.getUserPost
 );
+
+ROUTER.get(
+  '/userposts',
+  API.verifyAuthToken,
+  API.getUserPosts
+);
+
+ROUTER.put(
+  '/userpost/:id',
+  API.verifyAuthToken,
+  API.updateUserPost
+);
 module.exports = ROUTER;

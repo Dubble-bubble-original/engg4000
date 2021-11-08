@@ -88,6 +88,23 @@ types:
       500:
         body:
           type: string
+  get:
+    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
+    example: req.body.{ 'filter' : { 'title' : 'exampleTitle', 'body' : 'exampleBody'}}
+    responses:
+      200:
+        body:
+          application/json:
+            type: Array
+            items:
+              type: Post
+      406:
+        body:
+          type: string
+          example: 'No userpost matches the filter'
+      500:
+        body:
+          type: string
   /{id}:
     get: 
       description: Returns the post with the matching id
@@ -119,6 +136,21 @@ types:
           body:
             type: string
             example: User not found.
+        500:
+          body:
+            type: string
+    put:
+      description: Update a userpost with data provided in an update field in req.body
+      example: req.body.{ 'update' : { 'title': 'exampleUpdate', 'body': 'exampleUpdate'}}
+      responses:
+        200:
+          body:
+            application/json:            
+              type: Post
+        404:
+          body:
+            type: string
+            example: Userpost not found.
         500:
           body:
             type: string
