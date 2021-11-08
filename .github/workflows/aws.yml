@@ -61,7 +61,12 @@ jobs:
           
 
       - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
+        uses: |
+          rtCamp/action-slack-notify@v2
+          LTLA/actions-anime-gif-slackbot@master
+        with:
+            sentiment: celebrate, love
+            rating: 1
         env:
           SLACK_CHANNEL: devops
           SLACK_COLOR: '#00FF00'
