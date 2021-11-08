@@ -71,11 +71,10 @@ jobs:
           SLACK_USERNAME: Deploy_Bot
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           
-      - name: Post celebratory GIF 
-        uses: LTLA/actions-anime-gif-slackbot@master
+      - uses: someimportantcompany/github-actions-slack-message@v1
         with:
-          webhook: ${{ secrets.SLACK_WORK_WEBHOOK }}
-          sentiment: thumbs_up,celebrate
-          rating: 1
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          image-url: https://senior-design-img-bucket.s3.amazonaws.com/elmo.gif
+          color: good
 
 
