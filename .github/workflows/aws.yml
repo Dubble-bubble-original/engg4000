@@ -74,6 +74,7 @@ jobs:
       - uses: someimportantcompany/github-actions-slack-message@v1
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          text: 'Great Job Team!'
           image-url: https://senior-design-img-bucket.s3.amazonaws.com/elmo.gif
           color: good
 
