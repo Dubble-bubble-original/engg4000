@@ -10,16 +10,14 @@ const App = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <If condition={page === 'welcome_page'}>
-          <Then>
-            <WelcomePage data={setPage}/>
-          </Then>
-        <Else>
-          <HomePage />
-        </Else>
-        </If>
-      </header>
+      <If condition={page === 'welcome_page'}>
+        <Then>
+          <WelcomePage data={setPage}/>
+        </Then>
+      <Else>
+        <HomePage />
+      </Else>
+      </If>
     </div>
   );
 }
