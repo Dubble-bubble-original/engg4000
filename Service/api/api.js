@@ -124,13 +124,7 @@ exports.getUserPosts = (req, res) => {
   if (req.body.filter) filter = req.body.filter;
 
   UserPost.find(filter)
-    .then((docs) => {
-      // If the filter has no results
-      if (docs.length === 0 && filter !== {}) {
-        return res.status(406).send('No userpost matches the filter');
-      }
-      return res.status(200).send(docs);
-    })
+    .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err);
       return res.status(500).send(err);
