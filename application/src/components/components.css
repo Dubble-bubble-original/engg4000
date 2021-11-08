@@ -64,10 +64,6 @@ a {
      text-decoration:underline;
 }
 
-#terms-conditions {
-    font-family: 'Times New Roman', Times, serif;
-}
-
 #agree-checkbox:checked {
     outline: none;
     background-color:#EC4038;
