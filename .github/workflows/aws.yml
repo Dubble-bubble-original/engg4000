@@ -60,7 +60,7 @@ jobs:
 #           deployment_package: deploy.zip
       
       - name: Slack Notification
-      - uses: someimportantcompany/github-actions-slack-message@v1
+        uses: someimportantcompany/github-actions-slack-message@v1
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK }}
           text: 'Successfully Deployed prod-app-${{ steps.format-time.outputs.replaced }}'
