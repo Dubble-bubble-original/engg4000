@@ -1,6 +1,6 @@
 // React
 import { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Modal, Tabs, Tab } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
@@ -10,9 +10,14 @@ import './components.css';
 import logo from '../resources/images/nota-logo.png';
 import { getAuthToken } from '../api/api';
 
+// Components
+import TermsAndConditions from './termsAndConditions/TermsAndConditions';
+import PrivacyPolicy from './privacyPolicy/PrivacyPolicy';
+
 function WelcomePage(props) {
   // State variables
   const [agree, setAgree] = useState(false);
+  const [show, setShow] = useState(false);
 
   // Handler function for the welcome button
   const enterButtonHandler = async () => {
@@ -23,11 +28,11 @@ function WelcomePage(props) {
     }
   }
 
-  let termsAndConditions = <a href="" target="_blank" rel="noreferrer">terms and conditions</a>;
+  let termsAndConditions = <span id="terms-conditions-link" onClick={() => setShow(true)}>terms and conditions</span>;
 
   // This is the handler for the checkbox
   const checkBoxHandler = () => {
-    setAgree(!agree)
+    setAgree(!agree);
   }
 
   return (
@@ -48,8 +53,28 @@ function WelcomePage(props) {
       <Button data-testid="enter-btn" id="enter-btn" disabled={!agree} onClick={enterButtonHandler}>
         Enter Site
       </Button>
+
+      <Modal size='xl' scrollable show={show} onHide={() => setShow(false)}>
+        <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body>
+        <Tabs defaultActiveKey="termsandconditions" id="tabs" className="mb-3">
+          <Tab eventKey="termsandconditions" title="Terms and Conditions">
+            <TermsAndConditions id="terms-conditions"/>
+          </Tab>
+          <Tab eventKey="privacypolicy" title="Privacy Policy">
+            <PrivacyPolicy id="privacy-policy"/>
+          </Tab>
+        </Tabs>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button data-testid="close-btn" id="close-btn" onClick={() => setShow(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
-  )
+  );
 }
 
 WelcomePage.propTypes = {
