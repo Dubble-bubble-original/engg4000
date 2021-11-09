@@ -7,6 +7,7 @@ import './components.css';
 import {IconContext} from 'react-icons';
 import {MdHome, MdSearch, MdAddLocation, MdRefresh, MdMoreHoriz} from 'react-icons/md';
 import {FaHome, FaSearch, FaSearchLocation, FaRedoAlt, FaMapMarkerAlt, FaEllipsisH} from 'react-icons/fa';
+import Map from './Map';
 
 // Homepage component for the application
 function HomePage() {
@@ -48,6 +49,7 @@ function HomePage() {
         <div>Fontawesome: <FaHome/><FaSearch/><FaSearchLocation/><FaMapMarkerAlt/><FaRedoAlt/><FaEllipsisH/></div>
         </IconContext.Provider>
       </div>
+      <Map/>
     </div>
   )
 }
