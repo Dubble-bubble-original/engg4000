@@ -11,18 +11,18 @@ const App = () => {
 
   return (
     <div className="App">
-      <LoadScript
-        googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
-      >
-        <If condition={page === 'welcome_page'}>
-          <Then>
-            <WelcomePage data={setPage}/>
-          </Then>
+      <If condition={page === 'welcome_page'}>
+        <Then>
+          <WelcomePage data={setPage}/>
+        </Then>
         <Else>
-          <HomePage />
+          <LoadScript
+            googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
+          >
+            <HomePage />
+          </LoadScript>
         </Else>
-        </If>
-      </LoadScript>
+      </If>
     </div>
   );
 }
