@@ -61,7 +61,9 @@ function HomePage() {
         </div>
         <br/>
         <b>Static Map</b>
-        <StaticMap width={400} height={400} position={position} />
+        <div style={{width:'400px', height:'400px'}}>
+          <StaticMap width={400} height={400} position={position} />
+        </div>
         <br/>
       </div>
     </div>
