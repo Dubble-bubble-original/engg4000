@@ -1,0 +1,11 @@
+{
+    "authorID": 0,
+    "tags": ["nature", "hiking", "fall"],
+    "body": "Went hiking in a beautiful trail in Cape Breton with the family.",
+    "imgURL": "https://catalogue.novascotia.com/ManagedMedia/27778.jpg",
+    "location": {
+        "latitude": 0,
+        "longitude": 0
+    },
+    "true_location": true
+}

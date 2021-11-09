@@ -39,7 +39,7 @@ exports.version = (req, res) => {
 
 exports.createUserPost = (req, res) => {
   const newUserPost = new UserPost({
-    author: req.body.authorID,
+    authorID: req.body.authorID,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
