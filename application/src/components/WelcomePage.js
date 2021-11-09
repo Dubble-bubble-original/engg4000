@@ -28,7 +28,7 @@ function WelcomePage(props) {
     }
   }
 
-  let termsAndConditions = <span id="terms-conditions-link" onClick={() => setShow(true)}>terms and conditions</span>;
+  let termsAndConditions = <span id="terms-conditions-link" className="clickable" onClick={() => setShow(true)}>terms and conditions</span>;
 
   // This is the handler for the checkbox
   const checkBoxHandler = () => {

@@ -33,10 +33,13 @@ label {
     padding-bottom: 35px;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 /* IDs */
 
 #terms-conditions-link {
-    cursor: pointer;
     color: var(--bs-primary);
     text-decoration: underline;
 }
