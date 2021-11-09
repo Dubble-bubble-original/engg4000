@@ -62,6 +62,7 @@ function HomePage() {
         <br/>
         <b>Static Map</b>
         <StaticMap width={400} height={400} position={position} />
+        <br/>
       </div>
     </div>
   )

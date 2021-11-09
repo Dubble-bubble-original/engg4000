@@ -1,16 +1,28 @@
 // React
 import PropTypes from 'prop-types'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Modal } from 'react-bootstrap';
 import '../components.css';
+import placeholderImage from '../../resources/images/placeholder-image.png';
 
 // Map size expands to fit its container's size
 const containerStyle = {
   width: '100%',
   height: '100%'
 };
+const imgStyle = {
+  width:'100%', 
+  height: '100%', 
+  objectFit:'cover', 
+  backgroundColor:'lightgray'
+};
 const defaultZoom = 6;
+
+// Show placeholder image if map image fails
+function handleImgError(e) {
+  if (e.target.src != placeholderImage) e.target.src = placeholderImage;
+}
 
 function StaticMap(props) {
   const [showModal, setShowModal] = useState(false);
@@ -24,10 +36,10 @@ function StaticMap(props) {
     'key='+process.env.REACT_APP_MAPS_API_KEY
   ];
   const URL = encodeURI(baseURL + parameters.join('&'));
-
+  
   return (
-    <div>
-      <img src={URL} onClick={() => setShowModal(true)} className="clickable"></img>
+    <React.Fragment>
+      <img style={imgStyle} src={URL} onClick={() => setShowModal(true)} className="clickable" onError={handleImgError} />
 
       <Modal size='xl' scrollable show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -36,7 +48,7 @@ function StaticMap(props) {
           <DynamicMap position={props.position} zoom={zoom} />
         </Modal.Body>
       </Modal>
-    </div>
+    </React.Fragment>
   );
 }
 
