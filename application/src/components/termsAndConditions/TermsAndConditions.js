@@ -50,7 +50,7 @@ function TermsAndConditions() {
                         <p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'left'}}><span style={{fontStyle: 'normal', fontWeight: 'bold', textDecoration: 'underline'}}>Indemnity</span><br/>Except where prohibited by law, by using this Site you indemnify and hold harmless Nathaniel Caron, Frédéric Verret, Sahil Saini, Carter MacLennan, and Joao Pontes and our directors, officers, agents, employees, subsidiaries, and affiliates from any actions, claims, losses, damages, liabilities and expenses including legal fees arising out of your use of our Site or your violation of these Terms and Conditions.</p>
                     </div>
                     <div>
-                        <p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'left'}}><span style={{fontStyle: 'normal', fontWeight: 'bold', textDecoration: 'underline'}}>Applicable Law</span><br/>These Terms and Conditions are governed by the laws of the Province of New Brunswick.</p>
+                        <p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'left'}}><span style={{fontStyle: 'normal', fontWeight: 'bold', textDecoration: 'underline'}}>Applicable Laws / Forum</span><br/>These Terms and Conditions are governed by the laws of the Province of New Brunswick. The parties irrevocably sumbit to the exculsive jurisdiction of the courts of the province of New Brunswick.</p>
                     </div>
                     <div>
                         <p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'left'}}><span style={{fontStyle: 'normal', fontWeight: 'bold', textDecoration: 'underline'}}>Additional Terms</span></p>
