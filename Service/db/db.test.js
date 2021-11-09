@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const db = require('./dbUtils');
 const { User } = require('./dbSchema');
 const dbName = db.generateDBName();

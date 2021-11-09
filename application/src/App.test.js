@@ -51,18 +51,4 @@ describe('Welcome Page', () => {
     expect(checkBox).not.toBeChecked();
     expect(welcomeButton).toBeInTheDocument();
   });
-
-  test('when checkbox is selected and welcome button is pressed', () => {
-    // Select the checkBox    
-    userEvent.click(checkBox);
-    // Click the button
-    fireEvent.click(welcomeButton);
-    // After the button is pressed it should not be on the screen
-    expect(welcomeButton).not.toBeInTheDocument();
-
-    // Get homepage components from the screen
-    const homepage = screen.getByTestId('home-page');
-    // Check to see if the "Homepage" is on the screen
-    expect(homepage).toBeInTheDocument();
-  });
 })
