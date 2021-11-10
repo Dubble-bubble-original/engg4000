@@ -1,7 +1,7 @@
 import './App.css';
 import { useState } from 'react';
 import WelcomePage from './components/WelcomePage';
-import HomePage from './components/HomePage';
+import MainPage from './components/MainPage';
 import { If, Then, Else } from 'react-if';
 
 const App = () => {
@@ -15,7 +15,7 @@ const App = () => {
           <WelcomePage data={setPage}/>
         </Then>
       <Else>
-        <HomePage />
+        <MainPage />
       </Else>
       </If>
     </div>

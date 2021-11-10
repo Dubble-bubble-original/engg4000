@@ -1,0 +1,145 @@
+/* Tags */
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ID's */
+#outer-container {
+    padding: 20px;
+    width: 1080px;
+    height: 850px;
+    background: #ffff;
+    border-radius: 20px;
+}
+
+#main-container {
+    display: flex;
+    padding: 0px;
+}
+
+#profile {
+    padding: 0px;
+    width: 90px;
+    height: 138px;
+}
+
+#avatar {
+    position: static;
+    width: 100%;
+    height: 90px;
+    border-radius: 50%;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#user-name {
+    width: 90px;
+    height: 38px;
+    padding-top: 10px;
+    font-size: 18px;
+    line-height: 20px;
+    color: #000000;
+}
+
+#post {
+    padding: 0px;
+    width: 940px;
+}
+
+#post-data {
+    display: flex;
+    padding: 0px;
+    text-align: left;
+}
+
+#post-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+}
+
+#post-description {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    height: 184px;
+}
+
+#title-section {
+    width: 587px;
+    height: 21px;
+    left: 10px;
+    top: 10px;
+}
+
+#post-title {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 5px;
+    text-align: left;
+}
+
+#post-date {
+    position: relative;
+    top: -21px;
+    font-style: normal;
+    font-weight: 200;
+    font-size: 16px;
+    line-height: 5px;
+    text-align: right;
+    color: #4e4e4e;
+}
+
+#post-body {
+    position: static;
+    font-size: 16px;
+    line-height: 19px;
+    white-space: pre-line;
+}
+
+#tag-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 23px;
+}
+
+#tags {
+    padding: 2px 5px;
+    margin-right: 10px;
+    border: 1px solid #EC4038;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 19px;
+}
+
+#post-location {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    width: 313px;
+    height: 217px;
+}
+
+#map {
+    width: 313px;
+    overflow: hidden;
+    border-radius: 3%;
+}
+
+
+#map-description {
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+}
+
+#post-image {
+    border-radius: 1.5%;
+    width: 940px;
+    height: 573px;
+}
