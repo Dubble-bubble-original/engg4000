@@ -117,25 +117,17 @@ types:
           body:
             type: string
     delete:
-      description: Delete the post if the request body has the matching access-key
+      description: Delete the post if the parameter has the matching access_key.
       responses:
         200:
-        400:
-          body:
-            type: string
-            example: Client body does NOT contain an access-key.
-        403:
-          body:
-            type: string
-            example: Client access-key does NOT match the user post.
         404:
           body:
             type: string
-            example: User not found.
+            example: Userpost not found with matching access key.
         500:
           body:
             type: string
-    put:
+    patch:
       description: Update a userpost with data provided in an update field in req.body
       example: req.body.{ 'update' : { 'title': 'exampleUpdate', 'body': 'exampleUpdate'}}
       responses:

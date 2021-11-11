@@ -38,6 +38,7 @@ exports.version = (req, res, next) => {
 };
 
 exports.createUserPost = (req, res) => {
+  const accessKey = uuidv4();
   const newUserPost = new UserPost({
     authorID: req.body.authorID,
     body: req.body.body,
@@ -47,7 +48,7 @@ exports.createUserPost = (req, res) => {
     date_created: Date.now(),
     location: req.body.location,
     true_location: req.body.true_location,
-    access_key: req.body.access_key
+    access_key: accessKey
   });
 
   newUserPost.save((err) => {
@@ -76,27 +77,13 @@ exports.createUserPost = (req, res) => {
 };
 
 exports.deleteUserPost = (req, res) => {
-  // Find the userpost with the matching ID
-  UserPost.findById(req.params.id)
+  // Find the userpost with the matching access key
+  UserPost.findOneAndDelete({ access_key: req.params.ak })
     .then((doc) => {
       if (!doc) {
-        return res.status(404).send('Userpost not found.');
+        return res.status(404).send('Userpost not found with matching access key.');
       }
-
-      if (!('access_key' in req.body)) {
-        return res.status(400).send('Client body does NOT contain an access-key.');
-      }
-
-      // Check if the req & userpost access_key's match for deletion
-      if (doc.access_key === req.body.access_key) {
-        UserPost.findByIdAndDelete(req.params.id)
-          .catch((err) => {
-            logger.error(err);
-            return res.status(500).send(err);
-          });
-        return res.status(200).end();
-      }
-      return res.status(403).send('Client access-key does NOT match the userpost.');
+      return res.status(200).end();
     })
     .catch((err) => {
       logger.error(err);
