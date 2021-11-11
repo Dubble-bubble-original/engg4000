@@ -3,6 +3,7 @@ import { useState } from 'react';
 import WelcomePage from './components/WelcomePage';
 import MainPage from './components/MainPage';
 import { If, Then, Else } from 'react-if';
+import { LoadScript } from '@react-google-maps/api';
 
 const App = () => {
   // The state that determines what page we are on
@@ -15,7 +16,9 @@ const App = () => {
           <WelcomePage data={setPage}/>
         </Then>
       <Else>
-        <MainPage />
+        <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+          <MainPage />
+        </LoadScript>
       </Else>
       </If>
     </div>
