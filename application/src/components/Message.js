@@ -1,3 +1,5 @@
+/* eslint-disable no-unreachable */
+/* eslint-disable no-unused-vars */
 // React
 import { Container, Image } from 'react-bootstrap';
 import PropTypes from 'prop-types'
@@ -8,7 +10,7 @@ import './message.css';
 // Resources
 import Avatar from '../resources/images/avatar.jpg';
 import PostImage from '../resources/images/postImage.jpg';
-import PostLocation from '../resources/images/postLocation.jpg';
+import StaticMap from './maps/StaticMap';
 
 function Message() {
 
@@ -18,26 +20,31 @@ function Message() {
         'This sentence is just here so that it can long enough to need something.<br/> It <br/> was <br/> awesome<br/>!!!'.split('<br/>').join('\n')}
     </text>
 
+    const position = {
+        lat: 45.963589,
+        lng: -66.643112
+    }
+
     return (
         <Container id="outer-container">
-            <Container id="main-container">
+            <div className="container-fluid" id="main-container">
 
-                <Container id="profile">
+                <div className="container-fluid" id="profile">
                     <Image id="avatar" src={Avatar} roundedCircle/>
                     <p id="user-name">Nota User</p>
-                </Container>
+                </div>
 
-                <Container id="post">
-                    <Container id="post-data">
+                <div className="container-fluid" id="post">
+                    <div className="container-fluid" id="post-data">
 
-                        <Container id="post-content">
-                            <Container id="post-description">
+                        <div className="container-fluid" id="post-content">
+                            <div id="post-description">
                                 <div id="title-section">
                                     <p id="post-title">Title Goes Here</p> 
                                     <p id="post-date">November 5, 2021</p>
                                 </div>
                                 <p id="post-body">{postBody}</p>
-                            </Container>
+                            </div>
 
                             <div id="tag-container">
                                 <text id="tags">Nature</text>
@@ -45,18 +52,19 @@ function Message() {
                                 <text id="tags">Mountain</text>
                                 <text id="tags">Tag</text>
                             </div>
-                        </Container>
 
-                        <Container id="post-location">
+                        </div>
+
+                        <div className="container-fluid" id="post-location">
                             <div id="map">
-                                <img src={PostLocation} />
+                                <StaticMap width={313} height={188} position={position}/>
                             </div>
                             <p id="map-description">New Brunswick, Canada</p>
-                        </Container>
-                    </Container>
-                    <Image id="post-image" src={PostImage} />
-                </Container>
-            </Container>
+                        </div>
+                    </div>
+                    <img className="img-fluid" id="post-image" src={PostImage} />
+                </div>
+            </div>
         </Container>
     )
 }

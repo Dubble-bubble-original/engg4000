@@ -36,7 +36,7 @@ function WelcomePage(props) {
   }
 
   return (
-    <div className="container">
+    <div className="container" id="welcome-container">
       <img className="logo" src={logo} alt="Logo" />
       <div className="terms-conditions" data-testid="terms-conditions">
         <p>By entering this website, you are ageering to our {termsAndConditions}.</p>
