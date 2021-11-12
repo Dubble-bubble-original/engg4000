@@ -43,7 +43,7 @@ exports.createUserPost = (req, res) => {
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
-    imgURL: req.body.imgURL,
+    img_URL: req.body.imgURL,
     date_created: req.body.date_created,
     location: req.body.location,
     true_location: req.body.true_location,
@@ -53,8 +53,10 @@ exports.createUserPost = (req, res) => {
   newUserPost.save((err) => {
     if (err) {
       if (err.name === 'ValidationError') {
+        logger.info(err.message);
         return res.status(400).send(err.message);
       }
+      logger.error(err);
       return res.status(500).send(err);
     }
 
@@ -65,7 +67,7 @@ exports.createUserPost = (req, res) => {
         body: newUserPost.body,
         tags: newUserPost.tags,
         title: newUserPost.title,
-        imgURL: newUserPost.imgURL,
+        img_URL: newUserPost.imgURL,
         date_created: newUserPost.date_created,
         location: newUserPost.location,
         true_location: newUserPost.true_location,
@@ -80,11 +82,13 @@ exports.deleteUserPost = (req, res) => {
   UserPost.findById(req.params.id)
     .then((doc) => {
       if (!doc) {
-        return res.status(404).send('User Post not found.');
+        logger.info('User Post Not Found');
+        return res.status(404).send('User Post Not Found');
       }
 
       if (!('access_key' in req.body)) {
-        return res.status(400).send('Client body does NOT contain an access-key.');
+        logger.info('Client Body Does NOT Contain an Access-Key');
+        return res.status(400).send('Client Body Does NOT Contain an Access-Key');
       }
 
       // Check if the req & userpost access_key's match for deletion
@@ -96,7 +100,8 @@ exports.deleteUserPost = (req, res) => {
           });
         return res.status(200).end();
       }
-      return res.status(403).send('Client access-key does NOT match the user post.');
+      logger.info('Client Access-Key Does NOT Match User Post');
+      return res.status(403).send('Client Access-Key Does NOT Match User Post');
     })
     .catch((err) => {
       logger.error(err);
@@ -108,7 +113,8 @@ exports.getUserPost = (req, res) => {
   UserPost.findById(req.params.id)
     .then((doc) => {
       if (!doc) {
-        return res.status(404).send('User Post not found.');
+        logger.info('User Post Not Found');
+        return res.status(404).send('User Post Not Found');
       }
       return res.status(200).send(doc);
     })

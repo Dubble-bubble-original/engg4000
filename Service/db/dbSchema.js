@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const userUserPostSchema = new Schema({
+const userPostSchema = new Schema({
   author: { type: mongoose.ObjectId, required: true },
   body: { type: String, required: true },
   tags: [{ type: String, required: true }],
@@ -15,7 +15,7 @@ const userUserPostSchema = new Schema({
   true_location: { type: Boolean, required: true },
   access_key: { type: String, required: true }
 });
-const UserPost = mongoose.model('UserPost', userUserPostSchema, 'UserPost');
+const UserPost = mongoose.model('UserPost', userPostSchema, 'UserPost');
 
 const userSchema = new Schema({
   name: { type: String },
