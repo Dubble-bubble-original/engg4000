@@ -2,18 +2,11 @@
 // React
 import { useState, useEffect } from 'react';
 import { If, Then, Else } from 'react-if';
-import PropTypes from 'prop-types'
 
 // Resources
 import { getVersion } from '../api/api'
 import './components.css';
-import {IconContext} from 'react-icons';
-import {MdHome, MdSearch, MdAddLocation, MdRefresh, MdMoreHoriz} from 'react-icons/md';
-import {FaHome, FaSearch, FaSearchLocation, FaRedoAlt, FaMapMarkerAlt, FaEllipsisH} from 'react-icons/fa';
 import Message from './Message'
-
-import LocationPickerMap from './maps/LocationPickerMap';
-import StaticMap from './maps/StaticMap';
 
 // Homepage component for the application
 function HomePage() {
@@ -22,7 +15,6 @@ function HomePage() {
   const [isLoading, setLoading] = useState(true);
   const [version, setVersion] = useState(null);
   const [page, setPage] = useState('recent_posts');
-  const [position, setPosition] = useState(null);
 
   const fetchData = async () => {
     // Get app version

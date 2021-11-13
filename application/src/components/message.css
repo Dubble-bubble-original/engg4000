@@ -16,7 +16,6 @@ img {
 
 #main-container {
     display: flex;
-    /* background: rgb(177, 54, 54); */
     padding: 0px;
 }
 
@@ -27,12 +26,9 @@ img {
 }
 
 #avatar {
-    position: static;
     width: 100%;
     height: 90px;
     border-radius: 50%;
-    left: 0px;
-    top: 0px;
     overflow: hidden;
 }
 
@@ -47,7 +43,6 @@ img {
 
 #post {
     padding: 0px;
-    /* background: rgb(78, 152, 221); */
     width: 940px;
 }
 
@@ -60,7 +55,6 @@ img {
 #post-content {
     display: flex;
     flex-direction: column;
-    /* background: rgb(193, 24, 223); */
     padding: 0px;
 }
 
@@ -74,13 +68,9 @@ img {
 #title-section {
     width: 100%;
     height: 21px;
-    left: 10px;
-    top: 10px;
-    /* background: rgb(233, 202, 25); */
 }
 
 #post-title {
-    font-style: normal;
     font-weight: bold;
     font-size: 18px;
     line-height: 5px;
@@ -90,7 +80,6 @@ img {
 #post-date {
     position: relative;
     top: -21px;
-    font-style: normal;
     font-weight: 200;
     font-size: 16px;
     line-height: 5px;
@@ -99,15 +88,13 @@ img {
 }
 
 #post-body {
-    position: static;
     font-size: 16px;
     line-height: 19px;
-    white-space: pre-line;
+    white-space: pre-wrap;
 }
 
 #tag-container {
     display: flex;
-    flex-direction: row;
     align-items: center;
     height: 23px;
 }
@@ -147,6 +134,7 @@ img {
     height: 590px;
 }
 
+/* For screens that are 1200px or less */
 @media only screen and (max-width: 1200px) {
     #post-data{
         flex-direction: column;
@@ -157,7 +145,7 @@ img {
     }
 
     #post-image {
-        width: 80%;
+        width: 70%;
         border-radius: 1.5%;
         object-fit: scale-down;
         margin: -12%;
@@ -170,16 +158,28 @@ img {
     }
 }
 
-@media only screen and (max-width: 650px) {
+/* For screens that are 990px or less */
+@media only screen and (max-width: 990px) {
+    #tag-container {
+        margin-top: 5px;
+    }
+
+    #post-image {
+        margin: -180px;
+    }
+
+    #outer-container {
+        height: 700px;
+    }
+}
+
+/* For screens that are 765px or less */
+@media only screen and (max-width: 765px) {
     #tag-container {
         margin-top: 30px;
     }
 
     #post-image {
         margin: -200px;
-    }
-
-    #outer-container {
-        height: 700px;
     }
 }
