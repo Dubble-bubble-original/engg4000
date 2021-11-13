@@ -174,7 +174,7 @@ img {
 }
 
 /* For screens that are 765px or less */
-@media only screen and (max-width: 765px) {
+@media only screen and (max-width: 767px) {
     #tag-container {
         margin-top: 30px;
     }

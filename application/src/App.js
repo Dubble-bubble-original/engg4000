@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import './App.css';
 import { useState } from 'react';
 import WelcomePage from './components/WelcomePage';
@@ -10,18 +11,20 @@ const App = () => {
   const [page, setPage] = useState('welcome_page');
 
   return (
-    <div className="App">
-      <If condition={page === 'welcome_page'}>
-        <Then>
-          <WelcomePage data={setPage}/>
-        </Then>
+    <If condition={page === 'welcome_page'}>
+      <Then>
+        <div className="welcome-page" id="App">
+          <WelcomePage data={setPage} />
+        </div>
+      </Then>
       <Else>
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
-          <MainPage />
-        </LoadScript>
+        <div className="main-page" id="App">
+          <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+            <MainPage />
+          </LoadScript>
+        </div>
       </Else>
-      </If>
-    </div>
+    </If>
   );
 }
 
