@@ -31,7 +31,8 @@ function WelcomePage(props) {
     <div className="container">
       <img className="logo" src={logo} alt="Logo" />
       <div className="terms-conditions" data-testid="terms-conditions">
-        <p>By entering this website, you are ageering to our {termsAndConditions}.</p>
+           <p>Carter-test</p>
+//         <p>By entering this website, you are ageering to our {termsAndConditions}.</p>
       </div>
       <div className="i-agree">
         <Form.Check
