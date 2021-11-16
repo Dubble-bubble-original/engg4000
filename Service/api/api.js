@@ -128,44 +128,38 @@ exports.getUserPost = (req, res) => {
 };
 
 exports.createImage = async (req, res) => {
-  try {
-    const { file } = req;
-    // Upload file to S3 bucket
-    const result = await uploadFile(file);
-    // Delete file from local server
-    fs.unlinkSync(file.path);
+  const { file } = req;
+  // Upload file to S3 bucket
+  await uploadFile(file)
+    .then((result) => {
+      // Delete file from local server
+      fs.unlinkSync(file.path);
 
-    const response = { id: result.key };
-    res.send(response);
-  }
-  catch (err) {
-    logger.error(err);
-    return res.status(500).send(err);
-  }
-
-  return res.send();
+      const response = { id: result.key };
+      return res.status(200).send(response);
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).send(err);
+    });
 };
 
 exports.getImage = (req, res) => {
-  try {
-    const fileKey = req.params.id;
-    const readStream = getFile(fileKey);
-    return readStream.pipe(res);
-  }
-  catch (err) {
-    logger.error(err);
-    return res.status(500).send(err);
-  }
+  const fileKey = req.params.id;
+  const readStream = getFile(fileKey)
+    .then(() => readStream.pipe(res))
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).send(err);
+    });
 };
 
 exports.deleteImage = async (req, res) => {
-  try {
-    const fileKey = req.params.id;
-    await deleteFile(fileKey);
-    return res.status(200).send();
-  }
-  catch (err) {
-    logger.error(err);
-    return res.status(500).send(err);
-  }
+  const fileKey = req.params.id;
+  await deleteFile(fileKey)
+    .then(() => res.status(200).send())
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).send(err);
+    });
 };
