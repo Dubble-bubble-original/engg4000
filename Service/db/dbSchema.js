@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userUserPostSchema = new Schema({
-  author: { type: mongoose.ObjectId, required: true },
+  authorID: { type: mongoose.ObjectId, required: true, immutable: true },
   body: { type: String, required: true },
   tags: [{ type: String, required: true }],
   title: { type: String, required: true },
   imgURL: { type: String },
-  date_created: { type: Date, default: Date.now },
+  date_created: { type: Date, default: Date.now, immutable: true },
   location: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }

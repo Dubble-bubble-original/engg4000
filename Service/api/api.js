@@ -38,16 +38,17 @@ exports.version = (req, res) => {
 };
 
 exports.createUserPost = (req, res) => {
+  const accessKey = uuidv4();
   const newUserPost = new UserPost({
-    author: req.body.authorID,
+    authorID: req.body.authorID,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
     imgURL: req.body.imgURL,
-    date_created: req.body.date_created,
+    date_created: Date.now(),
     location: req.body.location,
     true_location: req.body.true_location,
-    access_key: req.body.access_key
+    access_key: accessKey
   });
 
   newUserPost.save((err) => {
@@ -76,27 +77,13 @@ exports.createUserPost = (req, res) => {
 };
 
 exports.deleteUserPost = (req, res) => {
-  // Find the userpost with the matching ID
-  UserPost.findById(req.params.id)
+  // Find the userpost with the matching access key
+  UserPost.findOneAndDelete({ access_key: req.params.ak })
     .then((doc) => {
       if (!doc) {
-        return res.status(404).send('User Post not found.');
+        return res.status(404).send('Userpost not found with matching access key.');
       }
-
-      if (!('access_key' in req.body)) {
-        return res.status(400).send('Client body does NOT contain an access-key.');
-      }
-
-      // Check if the req & userpost access_key's match for deletion
-      if (doc.access_key === req.body.access_key) {
-        UserPost.findByIdAndDelete(req.params.id)
-          .catch((err) => {
-            logger.error(err);
-            return res.status(500).send(err);
-          });
-        return res.status(200).end();
-      }
-      return res.status(403).send('Client access-key does NOT match the user post.');
+      return res.status(200).end();
     })
     .catch((err) => {
       logger.error(err);
@@ -108,7 +95,36 @@ exports.getUserPost = (req, res) => {
   UserPost.findById(req.params.id)
     .then((doc) => {
       if (!doc) {
-        return res.status(404).send('User Post not found.');
+        return res.status(404).send('Userpost not found.');
+      }
+      return res.status(200).send(doc);
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).send(err);
+    });
+};
+
+exports.getUserPosts = (req, res) => {
+  // empty filter returns all docs from Userposts
+  let filter = {};
+  if (req.body.filter) filter = req.body.filter;
+
+  // Limit the returned results to 1,000 user posts
+  UserPost.find(filter).limit(1000)
+    .then((docs) => res.status(200).send(docs))
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).send(err);
+    });
+};
+
+exports.updateUserPost = (req, res) => {
+  const query = { _id: req.params.id };
+  UserPost.findOneAndUpdate(query, req.body.update, { new: true })
+    .then((doc) => {
+      if (!doc) {
+        return res.status(404).send('Userpost not found.');
       }
       return res.status(200).send(doc);
     })
