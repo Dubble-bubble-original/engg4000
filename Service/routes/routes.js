@@ -52,4 +52,10 @@ ROUTER.get(
   API.getImage
 );
 
+ROUTER.delete(
+  '/image/:id',
+  // API.verifyAuthToken,
+  API.deleteImage
+);
+
 module.exports = ROUTER;

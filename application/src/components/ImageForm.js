@@ -30,18 +30,18 @@ async function postImage(file) {
     return result.data
 }
 
-// async function getImage(id) {
-//     const result = await axios({
-//         method: 'GET',
-//         url: serviceUrl + '/image/' + id
-//     });
+async function deleteImage(id) {
+    const result = await axios({
+        method: 'DELETE',
+        url: serviceUrl + '/image/' + id
+    });
 
-//     return result.data
-// }
+    return result.data
+}
 
 function ImageForm() {
-    const [file, setFile] = useState()
-    const [images, setImages] = useState([])
+    const [file, setFile] = useState();
+    const [image, setImage] = useState();
 
     const fileSelected = event => {
         const file = event.target.files[0];
@@ -57,7 +57,7 @@ function ImageForm() {
         console.log(result);
 
         // let imageData = await getImage(result.id);
-        setImages([result.id, ...images]);
+        setImage([result.id]);
     }
 
     return (
@@ -67,11 +67,7 @@ function ImageForm() {
                 <button type="submit">Upload</button>
             </form>
 
-            {images.map(image => (
-                <div key={image}>
-                    <img style={{maxHeight: '200px'}} src={serviceUrl + '/image/' + image} ></img>
-                </div>
-            ))}
+            <button onClick={() => deleteImage(image)}>Delete Image</button>
         </div>
     );
 }

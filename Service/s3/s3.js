@@ -8,18 +8,11 @@ const bucketRegion = ENV.AWS_REGION;
 const accessKey = ENV.AWS_ACCESS_KEY_ID;
 const secretAccessKey = ENV.AWS_SECRET_ACCESS_KEY;
 
-console.log(bucketName);
-console.log(bucketRegion);
-console.log(accessKey);
-console.log(secretAccessKey);
-
 const s3 = new S3({
   bucketRegion,
   accessKey,
   secretAccessKey
 });
-
-console.log(s3);
 
 // Upload a file to S3
 exports.uploadFile = (file) => {
@@ -45,3 +38,11 @@ exports.getFile = (fileKey) => {
 };
 
 // Delete a file from S3
+exports.deleteFile = (fileKey) => {
+  const deleteParams = {
+    Key: fileKey,
+    Bucket: bucketName
+  };
+
+  return s3.deleteObject(deleteParams).promise();
+};

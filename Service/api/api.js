@@ -9,7 +9,7 @@ const UTILS = require('../utils/utils');
 const { UserPost } = require('../db/dbSchema');
 
 // S3
-const { uploadFile, getFile } = require('../s3/s3');
+const { uploadFile, getFile, deleteFile } = require('../s3/s3');
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -103,7 +103,7 @@ exports.deleteUserPost = (req, res) => {
             logger.error(err);
             return res.status(500).send(err);
           });
-        return res.status(200).end();
+        return res.status(200).send();
       }
       return res.status(403).send('Client access-key does NOT match the user post.');
     })
@@ -130,27 +130,42 @@ exports.getUserPost = (req, res) => {
 exports.createImage = async (req, res) => {
   try {
     const { file } = req;
-    console.log(file);
+    // Upload file to S3 bucket
     const result = await uploadFile(file);
+    // Delete file from local server
     fs.unlinkSync(file.path);
 
     const response = { id: result.key };
     res.send(response);
   }
-  catch (error) {
-    console.error(error);
+  catch (err) {
+    logger.error(err);
+    return res.status(500).send(err);
   }
 
   return res.send();
 };
 
-exports.getImage = async (req, res) => {
+exports.getImage = (req, res) => {
   try {
     const fileKey = req.params.id;
     const readStream = getFile(fileKey);
-    readStream.pipe(res);
+    return readStream.pipe(res);
   }
-  catch (error) {
-    logger.error(error);
+  catch (err) {
+    logger.error(err);
+    return res.status(500).send(err);
+  }
+};
+
+exports.deleteImage = async (req, res) => {
+  try {
+    const fileKey = req.params.id;
+    await deleteFile(fileKey);
+    return res.status(200).send();
+  }
+  catch (err) {
+    logger.error(err);
+    return res.status(500).send(err);
   }
 };
