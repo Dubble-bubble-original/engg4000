@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 
 // Resources
-import { getVersion } from '../api/api'
+import { getVersion } from '../api/api';
 import './components.css';
 import {IconContext} from 'react-icons';
 import {MdHome, MdSearch, MdAddLocation, MdRefresh, MdMoreHoriz} from 'react-icons/md';
 import {FaHome, FaSearch, FaSearchLocation, FaRedoAlt, FaMapMarkerAlt, FaEllipsisH} from 'react-icons/fa';
 import LocationPickerMap from './maps/LocationPickerMap';
 import StaticMap from './maps/StaticMap';
+import ImageForm from './ImageForm';
 
 // Homepage component for the application
 function HomePage() {
@@ -66,6 +67,8 @@ function HomePage() {
         </div>
         <br/>
       </div>
+
+      <ImageForm></ImageForm>
     </div>
   )
 }

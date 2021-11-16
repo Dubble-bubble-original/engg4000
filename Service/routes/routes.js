@@ -1,5 +1,9 @@
 const EXPRESS = require('express');
 const ROUTER = EXPRESS.Router();
+
+const multer = require('multer');
+const upload = multer({ dest: './uploads' });
+
 const API = require('../api/api');
 
 ROUTER.post(
@@ -12,6 +16,8 @@ ROUTER.get(
   API.verifyAuthToken,
   API.version
 );
+
+// User post endpoints
 
 ROUTER.post(
   '/userpost',
@@ -30,4 +36,20 @@ ROUTER.get(
   API.verifyAuthToken,
   API.getUserPost
 );
+
+// Image endpoints
+
+ROUTER.post(
+  '/image',
+  // API.verifyAuthToken,
+  upload.single('image'),
+  API.createImage
+);
+
+ROUTER.get(
+  '/image/:id',
+  // API.verifyAuthToken,
+  API.getImage
+);
+
 module.exports = ROUTER;

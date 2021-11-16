@@ -1,6 +1,15 @@
+// Packages
 const uuidv4 = require('uuid').v4;
+const fs = require('fs');
+
+// Utils
 const UTILS = require('../utils/utils');
+
+// DB
 const { UserPost } = require('../db/dbSchema');
+
+// S3
+const { uploadFile, getFile } = require('../s3/s3');
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -116,4 +125,32 @@ exports.getUserPost = (req, res) => {
       logger.error(err);
       return res.status(500).send(err);
     });
+};
+
+exports.createImage = async (req, res) => {
+  try {
+    const { file } = req;
+    console.log(file);
+    const result = await uploadFile(file);
+    fs.unlinkSync(file.path);
+
+    const response = { id: result.key };
+    res.send(response);
+  }
+  catch (error) {
+    console.error(error);
+  }
+
+  return res.send();
+};
+
+exports.getImage = async (req, res) => {
+  try {
+    const fileKey = req.params.id;
+    const readStream = getFile(fileKey);
+    readStream.pipe(res);
+  }
+  catch (error) {
+    logger.error(error);
+  }
 };

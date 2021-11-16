@@ -1,6 +1,12 @@
-const EXPRESS = require('express');
+const WINSTON = require('winston');
+const mongoose = require('mongoose');
 const cors = require('cors');
+const EXPRESS = require('express');
 const APP = EXPRESS();
+const printServiceBanner = require('./banner/banner');
+
+// Print service banner
+printServiceBanner();
 
 // Get environment
 require('dotenv').config();
@@ -22,7 +28,6 @@ APP.use(EXPRESS.urlencoded({ extended: true }));
 APP.use('/', require('./routes/routes'));
 
 // Setup logger
-const WINSTON = require('winston');
 global.logger = WINSTON.createLogger({
   level: 'info',
   format: WINSTON.format.json(),
@@ -39,7 +44,6 @@ if (ENV.NODE_ENV === 'dev') {
 }
 
 // DB Connection
-const mongoose = require('mongoose');
 const db = require('./db/dbUtils');
 db.connectDatabase();
 const dbConnection = mongoose.connection;
