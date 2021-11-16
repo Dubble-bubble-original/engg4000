@@ -13,12 +13,12 @@ const App = () => {
   return (
     <If condition={page === 'welcome_page'}>
       <Then>
-        <div className="welcome-page" id="App">
+        <div className="App" id="welcome-page" >
           <WelcomePage data={setPage} />
         </div>
       </Then>
       <Else>
-        <div className="main-page" id="App">
+        <div className="App" id="main-page">
           <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
             <MainPage />
           </LoadScript>

@@ -6,7 +6,7 @@ import { If, Then, Else } from 'react-if';
 // Resources
 import { getVersion } from '../api/api'
 import './components.css';
-import Message from './Message'
+import Post from './Post'
 
 // Homepage component for the application
 function HomePage() {
@@ -40,7 +40,7 @@ function HomePage() {
     <div id="home-page" data-testid="home-page">
       <If condition={page === 'recent_posts'}>
         <Then>
-          <Message />
+          <Post />
         </Then>
       </If>
     </div>

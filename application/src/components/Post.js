@@ -5,7 +5,7 @@ import { Container, Image } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
-import './message.css';
+import './post.css';
 
 // Resources
 import Avatar from '../resources/images/avatar.jpg';

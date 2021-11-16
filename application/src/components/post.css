@@ -38,6 +38,8 @@ img {
     padding-top: 10px;
     font-size: 18px;
     line-height: 20px;
+    overflow-wrap: break-word;
+    hyphens: auto;
     color: #000000;
 }
 
