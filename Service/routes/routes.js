@@ -20,7 +20,7 @@ ROUTER.post(
 );
 
 ROUTER.delete(
-  '/userpost/:id',
+  '/userpost/:ak',
   API.verifyAuthToken,
   API.deleteUserPost
 );
@@ -29,5 +29,17 @@ ROUTER.get(
   '/userpost/:id',
   API.verifyAuthToken,
   API.getUserPost
+);
+
+ROUTER.post(
+  '/userposts',
+  API.verifyAuthToken,
+  API.getUserPosts
+);
+
+ROUTER.patch(
+  '/userpost/:id',
+  API.verifyAuthToken,
+  API.updateUserPost
 );
 module.exports = ROUTER;
