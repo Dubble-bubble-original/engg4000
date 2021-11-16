@@ -31,7 +31,7 @@ ROUTER.get(
   API.getUserPost
 );
 
-ROUTER.get(
+ROUTER.post(
   '/userposts',
   API.verifyAuthToken,
   API.getUserPosts
