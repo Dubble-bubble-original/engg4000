@@ -52,6 +52,12 @@ ROUTER.get(
   API.getImage
 );
 
+ROUTER.get(
+  '/imageurl/:id',
+  // API.verifyAuthToken,
+  API.getImageUrl
+);
+
 ROUTER.delete(
   '/image/:id',
   // API.verifyAuthToken,

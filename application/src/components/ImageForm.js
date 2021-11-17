@@ -39,6 +39,15 @@ async function deleteImage(id) {
     return result.data
 }
 
+async function getImageUrl(id) {
+    const result = await axios({
+        method: 'GET',
+        url: serviceUrl + '/imageurl/' + id
+    });
+
+    console.log(result.data);
+}
+
 function ImageForm() {
     const [file, setFile] = useState();
     const [image, setImage] = useState();
@@ -68,6 +77,7 @@ function ImageForm() {
             </form>
 
             <button onClick={() => deleteImage(image)}>Delete Image</button>
+            <button onClick={() => getImageUrl(image)}>Get Image Url</button>
         </div>
     );
 }

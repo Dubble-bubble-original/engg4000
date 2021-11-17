@@ -15,7 +15,7 @@ const s3 = new S3({
 });
 
 // Upload a file to S3
-exports.uploadFile = (file) => {
+exports.uploadFile = async (file) => {
   const fileStream = fs.createReadStream(file.path);
 
   const uploadParams = {
@@ -28,7 +28,7 @@ exports.uploadFile = (file) => {
 };
 
 // Download a file from S3
-exports.getFile = (fileKey) => {
+exports.downloadFile = async (fileKey) => {
   const downloadParams = {
     Key: fileKey,
     Bucket: bucketName
@@ -37,8 +37,19 @@ exports.getFile = (fileKey) => {
   return s3.getObject(downloadParams).createReadStream();
 };
 
+// Get a file URL from S3
+exports.getFileUrl = (fileKey) => {
+  const getParams = {
+    Key: fileKey,
+    Bucket: bucketName,
+    Expires: 300 // Expires in 5 minutes
+  };
+
+  return s3.getSignedUrl('getObject', getParams);
+};
+
 // Delete a file from S3
-exports.deleteFile = (fileKey) => {
+exports.deleteFile = async (fileKey) => {
   const deleteParams = {
     Key: fileKey,
     Bucket: bucketName

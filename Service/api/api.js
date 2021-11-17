@@ -9,7 +9,9 @@ const UTILS = require('../utils/utils');
 const { UserPost } = require('../db/dbSchema');
 
 // S3
-const { uploadFile, getFile, deleteFile } = require('../s3/s3');
+const {
+  uploadFile, downloadFile, getFileUrl, deleteFile
+} = require('../s3/s3');
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -146,12 +148,25 @@ exports.createImage = async (req, res) => {
 
 exports.getImage = (req, res) => {
   const fileKey = req.params.id;
-  const readStream = getFile(fileKey)
+  const readStream = downloadFile(fileKey)
     .then(() => readStream.pipe(res))
     .catch((err) => {
       logger.error(err);
       return res.status(500).send(err);
     });
+};
+
+exports.getImageUrl = (req, res) => {
+  const fileKey = req.params.id;
+  try {
+    const result = getFileUrl(fileKey);
+    const response = { url: result };
+    return res.status(200).send(response);
+  }
+  catch (err) {
+    logger.error(err);
+    return res.status(500).send(err);
+  }
 };
 
 exports.deleteImage = async (req, res) => {
