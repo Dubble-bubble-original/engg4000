@@ -1,84 +1,77 @@
-/* eslint-disable no-unreachable */
-/* eslint-disable no-unused-vars */
 // React
-import { Container, Image } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
 import './post.css';
 
 // Resources
-import Avatar from '../resources/images/avatar.jpg';
-import PostImage from '../resources/images/postImage.jpg';
 import StaticMap from './maps/StaticMap';
 
-function Message() {
+function Message({postData}) {
 
-    const postBody = <text style={{ whiteSpace: 'pre-line' }}>
-        {'The body of the message will be shown here. The font might need to be reduced ' +
-        'so it contracts better with the title. If it goes on too long we can add elipses. ' +
-        'This sentence is just here so that it can long enough to need something.<br/> It <br/> was <br/> awesome<br/>!!!'.split('<br/>').join('\n')}
-    </text>
+  // Create Tags for rendering
+  const tags = postData.tags.map(tag => {
+    return <text id="tags" key={tag}>{tag}</text>;
+  });
 
-    const position = {
-        lat: 45.963589,
-        lng: -66.643112
-    }
+  return (
+    <Container id="outer-container">
+      <Row auto>
+        <Col xs={{ order: 0 }} id="profile">
+          <img id="avatar" src={postData.avatar} />
+          <p id="user-name">{postData.user}</p>
+        </Col>
 
-    return (
-        <Container id="outer-container">
-            <div className="container-fluid" id="main-container">
+        <Col id="post">
+          <Row className="justify-content-md-center">
+            <Col xs={{ span: 12, order: 1 }} md={{ span: 6, order: 1 }} id="post-description">
+              <div id="title-section">
+                <p id="post-title">{postData.title}</p> 
+                <p id="post-date">{postData.date}</p>
+              </div>
+              <p id="post-body">{postData.postBody}</p>
+              <div id="tag-container-sm">
+                {tags}
+              </div>
+            </Col>
 
-                <div className="container-fluid" id="profile">
-                    <Image id="avatar" src={Avatar} roundedCircle/>
-                    <p id="user-name">Nota User</p>
-                </div>
+            <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 2 }} id="post-location" className="col-md-5 mx-auto">
+              <div id="map">
+                <StaticMap width={313} height={188} position={postData.position}/>
+              </div>
+              <p id="map-description">{postData.location}</p>
+            </Col>
+          </Row>
 
-                <div className="container-fluid" id="post">
-                    <div className="container-fluid" id="post-data">
-
-                        <div className="container-fluid" id="post-content">
-                            <div id="post-description">
-                                <div id="title-section">
-                                    <p id="post-title">Title Goes Here</p> 
-                                    <p id="post-date">November 5, 2021</p>
-                                </div>
-                                <p id="post-body">{postBody}</p>
-                            </div>
-
-                            <div id="tag-container">
-                                <text id="tags">Nature</text>
-                                <text id="tags">Hiking</text>
-                                <text id="tags">Mountain</text>
-                                <text id="tags">Tag</text>
-                            </div>
-
-                        </div>
-
-                        <div className="container-fluid" id="post-location">
-                            <div id="map">
-                                <StaticMap width={313} height={188} position={position}/>
-                            </div>
-                            <p id="map-description">New Brunswick, Canada</p>
-                        </div>
-                    </div>
-                    <img className="img-fluid" id="post-image" src={PostImage} />
-                </div>
+          <Row>
+            <div id="tag-container">
+                {tags}
             </div>
-        </Container>
-    )
+            <div className="col-md-5 mx-auto" id="post-image-container">
+              <img src={postData.postImage} />
+            </div>
+          </Row>
+        </Col>
+      </Row>
+    </Container> 
+  )
 }
 
 Message.propTypes = {
-    author: PropTypes.string,
-    avatar: PropTypes.string,                   // URL for the avatar
+  postData: PropTypes.objectOf({
+    user: PropTypes.string,
+    avatar: PropTypes.url,
     title: PropTypes.string,
-    date_created: PropTypes.string,
-    location: PropTypes.string,
-    true_location: PropTypes.string,            // Map Component
-    body: PropTypes.string,
+    date: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string),
-    image: PropTypes.string,                    // Image URL
+    position: PropTypes.objectOf({
+      lat: PropTypes.number,
+      lng: PropTypes.number,
+    }),
+    location: PropTypes.string,
+    postImage: PropTypes.url,
+  })
 }
 
 export default Message;

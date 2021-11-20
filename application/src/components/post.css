@@ -2,6 +2,7 @@
 img {
     width: 100%;
     height: 100%;
+    border-radius: 1.5%;
     object-fit: cover;
 }
 
@@ -9,31 +10,23 @@ img {
 #outer-container {
     padding: 20px;
     width: 1080px;
-    height: 850px;
+    max-height: 850px;
     background: #ffff;
     border-radius: 20px;
 }
 
-#main-container {
-    display: flex;
-    padding: 0px;
-}
-
 #profile {
-    padding: 0px;
-    width: 90px;
-    height: 138px;
+    width: 100px;
 }
 
 #avatar {
-    width: 100%;
-    height: 90px;
+    width: 90px;
+    max-height: 90px;
     border-radius: 50%;
     overflow: hidden;
 }
 
 #user-name {
-    width: 90px;
     height: 38px;
     padding-top: 10px;
     font-size: 18px;
@@ -48,23 +41,13 @@ img {
     width: 940px;
 }
 
-#post-data {
-    display: flex;
-    padding: 0px;
-    text-align: left;
-}
-
-#post-content {
-    display: flex;
-    flex-direction: column;
-    padding: 0px;
-}
-
 #post-description {
     display: flex;
     flex-direction: column;
+    text-align: left;
     padding: 10px;
-    height: 184px;
+    max-width: 607px;
+    width: 100%;
 }
 
 #title-section {
@@ -76,12 +59,15 @@ img {
     font-weight: bold;
     font-size: 18px;
     line-height: 5px;
+    overflow-wrap: break-word;
+    hyphens: auto;
     text-align: left;
 }
 
 #post-date {
     position: relative;
-    top: -21px;
+    bottom: 21px;
+    padding-right: auto;
     font-weight: 200;
     font-size: 16px;
     line-height: 5px;
@@ -93,12 +79,19 @@ img {
     font-size: 16px;
     line-height: 19px;
     white-space: pre-wrap;
+    --body-height: height;
 }
 
 #tag-container {
     display: flex;
     align-items: center;
     height: 23px;
+    align-self: left;
+    padding-bottom: 20px;
+}
+
+#tag-container-sm {
+    display: none;
 }
 
 #tags {
@@ -111,19 +104,11 @@ img {
 }
 
 #post-location {
-    display: flex;
-    flex-direction: column;
-    padding: 0px;
+    padding-left: 0px;
+    padding-right: 5px;
     width: 313px;
     height: 217px;
 }
-
-#map {
-    width: 313px;
-    overflow: hidden;
-    border-radius: 3%;
-}
-
 
 #map-description {
     font-size: 16px;
@@ -131,57 +116,148 @@ img {
     text-align: center;
 }
 
-#post-image {
-    border-radius: 1.5%;
-    height: 590px;
+#post-image-container {
+    width: 940px;
+    height: 573px;
+    padding-right: 15px;
 }
 
 /* For screens that are 1200px or less */
-@media only screen and (max-width: 1200px) {
-    #post-data{
-        flex-direction: column;
-    }
-
+@media screen and (max-width: 1200px) {
     #map {
-        margin-top: 30px;
+        height: 100%;
     }
 
-    #post-image {
-        width: 70%;
-        border-radius: 1.5%;
-        object-fit: scale-down;
-        margin: -12%;
+    #post-location {
+        display: flex;
+        padding-right: 10px;
+        flex-direction: column;
+        height: var(--body-height);
     }
 
-    #post {
+    #profile {
+        max-width: 15%;
+    }
+
+    #post-description {
+        max-width: 500px;
+    }
+
+    #post-image-container {
         width: 100%;
-        height: 800px;
-        justify-content: center;
+        height: 100%;
+        border-radius: 1.5%;
     }
 }
 
-/* For screens that are 990px or less */
-@media only screen and (max-width: 990px) {
-    #tag-container {
-        margin-top: 5px;
+/* For screens that are 992px or less */
+@media only screen and (max-width: 992px) {
+    #profile {
+        max-width: 18%;
     }
 
-    #post-image {
-        margin: -180px;
+    #post-description {
+        width: 60%;
+    }
+
+    #post-location {
+        width: 40%;
+        height: var(--body-height);
     }
 
     #outer-container {
-        height: 700px;
+        height: 100%;
     }
 }
 
-/* For screens that are 765px or less */
-@media only screen and (max-width: 767px) {
-    #tag-container {
-        margin-top: 30px;
+/* For screens that are 768px or less */
+@media only screen and (max-width: 768px) {
+    #outer-container {
+        width: 100%;
     }
 
-    #post-image {
-        margin: -200px;
+    #post-date {
+        text-align: left;
+        padding-top: 10%;
+    }
+
+    #post-body {
+        padding-top: 9%;
+    }
+
+    #post-location {
+        height: var(--body-height);
+        padding-bottom: 25px;
+        width: 45%;
+    }
+
+    #post-description {
+        padding-left: 20px;
+        width: 55%;
+    }
+
+    #profile {
+        max-width: 25%;
+    }
+}
+
+/* For screens that are 576px or less */
+@media only screen and (max-width: 576px) {
+    #outer-container {
+        width: 50%;
+    }
+
+    #post-location {
+        height: var(--body-height);
+        width: 50%;
+    }
+
+    #post-description {
+        padding-left: 10px;
+        width: 50%;
+    }
+
+    #post-image-container {
+        width: 100%;
+    }
+}
+
+/* For screens that are 450px or less (For Phone Browsers)*/
+@media screen and (max-width: 450px) {
+    #post-location {
+        width: 90%;
+        height: 200px;
+    }
+
+    #outer-container {
+        width: 40%;
+    }
+
+    #post-description {
+        width: 100%;
+    }
+
+    #avatar {
+        width: 100%;
+        height: 8%;
+    }
+
+    #profile {
+        max-width: 20%;
+    }
+
+    #post-date {
+        padding-top: 7%;
+    }
+
+    #tag-container-sm {   
+        display: flex;
+        align-items: center;
+        height: 23px;
+        align-self: left;
+    }
+
+    #tag-container {
+        display: none;
     }
 }
