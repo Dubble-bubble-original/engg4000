@@ -158,7 +158,7 @@ Feature: User post endpoints tests
     And match response contains 'Invalid User Post ID'
 
   Scenario: Try to update a nonexistent user post
-    # Call get user post endpoint with nonexistent user post id
+    # Call update user post endpoint with nonexistent user post id
     Given path 'userpost/53cb6b9b4f4ddef1ad47f943'
     And header token = auth_token
     And request { title: 'new title' }
@@ -185,7 +185,7 @@ Feature: User post endpoints tests
     Then status 200
     And match response._id == post_id
 
-    # Call get user post endpoint with nonexistent user post id
+    # Call update user post endpoint with nonexistent user post id
     Given path 'userpost/' + post_id
     And header token = auth_token
     And request { update: { title: 'new title' } }
