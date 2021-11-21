@@ -1,4 +1,4 @@
-Feature: Version endpoint tests
+Feature: User post endpoints tests
 
   Background:
     * url baseUrl
@@ -26,10 +26,9 @@ Feature: Version endpoint tests
     # Call create user post endpoint with empty body
     Given path 'userpost'
     And header token = auth_token
-    And request {}
     When method post
     Then status 400
-    And match response contains 'No Authentication Token Provided'
+    And match response contains 'No Request Body Provided'
 
   Scenario: Try to create a user post with missing required field
     # Call create user post endpoint with missing required field
@@ -38,7 +37,7 @@ Feature: Version endpoint tests
     And request read('../data/userPost_missingTittle.json')
     When method post
     Then status 400
-    And match response contains 'No Authentication Token Provided'
+    And match response contains 'UserPost validation failed: title: Path `title` is required'
 
   # Delete user posts
 
@@ -61,43 +60,33 @@ Feature: Version endpoint tests
 
   Scenario: Try to delete a nonexistent user post
     # Call delete user post endpoint with invalid user post id
-    Given path 'userpost/12345' 
+    Given path 'userpost/12345'
     And header token = auth_token
     And request {}
     When method delete
     Then status 404
     And match response contains 'User Post Not Found'
 
-  Scenario: Try to delete a user post without invalid access key
+  Scenario: Try to delete a user post with invalid access key
     # Call create user post endpoint with empty body
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/userPost.json')
     When method post
     Then status 201
-    * def post_id = response._id
-    * def post_access_key = response.access_key
-    
-    # Call delete user post endpoint with no access key
-    Given path 'userpost/' + post_id
-    And header token = auth_token
-    And request {}
-    When method delete
-    Then status 400
-    And match response contains 'Client Body Does NOT Contain an Access-Key'
+    * def post_id = response.post._id
+    * def post_access_key = response.post.access_key
 
     # Call delete user post endpoint with invalid access key
-    Given path 'userpost/' + post_id
+    Given path 'userpost/12345'
     And header token = auth_token
-    And request {access_key: '12345'}
     When method delete
-    Then status 403
-    And match response contains 'Client Access-Key Does NOT Match User Post'
+    Then status 404
+    And match response contains 'User Post Not Found'
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_id
+    Given path 'userpost/' + post_access_key
     And header token = auth_token
-    And request {access_key: post_access_key}
     When method delete
     Then status 200
 
@@ -118,16 +107,64 @@ Feature: Version endpoint tests
     Then status 401
     And match response contains 'Invalid Authentication Token Provided'
 
-  Scenario: Try to get a nonexistent user post
+  Scenario: Try to get a user post with invalid id
     # Call get user post endpoint with invalid user post id
-    Given path 'userpost/12345' 
+    Given path 'userpost/12345'
+    And header token = auth_token
+    When method get
+    Then status 400
+    And match response contains 'Invalid User Post ID'
+
+  Scenario: Try to get a nonexistent user post
+    # Call get user post endpoint with nonexistent user post id
+    Given path 'userpost/53cb6b9b4f4ddef1ad47f943'
     And header token = auth_token
     When method get
     Then status 404
     And match response contains 'User Post Not Found'
 
   # Update User posts
-  #TODO
+
+  Scenario: Try to update a user post with no auth token
+    # Call update user post endpoint with no auth token header
+    Given path 'userpost/12345'
+    When method patch
+    Then status 401
+    And match response contains 'No Authentication Token Provided'
+
+  Scenario: Try to update a user post with invalid auth token
+    # Call update user post endpoint with invalid auth token header
+    Given path 'userpost/12345'
+    And header token = '12345'
+    When method patch
+    Then status 401
+    And match response contains 'Invalid Authentication Token Provided'
+
+  Scenario: Try to update a user post with empty request body
+    # Call update user post endpoint with empty body
+    Given path 'userpost/12345'
+    And header token = auth_token
+    When method patch
+    Then status 400
+    And match response contains 'No Request Body Provided'
+
+  Scenario: Try to update a user post with invalid id
+    # Call update user post endpoint with invalid user post id
+    Given path 'userpost/12345'
+    And header token = auth_token
+    And request { title: 'new title' }
+    When method patch
+    Then status 400
+    And match response contains 'Invalid User Post ID'
+
+  Scenario: Try to update a nonexistent user post
+    # Call get user post endpoint with nonexistent user post id
+    Given path 'userpost/53cb6b9b4f4ddef1ad47f943'
+    And header token = auth_token
+    And request { title: 'new title' }
+    When method patch
+    Then status 404
+    And match response contains 'User Post Not Found'
 
   # Create, get, update, delete user posts
 
@@ -138,8 +175,8 @@ Feature: Version endpoint tests
     And request read('../data/userPost.json')
     When method post
     Then status 201
-    * def post_id = response._id
-    * def post_access_key = response.access_key
+    * def post_id = response.post._id
+    * def post_access_key = response.post.access_key
 
     # Call get user post endpoint
     Given path 'userpost/' + post_id
@@ -148,11 +185,16 @@ Feature: Version endpoint tests
     Then status 200
     And match response._id == post_id
 
-    # Call update user post endpoint
-    #TODO
+    # Call get user post endpoint with nonexistent user post id
+    Given path 'userpost/' + post_id
+    And header token = auth_token
+    And request { update: { title: 'new title' } }
+    When method patch
+    Then status 200
+    And match response.title == 'new title'
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_id
+    Given path 'userpost/' + post_access_key
     And header token = auth_token
     And request {access_key: post_access_key}
     When method delete

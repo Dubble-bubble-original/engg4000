@@ -1,4 +1,5 @@
 const uuidv4 = require('uuid').v4;
+const { ObjectId } = require('mongoose').Types;
 const UTILS = require('../utils/utils');
 const { UserPost } = require('../db/dbSchema');
 
@@ -38,14 +39,21 @@ exports.version = (req, res) => {
 };
 
 exports.createUserPost = (req, res) => {
+  // No request body provided
+  if (!req.body || !Object.keys(req.body).length) {
+    logger.info('No Request Body Provided');
+    return res.status(400).send('No Request Body Provided');
+  }
+
   const accessKey = uuidv4();
+  const dateCreated = Date.now();
   const newUserPost = new UserPost({
     authorID: req.body.authorID,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
     img_URL: req.body.imgURL,
-    date_created: req.body.date_created,
+    date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
     access_key: accessKey
@@ -79,30 +87,21 @@ exports.createUserPost = (req, res) => {
 };
 
 exports.deleteUserPost = (req, res) => {
+  const acessKey = req.params.ak;
   // Find the userpost with the matching access key
-  UserPost.findOneAndDelete({ access_key: req.params.ak })
+  UserPost.findOneAndDelete({ access_key: acessKey })
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
         return res.status(404).send('User Post Not Found');
       }
 
-      if (!('access_key' in req.body)) {
-        logger.info('Client Body Does NOT Contain an Access-Key');
-        return res.status(400).send('Client Body Does NOT Contain an Access-Key');
-      }
-
-      // Check if the req & userpost access_key's match for deletion
-      if (doc.access_key === req.body.access_key) {
-        UserPost.findByIdAndDelete(req.params.id)
-          .catch((err) => {
-            logger.error(err);
-            return res.status(500).send(err);
-          });
-        return res.status(200).send();
-      }
-      logger.info('Client Access-Key Does NOT Match User Post');
-      return res.status(403).send('Client Access-Key Does NOT Match User Post');
+      UserPost.findByIdAndDelete(req.params.id)
+        .catch((err) => {
+          logger.error(err);
+          return res.status(500).send(err);
+        });
+      return res.status(200).send();
     })
     .catch((err) => {
       logger.error(err);
@@ -111,7 +110,14 @@ exports.deleteUserPost = (req, res) => {
 };
 
 exports.getUserPost = (req, res) => {
-  UserPost.findById(req.params.id)
+  const userPostId = req.params.id;
+
+  if (!ObjectId.isValid(userPostId)) {
+    logger.info('Invalid User Post ID');
+    return res.status(400).send('Invalid User Post ID');
+  }
+
+  UserPost.findById(userPostId)
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
@@ -140,11 +146,24 @@ exports.getUserPosts = (req, res) => {
 };
 
 exports.updateUserPost = (req, res) => {
-  const query = { _id: req.params.id };
+  // No request body provided
+  if (!req.body || !Object.keys(req.body).length) {
+    logger.info('No Request Body Provided');
+    return res.status(400).send('No Request Body Provided');
+  }
+
+  const userPostId = req.params.id;
+
+  if (!ObjectId.isValid(userPostId)) {
+    logger.info('Invalid User Post ID');
+    return res.status(400).send('Invalid User Post ID');
+  }
+
+  const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
     .then((doc) => {
       if (!doc) {
-        return res.status(404).send('Userpost not found.');
+        return res.status(404).send('User Post Not Found');
       }
       return res.status(200).send(doc);
     })
