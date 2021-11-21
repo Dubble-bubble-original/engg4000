@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 // React
 import { useState, useEffect } from 'react';
 import { If, Then } from 'react-if';
 
 // Resources
-import { getVersion } from '../api/api'
 import './components.css';
 import Post from './Post'
 import Avatar from '../resources/images/avatar.jpg';
@@ -31,13 +29,11 @@ function HomePage() {
 
   // State variables
   const [isLoading, setLoading] = useState(true);
-  const [version, setVersion] = useState(null);
-  const [page, setPage] = useState('recent_posts');
+  const [page, setPage] = useState(null);
 
   const fetchData = async () => {
-    // Get app version
-    let appVersion = await getVersion();
-    setVersion(appVersion);
+    // API Calls will come here
+    setPage('recent_posts');
     setLoading(false);
   }
 

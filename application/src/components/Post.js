@@ -8,16 +8,16 @@ import './post.css';
 // Resources
 import StaticMap from './maps/StaticMap';
 
-function Message({postData}) {
+function Post({postData}) {
 
   // Create Tags for rendering
   const tags = postData.tags.map(tag => {
-    return <text id="tags" key={tag}>{tag}</text>;
+    return <span id="tags" key={tag}>{tag}</span>;
   });
 
   return (
     <Container id="outer-container">
-      <Row auto>
+      <Row>
         <Col xs={{ order: 0 }} id="profile">
           <img id="avatar" src={postData.avatar} />
           <p id="user-name">{postData.user}</p>
@@ -58,14 +58,15 @@ function Message({postData}) {
   )
 }
 
-Message.propTypes = {
-  postData: PropTypes.objectOf({
+Post.propTypes = {
+  postData: PropTypes.shape({
     user: PropTypes.string,
     avatar: PropTypes.url,
     title: PropTypes.string,
     date: PropTypes.string,
+    postBody: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string),
-    position: PropTypes.objectOf({
+    position: PropTypes.shape({
       lat: PropTypes.number,
       lng: PropTypes.number,
     }),
@@ -74,4 +75,4 @@ Message.propTypes = {
   })
 }
 
-export default Message;
+export default Post;
