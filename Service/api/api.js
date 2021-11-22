@@ -96,11 +96,6 @@ exports.deleteUserPost = (req, res) => {
         return res.status(404).send('User Post Not Found');
       }
 
-      UserPost.findByIdAndDelete(req.params.id)
-        .catch((err) => {
-          logger.error(err);
-          return res.status(500).send(err);
-        });
       return res.status(200).send();
     })
     .catch((err) => {
