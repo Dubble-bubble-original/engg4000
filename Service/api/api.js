@@ -48,11 +48,11 @@ exports.createUserPost = (req, res) => {
   const accessKey = uuidv4();
   const dateCreated = Date.now();
   const newUserPost = new UserPost({
-    authorID: req.body.authorID,
+    author_ID: req.body.author_ID,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
-    img_URL: req.body.imgURL,
+    img_URL: req.body.img_URL,
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
@@ -72,11 +72,11 @@ exports.createUserPost = (req, res) => {
     return res.status(201).json({
       post: {
         _id: newUserPost._id,
-        author: newUserPost.authorID,
+        author_ID: newUserPost.author_ID,
         body: newUserPost.body,
         tags: newUserPost.tags,
         title: newUserPost.title,
-        img_URL: newUserPost.imgURL,
+        img_URL: newUserPost.img_URL,
         date_created: newUserPost.date_created,
         location: newUserPost.location,
         true_location: newUserPost.true_location,
