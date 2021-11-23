@@ -44,26 +44,26 @@ ROUTER.get(
 
 ROUTER.post(
   '/image',
-  // API.verifyAuthToken,
+  API.verifyAuthToken,
   upload.single('image'),
   API.createImage
 );
 
 ROUTER.get(
   '/image/:id',
-  // API.verifyAuthToken,
+  API.verifyAuthToken,
   API.getImage
 );
 
 ROUTER.get(
   '/imageurl/:id',
-  // API.verifyAuthToken,
+  API.verifyAuthToken,
   API.getImageUrl
 );
 
 ROUTER.delete(
   '/image/:id',
-  // API.verifyAuthToken,
+  API.verifyAuthToken,
   API.deleteImage
 );
 
