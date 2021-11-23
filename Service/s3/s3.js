@@ -3,11 +3,13 @@ const fs = require('fs');
 require('dotenv').config();
 const ENV = process.env;
 
+// Environment variables
 const bucketName = ENV.AWS_BUCKET_NAME;
 const bucketRegion = ENV.AWS_REGION;
 const accessKey = ENV.AWS_ACCESS_KEY_ID;
 const secretAccessKey = ENV.AWS_SECRET_ACCESS_KEY;
 
+// S3 parameters
 const s3 = new S3({
   bucketRegion,
   accessKey,
@@ -28,7 +30,7 @@ exports.uploadFile = async (file) => {
 };
 
 // Download a file from S3
-exports.downloadFile = async (fileKey) => {
+exports.downloadFile = (fileKey) => {
   const downloadParams = {
     Key: fileKey,
     Bucket: bucketName

@@ -50,47 +50,50 @@ types:
 
 /auth:
   post:
-    description: Creates an authorization token to be used for authorizing API calls.
+    description: "Creates an authorization token to be used for authorizing API calls."
     responses:
       200:
         body:
           application/json:
             type: Token
-            example: {
-              'token': '6bf73119-ff54-40d6-bbd5-a2590b9eb66f',
-              'timestamp': 1635366449733
+            example: |
+            {
+              "token": "6bf73119-ff54-40d6-bbd5-a2590b9eb66f",
+              "timestamp": "1635366449733"
             }
+
 /version:
   get:
-    description: Returns the version of the APP.
+    description: "Returns the version of the APP."
     responses:
       200:
         body:
           type: string
-          example: 'Service v0.0.0'
+          example: "Service v0.0.0"
       401:
         body:
           type: string
-          example: 'No Authentication Token Provided'
+          example: "No Authentication Token Provided"
+
 /userpost:
   post:
-    description: Creates a new post document and returns it
+    description: "Creates a new post document and returns it."
     responses:
       201:
         body:
           application/json:
             type: Post
       400:
-        description: A required field in the request is missing.
+        description: "A required field in the request is missing."
         body:
           type: string
-          example: UserPost validation failed: author: Path `author` is required.
+          example: "UserPost validation failed: author: Path `author` is required."
       500:
         body:
           type: string
   /{id}:
     get: 
-      description: Returns the post with the matching id
+      description: "Returns the post with the matching id"
       responses:
         200:
           body:
@@ -99,26 +102,73 @@ types:
         404:
           body:
             type: string
-            example: User not found.
+            example: "User Not Found"
         500:
           body:
             type: string
     delete:
-      description: Delete the post if the request body has the matching access-key
+      description: "Deletes a user post."
       responses:
         200:
-        400:
-          body:
-            type: string
-            example: Client body does NOT contain an access-key.
-        403:
-          body:
-            type: string
-            example: Client access-key does NOT match the user post.
         404:
           body:
             type: string
-            example: User not found.
+            example: "User Post Not Found"
+        500:
+          body:
+            type: string
+
+/image:
+  post:
+    description: "Creates a image in an S3 bucket and returns the object key."
+    responses:
+      201:
+        body:
+          application/json:
+            type: id,
+            example: |
+            {
+              "id": "a2590b9eb66f"
+            }
+      400:
+        description: "No image file was provided in the request body."
+        body:
+          type: string
+          example: "No Image Provided"
+      500:
+        body:
+          type: string
+  /{id}:
+    get: 
+      description: "Returns the image with the matching id."
+      responses:
+        200:
+          body:
+            type: image
+        500:
+          body:
+            type: string
+    delete:
+      description: "Delete an image."
+      responses:
+        200:
+        500:
+          body:
+            type: string
+
+/imageurl
+  /{id}:
+    get: 
+      description: "Returns the image url with the matching id."
+      responses:
+        200:
+          body:
+            application/json:
+              type: url,
+              example: |
+              {
+                "url": "https://google.com"
+              }
         500:
           body:
             type: string

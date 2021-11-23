@@ -1,6 +1,9 @@
+// This component is for testing only
+
 // React
 import { useState } from 'react';
 import axios from 'axios'
+import { If, Then } from 'react-if';
 
 // Get environment
 require('dotenv').config();
@@ -48,9 +51,18 @@ async function getImageUrl(id) {
     console.log(result.data);
 }
 
+async function getImage(id) {
+    const result = await axios({
+        method: 'GET',
+        url: serviceUrl + '/image/' + id
+    });
+
+    console.log(result.data);
+}
+
 function ImageForm() {
     const [file, setFile] = useState();
-    const [image, setImage] = useState();
+    const [image, setImage] = useState(null);
 
     const fileSelected = event => {
         const file = event.target.files[0];
@@ -65,7 +77,6 @@ function ImageForm() {
         console.log('result:');
         console.log(result);
 
-        // let imageData = await getImage(result.id);
         setImage([result.id]);
     }
 
@@ -75,9 +86,18 @@ function ImageForm() {
                 <input onChange={fileSelected} type="file" accept="image/*"></input>
                 <button type="submit">Upload</button>
             </form>
-
+            <br />
             <button onClick={() => deleteImage(image)}>Delete Image</button>
+            <br />
             <button onClick={() => getImageUrl(image)}>Get Image Url</button>
+            <br />
+            <button onClick={() => getImage(image)}>Get Image</button>
+            <If condition={image}>
+                <Then>
+                    <br />
+                    <img src={serviceUrl + '/image/' + image}></img>
+                </Then>
+            </If>
         </div>
     );
 }

@@ -2,7 +2,10 @@ const EXPRESS = require('express');
 const ROUTER = EXPRESS.Router();
 
 const multer = require('multer');
-const upload = multer({ dest: './uploads' });
+const upload = multer({
+  limits: { fileSize: 5000000 }, // 5MB
+  dest: './uploads'
+});
 
 const API = require('../api/api');
 

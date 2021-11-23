@@ -130,6 +130,11 @@ exports.getUserPost = (req, res) => {
 };
 
 exports.createImage = async (req, res) => {
+  if (!req.file) {
+    logger.info('No Image Provided');
+    return res.status(400).send('No Image Provided');
+  }
+
   const { file } = req;
   // Upload file to S3 bucket
   await uploadFile(file)
@@ -148,12 +153,14 @@ exports.createImage = async (req, res) => {
 
 exports.getImage = (req, res) => {
   const fileKey = req.params.id;
-  const readStream = downloadFile(fileKey)
-    .then(() => readStream.pipe(res))
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).send(err);
-    });
+  try {
+    const readStream = downloadFile(fileKey);
+    readStream.pipe(res);
+  }
+  catch (err) {
+    logger.error(err);
+    return res.status(500).send(err);
+  }
 };
 
 exports.getImageUrl = (req, res) => {
