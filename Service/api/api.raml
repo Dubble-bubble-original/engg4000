@@ -17,12 +17,12 @@ types:
       timestamp:
         required: true
         type: number
-  Post:
+  userPost:
     type: object
     properties:
       _id:
         type: number
-      author:
+      author_ID:
         type: string
       body:
         type: string
@@ -32,7 +32,7 @@ types:
           type: string
       title:
         type: string
-      imgURL:
+      img_URL:
         type: string
       date_created:
         type: number
@@ -84,7 +84,7 @@ types:
         description: A required field in the request is missing.
         body:
           type: string
-          example: UserPost validation failed: author: Path `author` is required.
+          example: UserPost validation failed: author: Path `authorID` is required.
       500:
         body:
           type: string
