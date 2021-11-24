@@ -1,5 +1,5 @@
 // React
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
@@ -7,53 +7,46 @@ import './post.css';
 
 // Resources
 import StaticMap from './maps/StaticMap';
+import { FRow, FCol } from './FlexContainers';
 
 function Post({postData}) {
 
   // Create Tags for rendering
   const tags = postData.tags.map(tag => {
-    return <span id="tags" key={tag}>{tag}</span>;
+    return <span className="tag" key={tag}>{tag}</span>;
   });
 
   return (
-    <Container id="outer-container">
-      <Row>
-        <Col xs={{ order: 0 }} id="profile">
-          <img id="avatar" src={postData.avatar} />
-          <p id="user-name">{postData.user}</p>
-        </Col>
+    <Container className="outer-container">
+      <FRow>
+        <FCol>
+          <img className="avatar" src={postData.avatar} />
+          <div className="user-name">{postData.user}</div>
+        </FCol>
 
-        <Col id="post">
-          <Row className="justify-content-md-center">
-            <Col xs={{ span: 12, order: 1 }} md={{ span: 6, order: 1 }} id="post-description">
-              <div id="title-section">
-                <p id="post-title">{postData.title}</p> 
-                <p id="post-date">{postData.date}</p>
-              </div>
-              <p id="post-body">{postData.postBody}</p>
-              <div id="tag-container-sm">
+        <FCol>
+          <FRow className="post-content">
+            <FCol  className="post-description">
+              <FRow className="title-section">
+                <div className="post-title">{postData.title}</div> 
+                <div className="grey">{postData.date}</div>
+              </FRow>
+              <div className="post-body">{postData.postBody}</div>
+              <FRow className="tag-container">
                 {tags}
-              </div>
-            </Col>
+              </FRow>
+            </FCol>
 
-            <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 2 }} id="post-location" className="col-md-5 mx-auto">
-              <div id="map">
-                <StaticMap width={313} height={188} position={postData.position}/>
-              </div>
-              <p id="map-description">{postData.location}</p>
-            </Col>
-          </Row>
-
-          <Row>
-            <div id="tag-container">
-                {tags}
-            </div>
-            <div className="col-md-5 mx-auto" id="post-image-container">
-              <img src={postData.postImage} />
-            </div>
-          </Row>
-        </Col>
-      </Row>
+            <FCol className="post-location">
+              <StaticMap width={2000} height={200} position={postData.position}/>
+              <div className="grey map-description">{postData.location}</div>
+            </FCol>
+          </FRow>
+          <div>
+            <img src={postData.postImage} />
+          </div>
+        </FCol>
+      </FRow>
     </Container> 
   )
 }

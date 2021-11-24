@@ -39,9 +39,9 @@ function WelcomePage(props) {
     <div className="container">
       <img className="logo" src={logo} alt="Logo" />
       <div className="terms-conditions" data-testid="terms-conditions">
-        <p>By entering this website, you are ageering to our {termsAndConditions}.</p>
+        <p className="h5">By entering this website, you are ageering to our {termsAndConditions}.</p>
       </div>
-      <div className="i-agree">
+      <div className="i-agree h5">
         <Form.Check
           data-testid="agree-checkbox"
           id="agree-checkbox"

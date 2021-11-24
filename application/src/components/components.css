@@ -37,6 +37,24 @@ label {
     cursor: pointer;
 }
 
+.f-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.f-col {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.grey {
+    color: #A09F9F;
+}
+
 /* IDs */
 
 #terms-conditions-link {

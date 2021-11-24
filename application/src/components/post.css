@@ -2,229 +2,94 @@
 img {
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 20px;
     object-fit: cover;
 }
 
-/* ID's */
-#outer-container {
+/* Classes */
+
+div.outer-container { /* The div is added so it takes precedence over bootstrap's CSS */
     padding: 20px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    width: 1080px;
-    height: 100%;
     background: #ffff;
     border-radius: 20px;
 }
 
-#profile {
-    width: 100px;
-}
-
-#avatar {
+.avatar {
     width: 90px;
     height: 90px;
     border-radius: 50px;
     overflow: hidden;
 }
 
-#user-name {
-    padding-top: 10px;
-    font-size: 18px;
-    line-height: 20px;
+.user-name {
+    /* Allow breaking names to fit in the avatar column */
     overflow-wrap: break-word;
     hyphens: auto;
 }
 
-#post {
-    padding: 0px;
-    width: 940px;
-}
-
-#post-description {
+.post-description {
     display: flex;
     flex-direction: column;
     text-align: left;
-    padding: 10px;
-    max-width: 607px;
-    width: 100%;
+    width: 70%; /* Take 70% of post width, leaving 30% for map */
 }
 
-#title-section {
-    width: 100%;
-    height: 21px;
+.title-section {
+    /* Make the title & date stay at opposite ends */
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 0 10px;
 }
 
-#post-title {
+.post-title {
     font-weight: bold;
-    font-size: 18px;
-    line-height: 5px;
     overflow-wrap: break-word;
     hyphens: auto;
-    text-align: left;
 }
 
-#post-date {
-    position: relative;
-    bottom: 21px;
-    font-weight: 200;
-    font-size: 16px;
-    line-height: 5px;
-    text-align: right;
-    color: #4e4e4e;
-}
-
-#post-body {
-    font-size: 16px;
-    line-height: 19px;
+.post-body {
+    /* Keep extra whitespace inside the description of the post (e.g., newlines) */
     white-space: pre-wrap;
-    --body-height: height;
 }
 
-#tag-container {
-    display: flex;
-    align-items: center;
-    height: 23px;
-    align-self: left;
-    padding-bottom: 20px;
+.tag-container {
+    /* Allow tags to wrap to a new line */
+    flex-wrap: wrap;
 }
 
-#tag-container-sm {
-    display: none;
-}
-
-#tags {
-    padding: 2px 5px;
-    margin-right: 10px;
+.tag {
+    padding: 2px 8px;
     border: 1px solid var(--bs-primary);
-    border-radius: 10px;
-    font-size: 15px;
-    line-height: 19px;
+    border-radius: 20px;
 }
 
-#post-location {
-    padding-left: 0px;
-    padding-right: 5px;
-    width: 313px;
-    height: 217px;
+.post-location {
+    width: 30%; /* Take 30% of post width, leaving 70% for body */
 }
 
-#map-description {
-    font-size: 16px;
-    line-height: 19px;
+.map-description {
     text-align: center;
 }
 
-#post-image-container {
-    width: 940px;
-    height: 573px;
-    padding-right: 15px;
-}
-
-/* For screens that are 1200px or less */
-@media screen and (max-width: 1200px) {
-    #map {
-        height: 100%;
-    }
-
-    #post-location {
-        display: flex;
-        padding-right: 10px;
-        flex-direction: column;
-        height: var(--body-height);
-    }
-
-    #profile {
-        max-width: 120px;
-    }
-
-    #post-description {
-        max-width: 500px;
-    }
-
-    #post-image-container {
-        width: 100%;
-        height: 100%;
-    }
-}
-
-/* For screens that are 992px or less */
-@media only screen and (max-width: 992px) {
-    #post-description {
-        width: 60%;
-    }
-
-    #post-location {
-        width: 40%;
-        height: var(--body-height);
-    }
-
-    #outer-container {
-        height: 100%;
-        background: rgb(14, 211, 113);
-    }
-}
-
 /* For screens that are 768px or less */
-@media only screen and (max-width: 768px) {
-    #outer-container {
-        width: 100%;
-        height: 100%;
-        background: red;
-    }
-
-    #post-date {
-        text-align: left;
-        padding-top: 18px;
-    }
-
-    #post-body {
-        padding-top: 20px;
-    }
-
-    #post-location {
-        height: var(--body-height);
-        padding-bottom: 25px;
-        width: 45%;
-    }
-
-    #post-description {
-        padding-left: 20px;
-        width: 55%;
-    }
-
-    #avatar {
+@media screen and (max-width: 768px) {
+    .avatar {
+        /* Reduce avatar size on small screens */
         width: 80px;
         height: 80px;
-    }
-
-    #profile {
-        max-width: 100px;
     }
 }
 
 /* For screens that are 576px or less */
-@media only screen and (max-width: 576px) {
-    #outer-container {
-        width: 50%;
-        background: rgb(0, 26, 255);
+@media screen and (max-width: 576px) {
+    div.outer-container {
+        /* Reduce padding around the overall post on smaller screens */
+        padding: 10px;
     }
 
-    #post-location {
-        height: var(--body-height);
-        width: 50%;
-    }
-
-    #post-description {
-        padding-left: 10px;
-        width: 50%;
-    }
-
-    #post-image-container {
-        width: 100%;
-    }
-
-    #avatar {
+    .avatar {
+        /* Reduce avatar size on smaller screens (even more) */
         width: 70px;
         height: 70px;
     }
@@ -232,28 +97,9 @@ img {
 
 /* For screens that are 450px or less (For Phone Browsers)*/
 @media screen and (max-width: 480px) {
-    #post-location {
-        width: 90%;
-        height: 200px;
-    }
 
-    #outer-container {
-        width: 40%;
-        background: rgb(234, 0, 255);
-    }
-
-    #post-description {
-        width: 100%;
-    }
-
-    #tag-container-sm {   
-        display: flex;
-        align-items: center;
-        height: 23px;
-        align-self: left;
-    }
-
-    #tag-container {
-        display: none;
-    }
+    /* Switch the map to be below post body on small screens (mobile) */
+    .post-content { flex-direction: column; }
+    .post-description { width: 100%; }
+    .post-location { width: 100%; }
 }
