@@ -135,3 +135,9 @@ buildNumber.properties
 # Visual Studio Code
 .vscode/
 .code-workspace
+
+# Others
+.classpath
+.project
+.settings
+.DS_Store

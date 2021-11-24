@@ -20,6 +20,7 @@
         "no-underscore-dangle": [ "off" ],
         "no-plusplus": ["error", {
             "allowForLoopAfterthoughts": true
-        }]
+        }],
+        "consistent-return": [ "off" ]
     }
 }
