@@ -28,8 +28,14 @@ ROUTER.post(
   API.createUserPost
 );
 
-ROUTER.delete(
+ROUTER.patch(
   '/userpost/:id',
+  API.verifyAuthToken,
+  API.updateUserPost
+);
+
+ROUTER.delete(
+  '/userpost/:ak',
   API.verifyAuthToken,
   API.deleteUserPost
 );
@@ -38,6 +44,12 @@ ROUTER.get(
   '/userpost/:id',
   API.verifyAuthToken,
   API.getUserPost
+);
+
+ROUTER.post(
+  '/userposts',
+  API.verifyAuthToken,
+  API.getUserPosts
 );
 
 // Image endpoints

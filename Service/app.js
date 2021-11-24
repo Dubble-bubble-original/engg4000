@@ -12,6 +12,10 @@ printServiceBanner();
 require('dotenv').config();
 const ENV = process.env;
 
+// API Middleware
+APP.use(EXPRESS.json());
+APP.use(EXPRESS.urlencoded({ extended: true }));
+
 // options for cross-origin resource sharing
 const corsOptions = {
   origin: ENV.FRONTEND_URL
@@ -19,10 +23,6 @@ const corsOptions = {
 
 // Allow the app to uase CORS with the defined routes in routes.js
 APP.use(cors(corsOptions), require('./routes/routes'));
-
-// API middleware
-APP.use(EXPRESS.json());
-APP.use(EXPRESS.urlencoded({ extended: true }));
 
 // Define all routes in routes.js
 APP.use('/', require('./routes/routes'));

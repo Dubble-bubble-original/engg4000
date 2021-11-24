@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const userUserPostSchema = new Schema({
-  author: { type: mongoose.ObjectId, required: true },
+const userPostSchema = new Schema({
+  author_ID: { type: mongoose.ObjectId, required: true, immutable: true },
   body: { type: String, required: true },
   tags: [{ type: String, required: true }],
   title: { type: String, required: true },
-  imgURL: { type: String },
-  date_created: { type: Date, default: Date.now },
+  img_URL: { type: String },
+  date_created: { type: Date, default: Date.now, immutable: true },
   location: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
@@ -15,7 +15,7 @@ const userUserPostSchema = new Schema({
   true_location: { type: Boolean, required: true },
   access_key: { type: String, required: true }
 });
-const UserPost = mongoose.model('UserPost', userUserPostSchema, 'UserPost');
+const UserPost = mongoose.model('UserPost', userPostSchema, 'UserPost');
 
 const userSchema = new Schema({
   name: { type: String },

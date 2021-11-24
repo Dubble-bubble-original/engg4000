@@ -17,12 +17,12 @@ types:
       timestamp:
         required: true
         type: number
-  Post:
+  userPost:
     type: object
     properties:
       _id:
         type: number
-      author:
+      author_ID:
         type: string
       body:
         type: string
@@ -32,7 +32,7 @@ types:
           type: string
       title:
         type: string
-      imgURL:
+      img_URL:
         type: string
       date_created:
         type: number
@@ -91,6 +91,19 @@ types:
       500:
         body:
           type: string
+  get:
+    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
+    example: req.body.{ 'filter' : { 'title' : 'exampleTitle', 'body' : 'exampleBody'}}
+    responses:
+      200:
+        body:
+          application/json:
+            type: Array
+            items:
+              type: Post
+      500:
+        body:
+          type: string
   /{id}:
     get: 
       description: "Returns the post with the matching id"
@@ -110,6 +123,21 @@ types:
       description: "Deletes a user post."
       responses:
         200:
+        404:
+          body:
+            type: string
+            example: "User Post Not Found"
+        500:
+          body:
+            type: string
+    patch:
+      description: "Update a userpost with data provided in an update field in req.body"
+      example: { "update" : { "title": "exampleUpdate", "body": "exampleUpdate"}}
+      responses:
+        200:
+          body:
+            application/json:            
+              type: Post
         404:
           body:
             type: string
@@ -155,6 +183,7 @@ types:
         500:
           body:
             type: string
+
 
 /imageurl
   /{id}:
