@@ -6,8 +6,8 @@ import PropTypes from 'prop-types'
 import './post.css';
 
 // Resources
-import StaticMap from './maps/StaticMap';
-import { FRow, FCol } from './FlexContainers';
+import StaticMap from '../maps/StaticMap';
+import { FRow, FCol } from '../FlexContainers';
 
 function Post({postData}) {
 

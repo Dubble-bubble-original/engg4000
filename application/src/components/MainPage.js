@@ -4,7 +4,7 @@ import { If, Then } from 'react-if';
 
 // Resources
 import './components.css';
-import Post from './Post'
+import Post from './post/Post';
 import Avatar from '../resources/images/avatar.jpg';
 import PostImage from '../resources/images/postImage.jpg';
 
