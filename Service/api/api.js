@@ -11,7 +11,7 @@ const { UserPost } = require('../db/dbSchema');
 
 // S3
 const {
-  uploadFile, downloadFile, getFileUrl, deleteFile
+  uploadFile, checkFile, downloadFile, getFileUrl, deleteFile
 } = require('../s3/s3');
 
 exports.createAuthToken = (req, res) => {
@@ -120,7 +120,7 @@ exports.updateUserPost = (req, res) => {
       return res.status(200).send(doc);
     })
     .catch((err) => {
-      logger.error(err);
+      logger.error(err.message);
       return res.status(500).send(err);
     });
 };
@@ -138,7 +138,7 @@ exports.deleteUserPost = (req, res) => {
       return res.status(200).send();
     })
     .catch((err) => {
-      logger.error(err);
+      logger.error(err.message);
       return res.status(500).send(err);
     });
 };
@@ -160,7 +160,7 @@ exports.getUserPost = (req, res) => {
       return res.status(200).send(doc);
     })
     .catch((err) => {
-      logger.error(err);
+      logger.error(err.message);
       return res.status(500).send(err);
     });
 };
@@ -174,7 +174,7 @@ exports.getUserPosts = (req, res) => {
   UserPost.find(filter).limit(100)
     .then((docs) => res.status(200).send(docs))
     .catch((err) => {
-      logger.error(err);
+      logger.error(err.message);
       return res.status(500).send(err);
     });
 };
@@ -187,51 +187,75 @@ exports.createImage = async (req, res) => {
 
   const { file } = req;
   // Upload file to S3 bucket
-  await uploadFile(file)
+  uploadFile(file)
     .then((result) => {
       // Delete file from local server
       fs.unlinkSync(file.path);
 
       const response = { id: result.key };
-      return res.status(200).send(response);
+      return res.status(201).send(response);
     })
     .catch((err) => {
-      logger.error(err);
-      return res.status(500).send(err);
+      logger.error(err.message);
+      return res.status(500).send('Failed to Create Image');
     });
 };
 
-exports.getImage = (req, res) => {
+exports.getImage = async (req, res) => {
   const fileKey = req.params.id;
+
+  const fileExists = await checkFile(fileKey);
+
+  if (!fileExists) {
+    logger.error('Image Does Not Exist');
+    return res.status(404).send('Image Does Not Exist');
+  }
+
   try {
     const readStream = downloadFile(fileKey);
     readStream.pipe(res);
   }
   catch (err) {
-    logger.error(err);
-    return res.status(500).send(err);
+    logger.error(err.message);
+    return res.status(500).send('Failed to Fetch Image');
   }
 };
 
-exports.getImageUrl = (req, res) => {
+exports.getImageUrl = async (req, res) => {
   const fileKey = req.params.id;
-  try {
-    const result = getFileUrl(fileKey);
-    const response = { url: result };
-    return res.status(200).send(response);
+
+  const fileExists = await checkFile(fileKey);
+
+  if (!fileExists) {
+    logger.error('Image Does Not Exist');
+    return res.status(404).send('Image Does Not Exist');
   }
-  catch (err) {
-    logger.error(err);
-    return res.status(500).send(err);
+
+  const result = getFileUrl(fileKey);
+
+  if (!result) {
+    logger.error('Failed to Get Image URL');
+    return res.status(500).send('Failed to Get Image URL');
   }
+
+  const response = { url: result };
+  return res.status(200).send(response);
 };
 
 exports.deleteImage = async (req, res) => {
   const fileKey = req.params.id;
-  await deleteFile(fileKey)
+
+  const fileExists = await checkFile(fileKey);
+
+  if (!fileExists) {
+    logger.error('Image Does Not Exist');
+    return res.status(404).send('Image Does Not Exist');
+  }
+
+  deleteFile(fileKey)
     .then(() => res.status(200).send())
     .catch((err) => {
-      logger.error(err);
-      return res.status(500).send(err);
+      logger.error(err.message);
+      return res.status(500).send('Failed to Delete Image');
     });
 };

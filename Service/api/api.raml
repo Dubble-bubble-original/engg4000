@@ -1,5 +1,9 @@
 #%RAML 1.0
 ---
+
+# Validation:
+# https://raml-org.github.io/playground/custom_validation.html
+
 title: Nota API
 baseUri: http://localhost:9000
 version: v1
@@ -57,10 +61,10 @@ types:
           application/json:
             type: Token
             example: |
-            {
-              "token": "6bf73119-ff54-40d6-bbd5-a2590b9eb66f",
-              "timestamp": "1635366449733"
-            }
+              {
+                "token": "6bf73119-ff54-40d6-bbd5-a2590b9eb66f",
+                "timestamp": "1635366449733"
+              }
 
 /version:
   get:
@@ -82,7 +86,7 @@ types:
       201:
         body:
           application/json:
-            type: Post
+            type: object
       400:
         description: "A required field in the request is missing."
         body:
@@ -93,14 +97,16 @@ types:
           type: string
   get:
     description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
-    example: req.body.{ 'filter' : { 'title' : 'exampleTitle', 'body' : 'exampleBody'}}
+    body:
+      application/json:
+        example: { "filter": { "title" : "exampleTitle", "body" : "exampleBody"}}
     responses:
       200:
         body:
           application/json:
-            type: Array
+            type: array
             items:
-              type: Post
+              type: object
       500:
         body:
           type: string
@@ -111,7 +117,7 @@ types:
         200:
           body:
             application/json:
-              type: Post
+              type: object
         404:
           body:
             type: string
@@ -132,12 +138,14 @@ types:
             type: string
     patch:
       description: "Update a userpost with data provided in an update field in req.body"
-      example: { "update" : { "title": "exampleUpdate", "body": "exampleUpdate"}}
+      body:
+        application/json:
+          example: { "update" : { "title": "exampleUpdate", "body": "exampleUpdate"}}
       responses:
         200:
           body:
             application/json:            
-              type: Post
+              type: object
         404:
           body:
             type: string
@@ -153,11 +161,11 @@ types:
       201:
         body:
           application/json:
-            type: id,
+            type: string,
             example: |
-            {
-              "id": "a2590b9eb66f"
-            }
+              {
+                "id": "a2590b9eb66f"
+              }
       400:
         description: "No image file was provided in the request body."
         body:
@@ -172,7 +180,7 @@ types:
       responses:
         200:
           body:
-            type: image
+            type: data
         500:
           body:
             type: string
@@ -185,19 +193,18 @@ types:
             type: string
 
 
-/imageurl
-  /{id}:
+/imageurl/{id}:
     get: 
       description: "Returns the image url with the matching id."
       responses:
         200:
           body:
             application/json:
-              type: url,
+              type: string,
               example: |
-              {
-                "url": "https://google.com"
-              }
+                {
+                  "url": "https://google.com"
+                }
         500:
           body:
             type: string

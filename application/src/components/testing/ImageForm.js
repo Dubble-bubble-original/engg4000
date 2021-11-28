@@ -2,63 +2,9 @@
 
 // React
 import { useState } from 'react';
-import axios from 'axios'
-import { If, Then } from 'react-if';
 
-// Get environment
-require('dotenv').config();
-const ENV = process.env;
-
-// Get the service url from the environment file
-const serviceUrl = ENV.REACT_APP_SERVICE_URL;
-
-async function postImage(file) {
-    console.log(file);
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    for (let key of formData.entries()) {
-        console.log(key[0] + ', ' + key[1]);
-    }
-
-    const result = await axios({
-        method: 'POST',
-        url: serviceUrl + '/image',
-        data: formData,
-        headers: {'Content-Type': 'multipart/form-data'}
-    });
-
-    console.log(result);
-    return result.data
-}
-
-async function deleteImage(id) {
-    const result = await axios({
-        method: 'DELETE',
-        url: serviceUrl + '/image/' + id
-    });
-
-    return result.data
-}
-
-async function getImageUrl(id) {
-    const result = await axios({
-        method: 'GET',
-        url: serviceUrl + '/imageurl/' + id
-    });
-
-    console.log(result.data);
-}
-
-async function getImage(id) {
-    const result = await axios({
-        method: 'GET',
-        url: serviceUrl + '/image/' + id
-    });
-
-    console.log(result.data);
-}
+// API
+import { postImage, getImage, getImageUrl, deleteImage } from '../../api/api';
 
 function ImageForm() {
     const [file, setFile] = useState();
@@ -92,12 +38,6 @@ function ImageForm() {
             <button onClick={() => getImageUrl(image)}>Get Image Url</button>
             <br />
             <button onClick={() => getImage(image)}>Get Image</button>
-            <If condition={image}>
-                <Then>
-                    <br />
-                    <img src={serviceUrl + '/image/' + image}></img>
-                </Then>
-            </If>
         </div>
     );
 }

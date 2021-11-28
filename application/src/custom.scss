@@ -1,6 +1,8 @@
 // Override default variables
+// (To see what variables we can override, look at the _variables.scss file at: node_modules/bootstrap/scss/_variables.scss)
 $primary: #EC4038;
 $min-contrast-ratio: 3.9; // Contrast ratio was reduced so that white text would be used over the primary color
+$line-height-base: 1.25;
 
 // Import Bootstrap and its default variables
 @import '~bootstrap/scss/bootstrap.scss';

@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 module.exports = function() {
   console.log('');
   console.log('');
