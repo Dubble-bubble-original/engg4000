@@ -200,20 +200,20 @@ Feature: User post endpoints tests
     When method delete
     Then status 200
 
-  Scenario: Try to get a post with no auth token provided
+  # Test Cases for POST userposts endpoint
+
+  Scenario: Try to get posts with no auth token provided
     Given path 'userposts'
     When method post
     Then status 401
     And match response contains 'No Authentication Token Provided'
 
-  Scenario: Try to get a post with an invalid auth token
+  Scenario: Try to get posts with an invalid auth token
     Given path 'userposts'
     And header token = 'Invalid_Token'
     When method post
     Then status 401
     And match response contains 'Invalid Authentication Token Provided'
-
-  # Test Cases for userposts endpoint
 
   Scenario: Calling userposts endpoint
     # Creating Temporary User Posts
