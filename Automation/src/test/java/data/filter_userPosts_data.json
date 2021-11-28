@@ -1,0 +1,40 @@
+{
+  "post1" : {
+    "author_ID": "21cb6b9b4f4ddef1ad47f043",
+    "tags": ["Mclaren", "Desert", "Test Tag 1", "Two Seater"],
+    "title": "Mclaren F1",
+    "body": "Mclaren F1, Colour Orange",
+    "img_URL": "https://static2.hotcarsimages.com/wordpress/wp-content/uploads/2020/08/mclaren-f1-2-e1597355115369.jpg",
+    "location": {
+      "latitude": 0,
+      "longitude": 0
+    },
+    "true_location": true
+  },
+
+  "post2": {
+    "author_ID": "51cb6b9b4f4ddef1ad47f053",
+    "tags": ["Ferrari", "Red", "Two Seater"],
+    "title": "Ferrari",
+    "body": "Ferrari, Colour: Red and Black",
+    "img_URL": "https://1.bp.blogspot.com/-mdHOPnpaiQ8/XQuqcdFKwwI/AAAAAAAAILk/1RFvb_KNo3slL6wXtlvvYtPrl5Kij1doQCLcBGAs/s1600/Ferrari%2BConcept%2BCars%2Bwallpapers.jpg",
+    "location": {
+      "latitude": 0,
+      "longitude": 0
+    },
+    "true_location": true
+  },
+
+  "post3": {
+    "author_ID": "71cb6b9b4f4ddef1ad47f073",
+    "tags": ["Mountains", "Snow", "Test Tag 1"],
+    "title": "Beautiful Mountain View!!",
+    "body": "Mountains covered with snow",
+    "img_URL": "http://astro.primozcigler.net/media/gallery/images/img_6527.jpg",
+    "location": {
+      "latitude": 0,
+      "longitude": 0
+    },
+    "true_location": true
+  }
+}

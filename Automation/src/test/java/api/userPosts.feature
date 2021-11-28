@@ -199,3 +199,131 @@ Feature: User post endpoints tests
     And request {access_key: post_access_key}
     When method delete
     Then status 200
+
+  Scenario: Try to get a post with no auth token provided
+    Given path 'userposts'
+    When method post
+    Then status 401
+    And match response contains 'No Authentication Token Provided'
+
+  Scenario: Try to get a post with an invalid auth token
+    Given path 'userposts'
+    And header token = 'Invalid_Token'
+    When method post
+    Then status 401
+    And match response contains 'Invalid Authentication Token Provided'
+
+  # Test Cases for userposts endpoint
+
+  Scenario: Calling userposts endpoint
+    # Creating Temporary User Posts
+
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post1
+    When method post
+    Then status 201
+    * def post1_access_key = response.post.access_key
+
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post2
+    When method post
+    Then status 201
+    * def post2_access_key = response.post.access_key
+
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post3
+    When method post
+    Then status 201
+    * def post3_access_key = response.post.access_key
+
+    # Call userPosts with no filters
+
+    Given path 'userposts'
+    And header token = auth_token
+    When method post
+    Then status 200
+    And assert response.length <= 100
+    And match response[*].title contains "Mclaren F1"
+    And match response[*].title contains "Ferrari"
+    And match response[*].title contains "Beautiful Mountain View!!"
+
+    # Call userPosts endpoint with title as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { title: "Ferrari" } }
+    When method post
+    Then status 200
+    And match response == '#[1]'
+    And match response[0].title contains "Ferrari"
+
+    # Call userPosts endpoint with an unused title as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { title: "Unused Title" } }
+    When method post
+    Then status 200
+    And match response == '#[0]'
+
+    # Call usePosts endpoint with empty tag as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: [] } }
+    When method post
+    Then status 200
+    And assert response.length <= 100
+    And match response[*].title contains "Mclaren F1"
+    And match response[*].title contains "Ferrari"
+    And match response[*].title contains "Beautiful Mountain View!!"
+
+    # Call userPosts endpoint with a valid tag as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Test Tag 1"] } }
+    When method post
+    Then status 200
+    And match response == '#[2]'
+    And match response[*].title contains "Mclaren F1"
+    And match response[*].title contains "Beautiful Mountain View!!"
+
+    # Call userPosts endpoint with a unused tag as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Unused Tag"] } }
+    When method post
+    Then status 200
+    And match response == '#[0]'
+
+    # Call userPosts endpoint with multiple tags as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Two Seater", "Ferrari"] } }
+    When method post
+    Then status 200
+    And match response == '#[1]'
+    And match response[0].title contains "Ferrari"
+
+    # Delete Added Posts
+
+    Given path 'userpost/' + post1_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+
+    Given path 'userpost/' + post2_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+
+    Given path 'userpost/' + post3_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200

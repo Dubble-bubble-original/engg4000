@@ -129,7 +129,21 @@ exports.getUserPost = (req, res) => {
 exports.getUserPosts = (req, res) => {
   // empty filter returns all docs from Userposts
   let filter = {};
-  if (req.body.filter) filter = req.body.filter;
+
+  if (req.body.filter) {
+    // Check if the filters have tags
+    if (req.body.filter.tags) {
+      // If the tags are not empty, add them to filter
+      if (req.body.filter.tags.length > 0) {
+        filter = {
+          tags: { $all: req.body.filter.tags }
+        };
+      }
+    }
+    else {
+      filter = req.body.filter;
+    }
+  }
 
   // Limit the returned results to 1,000 user posts
   UserPost.find(filter).limit(1000)
