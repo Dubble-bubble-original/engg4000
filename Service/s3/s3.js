@@ -1,6 +1,5 @@
 const S3 = require('aws-sdk/clients/s3');
 const fs = require('fs');
-const logger = require('../../application/src/logger/logger');
 require('dotenv').config();
 const ENV = process.env;
 
