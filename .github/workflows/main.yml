@@ -81,6 +81,7 @@ jobs:
       - name: Start Service
         run: |
           cd Service
+          rm -r node_modules/
           npm install --force
           npm run dev &
 
