@@ -81,32 +81,17 @@ types:
 
 /userpost:
   post:
-    description: "Creates a new post document and returns it."
+    description: "Creates a new user post document and returns it."
     responses:
       201:
         body:
           application/json:
-            type: object
+            type: userPost
       400:
         description: "A required field in the request is missing."
         body:
           type: string
           example: "UserPost validation failed: author: Path `author` is required."
-      500:
-        body:
-          type: string
-  get:
-    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
-    body:
-      application/json:
-        example: { "filter": { "title" : "exampleTitle", "body" : "exampleBody"}}
-    responses:
-      200:
-        body:
-          application/json:
-            type: array
-            items:
-              type: object
       500:
         body:
           type: string
@@ -117,7 +102,7 @@ types:
         200:
           body:
             application/json:
-              type: object
+              type: userPost
         404:
           body:
             type: string
@@ -145,7 +130,7 @@ types:
         200:
           body:
             application/json:            
-              type: object
+              type: userPost
         404:
           body:
             type: string
@@ -153,6 +138,23 @@ types:
         500:
           body:
             type: string
+
+/userPosts:
+  post:
+    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
+    body:
+      application/json:
+        example: { "filter": { "title" : "exampleTitle", "body" : "exampleBody"}}
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items:
+              type: userPost
+      500:
+        body:
+          type: string
 
 /image:
   post:

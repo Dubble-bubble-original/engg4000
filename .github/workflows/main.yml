@@ -81,7 +81,7 @@ jobs:
       - name: Start Service
         run: |
           cd Service
-          npm install --no-optional -f
+          npm install --force
           npm run dev &
 
       # Run Karate API Tests
