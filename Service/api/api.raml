@@ -1,5 +1,9 @@
 #%RAML 1.0
 ---
+
+# Validation:
+# https://raml-org.github.io/playground/custom_validation.html
+
 title: Nota API
 baseUri: http://localhost:9000
 version: v1
@@ -50,95 +54,159 @@ types:
 
 /auth:
   post:
-    description: Creates an authorization token to be used for authorizing API calls.
+    description: "Creates an authorization token to be used for authorizing API calls."
     responses:
       200:
         body:
           application/json:
             type: Token
-            example: {
-              'token': '6bf73119-ff54-40d6-bbd5-a2590b9eb66f',
-              'timestamp': 1635366449733
-            }
+            example: |
+              {
+                "token": "6bf73119-ff54-40d6-bbd5-a2590b9eb66f",
+                "timestamp": "1635366449733"
+              }
+
 /version:
   get:
-    description: Returns the version of the APP.
+    description: "Returns the version of the APP."
     responses:
       200:
         body:
           type: string
-          example: 'Service v0.0.0'
+          example: "Service v0.0.0"
       401:
         body:
           type: string
-          example: 'No Authentication Token Provided'
+          example: "No Authentication Token Provided"
+
 /userpost:
   post:
-    description: Creates a new post document and returns it
+    description: "Creates a new user post document and returns it."
     responses:
       201:
         body:
           application/json:
-            type: Post
+            type: userPost
       400:
-        description: A required field in the request is missing.
+        description: "A required field in the request is missing."
         body:
           type: string
-          example: UserPost validation failed: author: Path `authorID` is required.
-      500:
-        body:
-          type: string
-  get:
-    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
-    example: req.body.{ 'filter' : { 'title' : 'exampleTitle', 'body' : 'exampleBody'}}
-    responses:
-      200:
-        body:
-          application/json:
-            type: Array
-            items:
-              type: Post
+          example: "UserPost validation failed: author: Path `author` is required."
       500:
         body:
           type: string
   /{id}:
     get: 
-      description: Returns the post with the matching id
+      description: "Returns the post with the matching id"
       responses:
         200:
           body:
             application/json:
-              type: Post
+              type: userPost
         404:
           body:
             type: string
-            example: User not found.
+            example: "User Not Found"
         500:
           body:
             type: string
     delete:
-      description: Delete the post if the parameter has the matching access_key.
+      description: "Deletes a user post."
       responses:
         200:
         404:
           body:
             type: string
-            example: Userpost not found with matching access key.
+            example: "User Post Not Found"
         500:
           body:
             type: string
     patch:
-      description: Update a userpost with data provided in an update field in req.body
-      example: req.body.{ 'update' : { 'title': 'exampleUpdate', 'body': 'exampleUpdate'}}
+      description: "Update a userpost with data provided in an update field in req.body"
+      body:
+        application/json:
+          example: { "update" : { "title": "exampleUpdate", "body": "exampleUpdate"}}
       responses:
         200:
           body:
             application/json:            
-              type: Post
+              type: userPost
         404:
           body:
             type: string
-            example: Userpost not found.
+            example: "User Post Not Found"
+        500:
+          body:
+            type: string
+
+/userPosts:
+  post:
+    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
+    body:
+      application/json:
+        example: { "filter": { "title" : "exampleTitle", "body" : "exampleBody"}}
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items:
+              type: userPost
+      500:
+        body:
+          type: string
+
+/image:
+  post:
+    description: "Creates a image in an S3 bucket and returns the object key."
+    responses:
+      201:
+        body:
+          application/json:
+            type: string,
+            example: |
+              {
+                "id": "a2590b9eb66f"
+              }
+      400:
+        description: "No image file was provided in the request body."
+        body:
+          type: string
+          example: "No Image Provided"
+      500:
+        body:
+          type: string
+  /{id}:
+    get: 
+      description: "Returns the image with the matching id."
+      responses:
+        200:
+          body:
+            type: data
+        500:
+          body:
+            type: string
+    delete:
+      description: "Delete an image."
+      responses:
+        200:
+        500:
+          body:
+            type: string
+
+
+/imageurl/{id}:
+    get: 
+      description: "Returns the image url with the matching id."
+      responses:
+        200:
+          body:
+            application/json:
+              type: string,
+              example: |
+                {
+                  "url": "https://google.com"
+                }
         500:
           body:
             type: string
