@@ -56,7 +56,10 @@ StaticMap.propTypes = {
   zoom: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
-  position: PropTypes.object
+  position: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  })
 }
 
 function DynamicMap(props) {
@@ -79,7 +82,10 @@ function DynamicMap(props) {
 }
 
 DynamicMap.propTypes = {
-  position: PropTypes.object,
+  position: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  }),
   zoom: PropTypes.number
 }
 
