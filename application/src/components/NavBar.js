@@ -5,26 +5,41 @@ import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
 // Stylesheet
 import './components.css';
 
-function NavBar() {
+// Resources
+import {IconContext} from 'react-icons';
+import {MdHome, MdSearch, MdAddLocation } from 'react-icons/md';
+import Logo from '../resources/images/nota-logo-no-text.png';
 
+function NavBar(props) {
 
   return (
     <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+        <Navbar.Brand>
+          <img
+            src={Logo}
+            style={{
+              width: '40px', 
+              height: '40px'
+            }}
+            alt="Nota logo"
+          />
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="me-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#link">Link</Nav.Link>
-          <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-          <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-          </NavDropdown>
-        </Nav>
+          <Nav className="me-auto">
+            <IconContext.Provider value={{color:'#EC4038'}}>
+              <Nav.Link onClick={() => props.setContent('home')}>Home <MdHome/></Nav.Link>
+              <Nav.Link onClick={() => props.setContent('search')}>Search <MdSearch/></Nav.Link>
+              <Nav.Link onClick={() => props.setContent('create')}>Create <MdAddLocation/></Nav.Link>
+            </IconContext.Provider>
+          </Nav>
+          <Nav className="justify-content-end">
+            <NavDropdown align="end" title="..." id="basic-nav-dropdown">
+              <NavDropdown.Item>Terms and Conditions / Privacy Policy</NavDropdown.Item>
+              <NavDropdown.Item onClick={() => props.setContent('delete')}>Delete a post</NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
@@ -32,7 +47,7 @@ function NavBar() {
 }
 
 NavBar.propTypes = {
-    placeholder: PropTypes.string
+  setContent: PropTypes.func
 }
 
 export default NavBar;
