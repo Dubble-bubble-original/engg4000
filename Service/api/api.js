@@ -128,25 +128,40 @@ exports.getUserPost = (req, res) => {
 
 exports.getUserPosts = (req, res) => {
   // empty filter returns all docs from Userposts
-  let filter = {};
+  let searchFilters = {};
 
   if (req.body.filter) {
-    // Check if the filters have tags
-    if (req.body.filter.tags) {
-      // If the tags are not empty, add them to filter
-      if (req.body.filter.tags.length > 0) {
-        filter = {
-          tags: { $all: req.body.filter.tags }
-        };
-      }
+    if (!req.body.filter.tags && !req.body.filter.title) {
+      searchFilters = null;
     }
     else {
-      filter = req.body.filter;
+      const { filter } = req.body;
+
+      // Check if the filters have tags
+      if (req.body.filter.tags) {
+        // If the tags are not empty, add them to filter
+        if (req.body.filter.tags.length > 0) {
+          const tagFilter = {
+            tags: { $all: req.body.filter.tags }
+          };
+          searchFilters = { ...tagFilter };
+        }
+
+        // Delete the tags from the provided filters
+        delete filter.tags;
+      }
+
+      searchFilters = { ...searchFilters, ...filter };
     }
   }
 
+  // If the searchFilters is null an invalid filter was provided
+  if (searchFilters === null) {
+    return res.status(400).send('Inavlid filters provided');
+  }
+
   // Limit the returned results to 1,000 user posts
-  UserPost.find(filter).limit(1000)
+  UserPost.find(searchFilters).limit(1000)
     .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err);
