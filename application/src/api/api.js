@@ -27,17 +27,78 @@ export const getAuthToken = async () => {
   }
 }
 
-// Get Versions
+// Get Version
 export const getVersion = async () => {
   return await requestWithToken(async() => {
-      const response = await axios({
-          method: 'GET',
-          url: serviceUrl+'/version',
-          headers: {
-              token: authToken
-          }
-      });
-      return response.data;
+    const response = await axios({
+        method: 'GET',
+        url: serviceUrl + '/version',
+        headers: {
+            'token': authToken
+        }
+    });
+    return response.data;
+  });
+}
+
+// Create an image
+export const postImage = async (file) => {
+  return await requestWithToken(async() => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/image',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Get an image
+export const getImage = async (id) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/image/' + id,
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Get an image URL
+export const getImageUrl = async (id) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/imageurl/' + id,
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Delete an image
+export const deleteImage = async (id) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'DELETE',
+      url: serviceUrl + '/image/' + id,
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data
   });
 }
 

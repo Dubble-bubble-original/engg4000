@@ -1,7 +1,18 @@
+// Packages
 const uuidv4 = require('uuid').v4;
+const fs = require('fs');
 const { ObjectId } = require('mongoose').Types;
+
+// Utils
 const UTILS = require('../utils/utils');
+
+// DB
 const { UserPost } = require('../db/dbSchema');
+
+// S3
+const {
+  uploadFile, checkFile, downloadFile, getFileUrl, deleteFile
+} = require('../s3/s3');
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -86,60 +97,6 @@ exports.createUserPost = (req, res) => {
   });
 };
 
-exports.deleteUserPost = (req, res) => {
-  const acessKey = req.params.ak;
-  // Find the userpost with the matching access key
-  UserPost.findOneAndDelete({ access_key: acessKey })
-    .then((doc) => {
-      if (!doc) {
-        logger.info('User Post Not Found');
-        return res.status(404).send('User Post Not Found');
-      }
-
-      return res.status(200).send();
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).send(err);
-    });
-};
-
-exports.getUserPost = (req, res) => {
-  const userPostId = req.params.id;
-
-  if (!ObjectId.isValid(userPostId)) {
-    logger.info('Invalid User Post ID');
-    return res.status(400).send('Invalid User Post ID');
-  }
-
-  UserPost.findById(userPostId)
-    .then((doc) => {
-      if (!doc) {
-        logger.info('User Post Not Found');
-        return res.status(404).send('User Post Not Found');
-      }
-      return res.status(200).send(doc);
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).send(err);
-    });
-};
-
-exports.getUserPosts = (req, res) => {
-  // empty filter returns all docs from Userposts
-  let filter = {};
-  if (req.body.filter) filter = req.body.filter;
-
-  // Limit the returned results to 1,000 user posts
-  UserPost.find(filter).limit(1000)
-    .then((docs) => res.status(200).send(docs))
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).send(err);
-    });
-};
-
 exports.updateUserPost = (req, res) => {
   // No request body provided
   if (!req.body || !Object.keys(req.body).length) {
@@ -163,7 +120,142 @@ exports.updateUserPost = (req, res) => {
       return res.status(200).send(doc);
     })
     .catch((err) => {
-      logger.error(err);
+      logger.error(err.message);
       return res.status(500).send(err);
+    });
+};
+
+exports.deleteUserPost = (req, res) => {
+  const acessKey = req.params.ak;
+  // Find the userpost with the matching access key
+  UserPost.findOneAndDelete({ access_key: acessKey })
+    .then((doc) => {
+      if (!doc) {
+        logger.info('User Post Not Found');
+        return res.status(404).send('User Post Not Found');
+      }
+
+      return res.status(200).send();
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send(err);
+    });
+};
+
+exports.getUserPost = (req, res) => {
+  const userPostId = req.params.id;
+
+  if (!ObjectId.isValid(userPostId)) {
+    logger.info('Invalid User Post ID');
+    return res.status(400).send('Invalid User Post ID');
+  }
+
+  UserPost.findById(userPostId)
+    .then((doc) => {
+      if (!doc) {
+        logger.info('User Post Not Found');
+        return res.status(404).send('User Post Not Found');
+      }
+      return res.status(200).send(doc);
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send(err);
+    });
+};
+
+exports.getUserPosts = (req, res) => {
+  // empty filter returns all docs from Userposts
+  let filter = {};
+  if (req.body.filter) filter = req.body.filter;
+
+  // Limit the returned results to 100 user posts
+  UserPost.find(filter).limit(100)
+    .then((docs) => res.status(200).send(docs))
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send(err);
+    });
+};
+
+exports.createImage = async (req, res) => {
+  if (!req.file) {
+    logger.info('No Image Provided');
+    return res.status(400).send('No Image Provided');
+  }
+
+  const { file } = req;
+  // Upload file to S3 bucket
+  uploadFile(file)
+    .then((result) => {
+      // Delete file from local server
+      fs.unlinkSync(file.path);
+
+      const response = { id: result.key };
+      return res.status(201).send(response);
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send('Failed to Create Image');
+    });
+};
+
+exports.getImage = async (req, res) => {
+  const fileKey = req.params.id;
+
+  const fileExists = await checkFile(fileKey);
+
+  if (!fileExists) {
+    logger.error('Image Does Not Exist');
+    return res.status(404).send('Image Does Not Exist');
+  }
+
+  try {
+    const readStream = downloadFile(fileKey);
+    readStream.pipe(res);
+  }
+  catch (err) {
+    logger.error(err.message);
+    return res.status(500).send('Failed to Fetch Image');
+  }
+};
+
+exports.getImageUrl = async (req, res) => {
+  const fileKey = req.params.id;
+
+  const fileExists = await checkFile(fileKey);
+
+  if (!fileExists) {
+    logger.error('Image Does Not Exist');
+    return res.status(404).send('Image Does Not Exist');
+  }
+
+  const result = getFileUrl(fileKey);
+
+  if (!result) {
+    logger.error('Failed to Get Image URL');
+    return res.status(500).send('Failed to Get Image URL');
+  }
+
+  const response = { url: result };
+  return res.status(200).send(response);
+};
+
+exports.deleteImage = async (req, res) => {
+  const fileKey = req.params.id;
+
+  const fileExists = await checkFile(fileKey);
+
+  if (!fileExists) {
+    logger.error('Image Does Not Exist');
+    return res.status(404).send('Image Does Not Exist');
+  }
+
+  deleteFile(fileKey)
+    .then(() => res.status(200).send())
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send('Failed to Delete Image');
     });
 };
