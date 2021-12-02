@@ -204,7 +204,7 @@ exports.getUserPosts = (req, res) => {
   }
 
   // Limit the returned results to 100 user posts
-  UserPost.find(filter).limit(100)
+  UserPost.find(searchFilters).limit(100)
     .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err.message);
