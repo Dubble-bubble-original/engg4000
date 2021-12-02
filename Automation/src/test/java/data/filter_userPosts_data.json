@@ -36,5 +36,18 @@
       "longitude": 0
     },
     "true_location": true
+  },
+
+  "post4": {
+    "author_ID": "91cb6b9b4f4ddef1ad47f093",
+    "tags": ["Ferrari", "Red-Gray", "Two Seater"],
+    "title": "Ferrari",
+    "body": "Ferrari, Colour: Red and Gray",
+    "img_URL": "https://1.bp.blogspot.com/-mdHOPnpaiQ8/XQuqcdFKwwI/AAAAAAAAILk/1RFvb_KNo3slL6wXtlvvYtPrl5Kij1doQCLcBGAs/s1600/Ferrari%2BConcept%2BCars%2Bwallpapers.jpg",
+    "location": {
+      "latitude": 0,
+      "longitude": 0
+    },
+    "true_location": true
   }
 }

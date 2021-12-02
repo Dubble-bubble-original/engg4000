@@ -239,6 +239,13 @@ Feature: User post endpoints tests
     Then status 201
     * def post3_access_key = response.post.access_key
 
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post4
+    When method post
+    Then status 201
+    * def post4_access_key = response.post.access_key
+
     # Call userPosts with no filters
 
     Given path 'userposts'
@@ -257,8 +264,8 @@ Feature: User post endpoints tests
     And request { filter: { title: "Ferrari" } }
     When method post
     Then status 200
-    And match response == '#[1]'
-    And match response[0].title contains "Ferrari"
+    And print response
+    And match each response contains { title: "Ferrari" }
 
     # Call userPosts endpoint with an unused title as filter
 
@@ -288,9 +295,8 @@ Feature: User post endpoints tests
     And request { filter: { tags: ["Test Tag 1"] } }
     When method post
     Then status 200
-    And match response == '#[2]'
-    And match response[*].title contains "Mclaren F1"
-    And match response[*].title contains "Beautiful Mountain View!!"
+    And print response
+    And match response[*].tags[*] contains "Test Tag 1"
 
     # Call userPosts endpoint with a unused tag as filter
 
@@ -308,8 +314,9 @@ Feature: User post endpoints tests
     And request { filter: { tags: ["Two Seater", "Ferrari"] } }
     When method post
     Then status 200
-    And match response == '#[1]'
-    And match response[0].title contains "Ferrari"
+    And print response
+    And match response[*].tags[*] contains "Ferrari"
+    And match response[*].tags[*] contains "Two Seater"
 
     # Delete Added Posts
 
@@ -324,6 +331,11 @@ Feature: User post endpoints tests
     Then status 200
 
     Given path 'userpost/' + post3_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+
+    Given path 'userpost/' + post4_access_key
     And header token = auth_token
     When method delete
     Then status 200
