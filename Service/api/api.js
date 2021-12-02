@@ -145,8 +145,9 @@ exports.getUserPosts = (req, res) => {
             tags: { $all: req.body.filter.tags }
           };
           searchFilters = { ...tagFilter };
-        } else {
-          // If tags are empty return all posts (Upto limit)
+        }
+        else {
+          // If tags are empty, dont add then to the search filters
           searchFilters = {};
         }
 
