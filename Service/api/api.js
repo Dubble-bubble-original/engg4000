@@ -161,7 +161,7 @@ exports.getUserPosts = (req, res) => {
 
   // If the searchFilters is null an invalid filter was provided
   if (searchFilters === null) {
-    return res.status(400).send('Inavlid filters provided');
+    return res.status(400).send('Invalid search filters filters provided');
   }
 
   // Limit the returned results to 1,000 user posts

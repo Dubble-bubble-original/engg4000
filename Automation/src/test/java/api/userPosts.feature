@@ -264,7 +264,6 @@ Feature: User post endpoints tests
     And request { filter: { title: "Ferrari" } }
     When method post
     Then status 200
-    And print response
     And match each response contains { title: "Ferrari" }
 
     # Call userPosts endpoint with an unused title as filter
@@ -295,7 +294,6 @@ Feature: User post endpoints tests
     And request { filter: { tags: ["Test Tag 1"] } }
     When method post
     Then status 200
-    And print response
     And match response[*].tags[*] contains "Test Tag 1"
 
     # Call userPosts endpoint with a unused tag as filter
@@ -314,9 +312,27 @@ Feature: User post endpoints tests
     And request { filter: { tags: ["Two Seater", "Ferrari"] } }
     When method post
     Then status 200
-    And print response
     And match response[*].tags[*] contains "Ferrari"
     And match response[*].tags[*] contains "Two Seater"
+
+    # Call userposts endpoint with tags and title as search filters
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Red-Gray"], title: "Ferrari" } }
+    When method post
+    Then status 200
+    And match response[*].tags[*] contains "Red-Gray"
+    And match each response contains { title: "Ferrari" }
+
+    # Call userposts endpoint with an invalid filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { authorID: "1234" } }
+    When method post
+    Then status 400
+    And match response contains 'Invalid search filters filters provided'
 
     # Delete Added Posts
 
