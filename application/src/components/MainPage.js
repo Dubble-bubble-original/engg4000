@@ -25,7 +25,7 @@ const postData = {
 }
 
 // Homepage component for the application
-function HomePage() {
+function MainPage() {
 
   // State variables
   const [isLoading, setLoading] = useState(true);
@@ -61,4 +61,4 @@ function HomePage() {
   )
 }
 
-export default HomePage;
+export default MainPage;
