@@ -22,5 +22,9 @@
             "allowForLoopAfterthoughts": true
         }],
         "consistent-return": [ "off" ]
+    },
+    "parserOptions": {
+        // Required for certain syntax usages
+        "ecmaVersion": 2020
     }
 }

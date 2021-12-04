@@ -177,20 +177,16 @@ exports.getUserPosts = (req, res) => {
       const { filter } = req.body;
 
       // Check if the filters have tags
-      if (req.body.filter.tags) {
-        // If the tags are not empty, add them to filter
-        if (req.body.filter.tags.length > 0) {
-          const tagFilter = {
-            tags: { $all: req.body.filter.tags }
-          };
-          searchFilters = { ...tagFilter };
-        }
-        else {
-          // If tags are empty, dont add then to the search filters
-          searchFilters = {};
-        }
+      if (req.body.filter.tags?.length > 0) {
+        const tagFilter = {
+          tags: { $all: req.body.filter.tags }
+        };
+        searchFilters = { ...tagFilter };
 
         // Delete the tags from the provided filters
+        delete filter.tags;
+      }
+      else if (req.body.filter.tags) {
         delete filter.tags;
       }
 
