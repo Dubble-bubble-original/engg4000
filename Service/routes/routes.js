@@ -1,6 +1,7 @@
 const EXPRESS = require('express');
 const ROUTER = EXPRESS.Router();
 
+// Multer setup (used to upload files to the server)
 const multer = require('multer');
 const upload = multer({
   limits: { fileSize: 5000000 }, // 5MB
@@ -9,74 +10,99 @@ const upload = multer({
 
 const API = require('../api/api');
 
+// Wrapper function to use global error handler
+const USE = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
 ROUTER.post(
   '/auth',
-  API.createAuthToken
+  USE(API.createAuthToken)
 );
 
 ROUTER.get(
   '/version',
-  API.verifyAuthToken,
-  API.version
+  USE(API.verifyAuthToken),
+  USE(API.version)
 );
 
 // User post endpoints
 
 ROUTER.post(
   '/userpost',
-  API.verifyAuthToken,
-  API.createUserPost
+  USE(API.verifyAuthToken),
+  USE(API.createUserPost)
 );
 
 ROUTER.patch(
   '/userpost/:id',
-  API.verifyAuthToken,
-  API.updateUserPost
+  USE(API.verifyAuthToken),
+  USE(API.updateUserPost)
 );
 
 ROUTER.delete(
   '/userpost/:ak',
-  API.verifyAuthToken,
-  API.deleteUserPost
+  USE(API.verifyAuthToken),
+  USE(API.deleteUserPost)
 );
 
 ROUTER.get(
   '/userpost/:id',
-  API.verifyAuthToken,
-  API.getUserPost
+  USE(API.verifyAuthToken),
+  USE(API.getUserPost)
 );
 
 ROUTER.post(
   '/userposts',
-  API.verifyAuthToken,
-  API.getUserPosts
+  USE(API.verifyAuthToken),
+  USE(API.getUserPosts)
+);
+
+// User endpoints
+
+ROUTER.post(
+  '/user',
+  // USE(API.verifyAuthToken),
+  USE(API.createUserPost)
+);
+
+ROUTER.delete(
+  '/user/:ak',
+  // USE(API.verifyAuthToken),
+  USE(API.deleteUserPost)
+);
+
+ROUTER.get(
+  '/user/:id',
+  // USE(API.verifyAuthToken),
+  USE(API.getUserPost)
 );
 
 // Image endpoints
 
 ROUTER.post(
   '/image',
-  API.verifyAuthToken,
-  upload.single('image'),
-  API.createImage
+  USE(API.verifyAuthToken),
+  USE(upload.single('image')),
+  USE(API.createImage)
 );
 
 ROUTER.get(
   '/image/:id',
-  API.verifyAuthToken,
-  API.getImage
+  USE(API.verifyAuthToken),
+  USE(API.getImage)
 );
 
 ROUTER.get(
   '/imageurl/:id',
-  API.verifyAuthToken,
-  API.getImageUrl
+  USE(API.verifyAuthToken),
+  USE(API.getImageUrl)
 );
 
 ROUTER.delete(
   '/image/:id',
-  API.verifyAuthToken,
-  API.deleteImage
+  USE(API.verifyAuthToken),
+  USE(API.deleteImage)
 );
 
 module.exports = ROUTER;

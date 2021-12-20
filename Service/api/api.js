@@ -179,6 +179,15 @@ exports.getUserPosts = (req, res) => {
     });
 };
 
+exports.createUser = (req, res) => {
+};
+
+exports.deleteUserPost = (req, res) => {
+};
+
+exports.getUser = (req, res) => {
+};
+
 exports.createImage = async (req, res) => {
   if (!req.file) {
     logger.info('No Image Provided');

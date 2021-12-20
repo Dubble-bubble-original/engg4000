@@ -20,7 +20,8 @@ const UserPost = mongoose.model('UserPost', userPostSchema, 'UserPost');
 const userSchema = new Schema({
   name: { type: String },
   avatar_url: { type: String },
-  email: { type: String }
+  email: { type: String },
+  access_key: { type: String, required: true }
 });
 const User = mongoose.model('User', userSchema, 'User');
 
