@@ -139,7 +139,7 @@ exports.deleteUserPost = (req, res) => {
         return res.status(404).send({ message: 'User Post Not Found' });
       }
 
-      return res.status(200).send();
+      return res.status(200).send({ message: 'User Post Deleted Successfully' });
     })
     .catch((err) => {
       logger.error(err.message);
@@ -230,7 +230,7 @@ exports.deleteUser = (req, res) => {
         return res.status(404).send({ message: 'User Not Found' });
       }
 
-      return res.status(200).send();
+      return res.status(200).send({ message: 'User Deleted Successfully' });
     })
     .catch((err) => {
       logger.error(err.message);
@@ -334,7 +334,7 @@ exports.deleteImage = async (req, res) => {
   }
 
   deleteFile(fileKey)
-    .then(() => res.status(200).send())
+    .then(() => res.status(200).send({ message: 'Image Deleted Successfully' }))
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
