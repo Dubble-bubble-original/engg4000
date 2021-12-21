@@ -7,5 +7,6 @@
         "latitude": 0,
         "longitude": 0
     },
-    "true_location": true
+    "true_location": true,
+    "access_key": "7f3a187f-115b-455d-892b-d8465e3167ea"
 }

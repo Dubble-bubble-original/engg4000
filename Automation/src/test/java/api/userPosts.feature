@@ -89,6 +89,7 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'
 
   # Get user posts
 
@@ -166,7 +167,7 @@ Feature: User post endpoints tests
     Then status 404
     And match response.message == 'User Post Not Found'
 
-  # Create, get, update, delete user posts
+  # Create, get, update, delete user post
 
   Scenario: Create, get, update, and delete a userPost
     # Call create user post endpoint
@@ -196,6 +197,6 @@ Feature: User post endpoints tests
     # Call delete user post endpoint
     Given path 'userpost/' + post_access_key
     And header token = auth_token
-    And request {access_key: post_access_key}
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'

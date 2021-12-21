@@ -62,20 +62,20 @@ ROUTER.post(
 
 ROUTER.post(
   '/user',
-  // USE(API.verifyAuthToken),
-  USE(API.createUserPost)
+  USE(API.verifyAuthToken),
+  USE(API.createUser)
 );
 
 ROUTER.delete(
   '/user/:ak',
-  // USE(API.verifyAuthToken),
-  USE(API.deleteUserPost)
+  USE(API.verifyAuthToken),
+  USE(API.deleteUser)
 );
 
 ROUTER.get(
   '/user/:id',
-  // USE(API.verifyAuthToken),
-  USE(API.getUserPost)
+  USE(API.verifyAuthToken),
+  USE(API.getUser)
 );
 
 // Image endpoints

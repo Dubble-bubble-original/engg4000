@@ -59,7 +59,6 @@ exports.createUserPost = (req, res) => {
     return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
-  const accessKey = uuidv4();
   const dateCreated = Date.now();
   const newUserPost = new UserPost({
     author_ID: req.body.author_ID,
@@ -70,7 +69,7 @@ exports.createUserPost = (req, res) => {
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
-    access_key: accessKey
+    access_key: req.body.access_key
   });
 
   newUserPost.save((err) => {
@@ -190,11 +189,12 @@ exports.createUser = (req, res) => {
     return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
+  const accessKey = uuidv4();
   const newUser = new User({
     name: req.body.name,
     avatar_url: req.body.avatar_url,
     email: req.body.email,
-    access_key: req.body.access_key
+    access_key: accessKey
   });
 
   newUser.save((err) => {
