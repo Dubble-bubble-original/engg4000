@@ -199,3 +199,159 @@ Feature: User post endpoints tests
     And request {access_key: post_access_key}
     When method delete
     Then status 200
+
+  # Test Cases for POST userposts endpoint
+
+  Scenario: Try to get posts with no auth token provided
+    Given path 'userposts'
+    When method post
+    Then status 401
+    And match response contains 'No Authentication Token Provided'
+
+  Scenario: Try to get posts with an invalid auth token
+    Given path 'userposts'
+    And header token = 'Invalid_Token'
+    When method post
+    Then status 401
+    And match response contains 'Invalid Authentication Token Provided'
+
+  Scenario: Calling userposts endpoint
+    # Creating Temporary User Posts
+
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post1
+    When method post
+    Then status 201
+    * def post1_access_key = response.post.access_key
+
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post2
+    When method post
+    Then status 201
+    * def post2_access_key = response.post.access_key
+
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post3
+    When method post
+    Then status 201
+    * def post3_access_key = response.post.access_key
+
+    Given path 'userpost'
+    And header token = auth_token
+    And request read('../data/filter_userPosts_data.json').post4
+    When method post
+    Then status 201
+    * def post4_access_key = response.post.access_key
+
+    # Call userPosts with no filters
+
+    Given path 'userposts'
+    And header token = auth_token
+    When method post
+    Then status 200
+    And assert response.length <= 100
+    And match response[*].title contains "Mclaren F1"
+    And match response[*].title contains "Ferrari"
+    And match response[*].title contains "Beautiful Mountain View!!"
+
+    # Call userPosts endpoint with title as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { title: "Ferrari" } }
+    When method post
+    Then status 200
+    And match each response contains { title: "Ferrari" }
+
+    # Call userPosts endpoint with an unused title as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { title: "Unused Title" } }
+    When method post
+    Then status 200
+    And match response == '#[0]'
+
+    # Call usePosts endpoint with empty tag as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: [] } }
+    When method post
+    Then status 200
+    And assert response.length <= 100
+    And match response[*].title contains "Mclaren F1"
+    And match response[*].title contains "Ferrari"
+    And match response[*].title contains "Beautiful Mountain View!!"
+
+    # Call userPosts endpoint with a valid tag as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Test Tag 1"] } }
+    When method post
+    Then status 200
+    And match response[*].tags[*] contains "Test Tag 1"
+
+    # Call userPosts endpoint with a unused tag as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Unused Tag"] } }
+    When method post
+    Then status 200
+    And match response == '#[0]'
+
+    # Call userPosts endpoint with multiple tags as filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Two Seater", "Ferrari"] } }
+    When method post
+    Then status 200
+    And match response[*].tags[*] contains "Ferrari"
+    And match response[*].tags[*] contains "Two Seater"
+
+    # Call userposts endpoint with tags and title as search filters
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { tags: ["Red-Gray"], title: "Ferrari" } }
+    When method post
+    Then status 200
+    And match response[*].tags[*] contains "Red-Gray"
+    And match each response contains { title: "Ferrari" }
+
+    # Call userposts endpoint with an invalid filter
+
+    Given path 'userposts'
+    And header token = auth_token
+    And request { filter: { authorID: "1234" } }
+    When method post
+    Then status 400
+    And match response contains 'Invalid search filters filters provided'
+
+    # Delete Added Posts
+
+    Given path 'userpost/' + post1_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+
+    Given path 'userpost/' + post2_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+
+    Given path 'userpost/' + post3_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+
+    Given path 'userpost/' + post4_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
