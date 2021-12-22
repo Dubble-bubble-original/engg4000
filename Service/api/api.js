@@ -217,32 +217,7 @@ exports.getUserPosts = async (req, res) => {
 
   // If more than one tag is provided order the posts with the most matching tags first
   if (providedTags.length > 1) {
-    const postMap = new Map();
-
-    postData.forEach((post) => {
-      providedTags.forEach((tag) => {
-        if (postMap.has(post)) {
-          let value = postMap.get(post);
-          if (post.tags.includes(tag)) {
-            postMap.delete(post);
-            value += 1;
-            postMap.set(post, value);
-          }
-        }
-        else if (post.tags.includes(tag)) {
-          postMap.set(post, 1);
-        }
-      });
-    });
-
-    // Order the posts with most matching tags first
-    const sortedPostMap = new Map([...postMap.entries()].sort((a, b) => b[1] - a[1]));
-    postData = [];
-
-    // Update the postData with the new sorted posts
-    for (const [key] of sortedPostMap.entries()) {
-      postData.push(key);
-    }
+    postData = UTILS.sortPosts(postData, providedTags);
   }
 
   return res.status(200).send(postData);
