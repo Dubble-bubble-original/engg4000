@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable quotes */
+/* eslint-disable quote-props */
 // Packages
 const uuidv4 = require('uuid').v4;
 const fs = require('fs');
@@ -165,9 +168,10 @@ exports.getUserPost = (req, res) => {
     });
 };
 
-exports.getUserPosts = (req, res) => {
+exports.getUserPosts = async (req, res) => {
   // empty filter returns all docs from Userposts
   let searchFilters = {};
+  let providedTags = [];
 
   if (req.body.filter) {
     if (!req.body.filter.tags && !req.body.filter.title) {
@@ -179,11 +183,12 @@ exports.getUserPosts = (req, res) => {
       // Check if the filters have tags
       if (req.body.filter.tags?.length > 0) {
         const tagFilter = {
-          tags: { $all: req.body.filter.tags }
+          tags: { $in: req.body.filter.tags }
         };
         searchFilters = { ...tagFilter };
 
         // Delete the tags from the provided filters
+        providedTags = filter.tags;
         delete filter.tags;
       }
       else if (req.body.filter.tags) {
@@ -199,13 +204,48 @@ exports.getUserPosts = (req, res) => {
     return res.status(400).send('Invalid search filters filters provided');
   }
 
-  // Limit the returned results to 100 user posts
-  UserPost.find(searchFilters).limit(100)
-    .then((docs) => res.status(200).send(docs))
-    .catch((err) => {
-      logger.error(err.message);
-      return res.status(500).send(err);
+  let postData = [];
+
+  try {
+    // Limit the returned results to 25 user posts
+    postData = await UserPost.find(searchFilters).limit(25);
+  }
+  catch (error) {
+    logger.error(error.message);
+    return res.status(500).send(err);
+  }
+
+  // If more than one tag is provided order the posts with the most matching tags first
+  if (providedTags.length > 1) {
+    const postMap = new Map();
+
+    postData.forEach((post) => {
+      providedTags.forEach((tag) => {
+        if (postMap.has(post)) {
+          let value = postMap.get(post);
+          if (post.tags.includes(tag)) {
+            postMap.delete(post);
+            value += 1;
+            postMap.set(post, value);
+          }
+        }
+        else if (post.tags.includes(tag)) {
+          postMap.set(post, 1);
+        }
+      });
     });
+
+    // Order the posts with most matching tags first
+    const sortedPostMap = new Map([...postMap.entries()].sort((a, b) => b[1] - a[1]));
+    postData = [];
+
+    // Update the postData with the new sorted posts
+    for (const [key] of sortedPostMap.entries()) {
+      postData.push(key);
+    }
+  }
+
+  return res.status(200).send(postData);
 };
 
 exports.createImage = async (req, res) => {
