@@ -1,0 +1,59 @@
+/* Logo */
+.navbar-brand img {
+    width: 40px;
+    height: 40px;
+    border-radius: 0;
+}
+
+/* Page links */
+.nav-link {
+    padding-top: 0;
+    border-radius: 20px;
+    margin-left: 10px;
+    width: 115px;
+}
+.nav-link.active {
+    font-weight: bold;
+}
+.nav-link:hover {
+    background-color: lightgray;
+}
+
+/* Aling items right in hamburger menu */
+.navbar-nav {
+    align-items: flex-end;
+}
+
+/* Rounded corners */
+#navbar {
+    border-radius: 0 0 20px 20px;
+}
+
+/* Elipsis dropdown override */
+#basic-nav-dropdown {
+    width: auto;
+    padding: 0.35rem 1rem;
+}
+#basic-nav-dropdown svg {
+    width: 2rem;
+    height: 2rem;
+}
+#basic-nav-dropdown::after {
+    display: none;
+}
+
+/* Make the hamburger menu use our primary color */
+.navbar-light button.navbar-toggler {
+    color: var(--bs-primary);
+}
+.navbar-light button.navbar-toggler .navbar-toggler-icon {
+    /* Reference: https://stackoverflow.com/a/50942954 */
+    filter: invert(52%) sepia(124%) saturate(5844%) hue-rotate(341deg) brightness(120%) contrast(200%);
+}
+
+/* Only show black line separator when hamburger menu is not shown (i.e., on large screens) */
+@media screen and (min-width: 576px) {
+    #basic-navbar-nav {
+        border-left: 3px solid black;
+    }
+}

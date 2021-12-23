@@ -4,8 +4,11 @@ import { Switch, Case, Default } from 'react-if';
 
 // Resources
 import './components.css';
-import NavBar from './NavBar';
+import NavBar from './navbar/NavBar';
 import Home from './Home';
+import Search from './Search';
+import Create from './Create';
+import Delete from './Delete';
 
 
 // Homepage component for the application
@@ -16,11 +19,11 @@ function MainPage() {
   
   return (
     <div>
-      <NavBar setContent={setContent} />
+      <NavBar style={{width: '100%'}} content={content} setContent={setContent} />
       <Switch>
-        <Case condition={content === 'search'}>Search component goes here</Case>
-        <Case condition={content === 'create'}>Create component goes here</Case>
-        <Case condition={content === 'delete'}>Delete component goes here</Case>
+        <Case condition={content === 'search'}><Search/></Case>
+        <Case condition={content === 'create'}><Create/></Case>
+        <Case condition={content === 'delete'}><Delete/></Case>
         <Default><Home/></Default>
       </Switch>
     </div>
