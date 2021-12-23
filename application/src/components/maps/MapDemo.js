@@ -2,7 +2,6 @@
 import { useState } from 'react';
 
 // Resources
-import '../components.css';
 import LocationPickerMap from './LocationPickerMap';
 import StaticMap from './StaticMap';
 

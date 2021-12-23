@@ -24,7 +24,7 @@ function WelcomePage(props) {
     if (agree == true) {
       // Generate Auth Token
       await getAuthToken();
-      props.data('home_page');
+      props.setPage('homePage');
     }
   }
 
@@ -78,7 +78,7 @@ function WelcomePage(props) {
 }
 
 WelcomePage.propTypes = {
-  data: PropTypes.func
+  setPage: PropTypes.func
 }
 
 export default WelcomePage;

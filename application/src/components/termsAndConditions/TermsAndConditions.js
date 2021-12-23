@@ -69,11 +69,11 @@ function TermsAndConditions() {
                     </div>
                         <p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'right'}}>Effective Date: 1st day of November, 2021</p>
                     <div className="LDCopyright">
-               <p>&copy;2002-2021 LawDepot.ca&reg;</p>
+                        <p>&copy;2002-2021 LawDepot.ca&reg;</p>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-   </div>
+        </div>
     );
 }
 

@@ -1,16 +1,11 @@
 // React
 import { useState, useEffect } from 'react';
+import { Container } from 'react-bootstrap';
 
 // Resources
-import { getVersion } from '../api/api';
-import './components.css';
-import {IconContext} from 'react-icons';
-import {MdHome, MdSearch, MdAddLocation, MdRefresh, MdMoreHoriz} from 'react-icons/md';
-import {FaHome, FaSearch, FaSearchLocation, FaRedoAlt, FaMapMarkerAlt, FaEllipsisH} from 'react-icons/fa';
 import Post from './post/Post';
 import Avatar from '../resources/images/avatar.jpg';
 import PostImage from '../resources/images/postImage.jpg';
-import MapDemo from './maps/MapDemo';
 
 // Test Post Data
 const postData = {
@@ -28,17 +23,16 @@ const postData = {
   postImage: PostImage,
 }
 
-// Homepage component for the application
-function HomePage() {
+// Home component for the application
+function Home() {
 
   // State variables
   const [isLoading, setLoading] = useState(true);
-  const [version, setVersion] = useState(null);
 
   const fetchData = async () => {
-    // Get app version
-    let appVersion = await getVersion();
-    setVersion(appVersion);
+
+    // Todo: Get recent posts
+
     setLoading(false);
   }
 
@@ -57,28 +51,14 @@ function HomePage() {
 
   return (
     <div className="home-page" data-testid="home-page">
-      <br/>
-      <br/>
+      <Container>
+        <br/>
+        <b>Home Page goes here.</b><br/>
+        <br/>
+      </Container>
       <Post postData={postData}/>
-      <br/>
-      <br/>
-      <div>
-        HomePage
-        <p>version: {version}</p>
-        <br/>
-        <br/>
-        <div style={{textAlign:'left'}}>
-          <b>Sample Icons</b><br/>
-          <IconContext.Provider value={{color:'#EC4038'}} style={{textAlign:'left'}}>
-          <div>Material Design: <MdHome/><MdSearch/><MdAddLocation/><MdRefresh/><MdMoreHoriz/></div>
-          <div>Fontawesome: <FaHome/><FaSearch/><FaSearchLocation/><FaMapMarkerAlt/><FaRedoAlt/><FaEllipsisH/></div>
-          </IconContext.Provider>
-        </div>
-        <br/>
-        <MapDemo />
-      </div>
     </div>
   )
 }
 
-export default HomePage;
+export default Home;

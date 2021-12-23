@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Modal } from 'react-bootstrap';
-import '../components.css';
 import placeholderImage from '../../resources/images/placeholder-image.png';
 
 // Map size expands to fit its container's size
