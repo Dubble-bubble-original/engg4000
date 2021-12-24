@@ -167,7 +167,7 @@ exports.getUserPost = (req, res) => {
 
 exports.getUserPosts = async (req, res) => {
   // empty filter returns all docs from Userposts
-  let searchFilters = {};
+  let searchFilters = [];
   let recentPosts = false;
   let providedTags = [];
 
@@ -180,47 +180,69 @@ exports.getUserPosts = async (req, res) => {
 
       // Check if the filters have tags
       if (req.body.filter.tags?.length > 0) {
-        const tagFilter = {
-          tags: { $in: req.body.filter.tags }
-        };
-        searchFilters = { ...tagFilter };
+        searchFilters = [
+          { $match: { tags: { $in: req.body.filter.tags } } }
+        ];
 
         // Delete the tags from the provided filters
         providedTags = filter.tags;
         delete filter.tags;
       }
       else if (req.body.filter.tags) {
+        recentPosts = true;
         delete filter.tags;
       }
 
-      searchFilters = { ...searchFilters, ...filter };
+      if (req.body.filter.title) {
+        searchFilters = [
+          ...searchFilters,
+          { $match: { title: req.body.filter.title } }
+        ];
+      }
     }
   }
   else {
     // Get recent posts
     recentPosts = true;
-    
+  }
+
+  if (recentPosts || searchFilters === []) {
+    searchFilters = [
+      {
+        $project: {
+          title: 1,
+          body: 1,
+          tags: 1,
+          img_URL: 1,
+          date_created: 1,
+          location: 1
+        }
+      },
+      { $sort: { date_created: -1 } }
+    ];
+
     // Add the starting post date if provided (This is for paginating recent posts)
-    if(req.body.date) {
-      searchFilters = {
-        date_created: { $lt: req.body.date }
-      }
+    if (req.body.date) {
+      searchFilters = [
+        { $match: { date_created: { $lt: new Date(req.body.date) } } },
+        ...searchFilters
+      ];
     }
   }
 
   // Create new search format for partial matching tags
   if (providedTags.length > 0) {
     searchFilters = [
-      { $match: { tags: searchFilters.tags } },
+      ...searchFilters,
       {
         $project: {
-          'title': 1,
-          'body': 1,
-          'tags': 1,
-          'img_URL': 1,
-          'date_created': 1,
-          'location': 1,
-          'maxTagMatch': {
+          title: 1,
+          body: 1,
+          tags: 1,
+          img_URL: 1,
+          date_created: 1,
+          location: 1,
+          maxTagMatch: {
             $size: {
               $setIntersection: ['$tags', providedTags]
             }
@@ -236,18 +258,18 @@ exports.getUserPosts = async (req, res) => {
     return res.status(400).send('Invalid search filters filters provided');
   }
 
+  // Get current page number
+  const pageNumber = req.body.page ? (req.body.page - 1) : 0;
+
   // Limit the returned results to 100 user posts
   let postData = [];
 
   try {
-    if(providedTags.length > 0) {
+    if (recentPosts) {
       postData = await UserPost.aggregate(searchFilters).limit(25);
     }
-    else if (recentPosts) {
-      postData = await UserPost.find(searchFilters).sort({ date_created: -1 }).limit(3);
-    }
     else {
-      postData = await UserPost.find(searchFilters).limit(25);
+      postData = await UserPost.aggregate(searchFilters).skip(pageNumber * 25).limit(25);
     }
   }
   catch (error) {

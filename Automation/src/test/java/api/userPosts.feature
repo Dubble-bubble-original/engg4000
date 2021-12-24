@@ -252,7 +252,7 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method post
     Then status 200
-    And assert response.length <= 100
+    And assert response.length <= 25
     And match response[*].title contains "Mclaren F1"
     And match response[*].title contains "Ferrari"
     And match response[*].title contains "Beautiful Mountain View!!"
@@ -282,7 +282,7 @@ Feature: User post endpoints tests
     And request { filter: { tags: [] } }
     When method post
     Then status 200
-    And assert response.length <= 100
+    And assert response.length <= 25
     And match response[*].title contains "Mclaren F1"
     And match response[*].title contains "Ferrari"
     And match response[*].title contains "Beautiful Mountain View!!"
