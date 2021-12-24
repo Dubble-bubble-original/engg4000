@@ -1,6 +1,6 @@
 // React
 import { useState } from 'react';
-import { Button, Form, Modal, Tabs, Tab } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
@@ -11,13 +11,12 @@ import logo from '../resources/images/nota-logo.png';
 import { getAuthToken } from '../api/api';
 
 // Components
-import TermsAndConditions from './termsAndConditions/TermsAndConditions';
-import PrivacyPolicy from './privacyPolicy/PrivacyPolicy';
+import TermsModal from './terms/termsModal';
 
 function WelcomePage(props) {
   // State variables
   const [agree, setAgree] = useState(false);
-  const [show, setShow] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
 
   // Handler function for the welcome button
   const enterButtonHandler = async () => {
@@ -28,7 +27,7 @@ function WelcomePage(props) {
     }
   }
 
-  let termsAndConditions = <span id="terms-conditions-link" className="clickable" onClick={() => setShow(true)}>terms and conditions</span>;
+  let termsAndConditions = <span id="terms-conditions-link" className="clickable" onClick={() => setShowTerms(true)}>terms and conditions</span>;
 
   // This is the handler for the checkbox
   const checkBoxHandler = () => {
@@ -54,25 +53,7 @@ function WelcomePage(props) {
         Enter Site
       </Button>
 
-      <Modal size='xl' scrollable show={show} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-        </Modal.Header>
-        <Modal.Body>
-        <Tabs defaultActiveKey="termsandconditions" id="tabs" className="mb-3">
-          <Tab eventKey="termsandconditions" title="Terms and Conditions">
-            <TermsAndConditions id="terms-conditions"/>
-          </Tab>
-          <Tab eventKey="privacypolicy" title="Privacy Policy">
-            <PrivacyPolicy id="privacy-policy"/>
-          </Tab>
-        </Tabs>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button data-testid="close-btn" id="close-btn" onClick={() => setShow(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <TermsModal show={showTerms} setShow={setShowTerms} />
     </div>
   );
 }

@@ -29,7 +29,7 @@ function NavBar(props) {
             </Nav>
             <Nav className="justify-content-end">
               <NavDropdown align="end" title={<MdMoreHoriz/>} id="basic-nav-dropdown">
-                <NavDropdown.Item>Terms and Conditions</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => props.setShowTerms(true)}>Terms and Conditions</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => props.setContent('delete')}>Delete a post</NavDropdown.Item>
               </NavDropdown>
             </Nav>
@@ -42,7 +42,8 @@ function NavBar(props) {
 
 NavBar.propTypes = {
   content: PropTypes.string,
-  setContent: PropTypes.func
+  setContent: PropTypes.func,
+  setShowTerms: PropTypes.func
 }
 
 export default NavBar;
