@@ -1,6 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable quotes */
-/* eslint-disable quote-props */
 // Packages
 const uuidv4 = require('uuid').v4;
 const fs = require('fs');
@@ -171,6 +168,7 @@ exports.getUserPost = (req, res) => {
 exports.getUserPosts = async (req, res) => {
   // empty filter returns all docs from Userposts
   let searchFilters = {};
+  let recentPosts = false;
   let providedTags = [];
 
   if (req.body.filter) {
@@ -198,26 +196,63 @@ exports.getUserPosts = async (req, res) => {
       searchFilters = { ...searchFilters, ...filter };
     }
   }
+  else {
+    // Get recent posts
+    recentPosts = true;
+    
+    // Add the starting post date if provided (This is for paginating recent posts)
+    if(req.body.date) {
+      searchFilters = {
+        date_created: { $lt: req.body.date }
+      }
+    }
+  }
+
+  // Create new search format for partial matching tags
+  if (providedTags.length > 0) {
+    searchFilters = [
+      { $match: { tags: searchFilters.tags } },
+      {
+        $project: {
+          'title': 1,
+          'body': 1,
+          'tags': 1,
+          'img_URL': 1,
+          'date_created': 1,
+          'location': 1,
+          'maxTagMatch': {
+            $size: {
+              $setIntersection: ['$tags', providedTags]
+            }
+          }
+        }
+      },
+      { $sort: { maxTagMatch: -1 } }
+    ];
+  }
 
   // If the searchFilters is null an invalid filter was provided
   if (searchFilters === null) {
     return res.status(400).send('Invalid search filters filters provided');
   }
 
+  // Limit the returned results to 100 user posts
   let postData = [];
 
   try {
-    // Limit the returned results to 25 user posts
-    postData = await UserPost.find(searchFilters).limit(25);
+    if(providedTags.length > 0) {
+      postData = await UserPost.aggregate(searchFilters).limit(25);
+    }
+    else if (recentPosts) {
+      postData = await UserPost.find(searchFilters).sort({ date_created: -1 }).limit(3);
+    }
+    else {
+      postData = await UserPost.find(searchFilters).limit(25);
+    }
   }
   catch (error) {
     logger.error(error.message);
     return res.status(500).send(err);
-  }
-
-  // If more than one tag is provided order the posts with the most matching tags first
-  if (providedTags.length > 1) {
-    postData = UTILS.sortPosts(postData, providedTags);
   }
 
   return res.status(200).send(postData);
