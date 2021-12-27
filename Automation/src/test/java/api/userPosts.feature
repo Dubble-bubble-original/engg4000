@@ -332,7 +332,7 @@ Feature: User post endpoints tests
     And request { filter: { authorID: "1234" } }
     When method post
     Then status 400
-    And match response contains 'Invalid search filters filters provided'
+    And match response contains 'Invalid search filters provided'
 
     # Delete Added Posts
 

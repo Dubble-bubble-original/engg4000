@@ -208,17 +208,7 @@ exports.getUserPosts = async (req, res) => {
 
   if (recentPosts || searchFilters === []) {
     searchFilters = [
-      {
-        $project: {
-          title: 1,
-          body: 1,
-          tags: 1,
-          img_URL: 1,
-          date_created: 1,
-          location: 1
-        }
-      },
-      { $sort: { date_created: -1 } }
+      { $sort: { date_created: -1, _id: 1 } }
     ];
 
     // Add the starting post date if provided (This is for paginating recent posts)
@@ -229,7 +219,6 @@ exports.getUserPosts = async (req, res) => {
       ];
     }
   }
-
   // Create new search format for partial matching tags
   if (providedTags.length > 0) {
     searchFilters = [
@@ -249,18 +238,17 @@ exports.getUserPosts = async (req, res) => {
           }
         }
       },
-      { $sort: { maxTagMatch: -1 } }
+      { $sort: { maxTagMatch: -1, date_created: -1, _id: 1 } }
     ];
   }
 
   // If the searchFilters is null an invalid filter was provided
   if (searchFilters === null) {
-    return res.status(400).send('Invalid search filters filters provided');
+    return res.status(400).send('Invalid search filters provided');
   }
 
   // Get current page number
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
-
   // Limit the returned results to 100 user posts
   let postData = [];
 
@@ -274,9 +262,8 @@ exports.getUserPosts = async (req, res) => {
   }
   catch (error) {
     logger.error(error.message);
-    return res.status(500).send(err);
+    return res.status(500).send(error);
   }
-
   return res.status(200).send(postData);
 };
 

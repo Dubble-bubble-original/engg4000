@@ -141,10 +141,11 @@ types:
 
 /userPosts:
   post:
-    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
+    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts with recent posts first (sorted by date).
     body:
       application/json:
-        example: { "filter": { "title" : "exampleTitle", "body" : "exampleBody"}}
+        example: { "filter": { "title" : "exampleTitle", "tags" : "["Tag1", "Tag2"]" } }
+        example: { "date": "date for the last displayed post" }
     responses:
       200:
         body:
@@ -153,6 +154,9 @@ types:
             items:
               type: userPost
       500:
+        body:
+          type: string
+      400:
         body:
           type: string
 
