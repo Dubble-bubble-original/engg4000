@@ -74,7 +74,7 @@ if (ENV.NODE_ENV === 'dev') {
   );
 
   ROUTER.delete(
-    '/user/:ak',
+    '/user/:id',
     USE(API.verifyAuthToken),
     USE(API.deleteUser)
   );
