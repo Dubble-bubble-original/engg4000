@@ -44,7 +44,6 @@ Feature: User endpoints tests
   Scenario: Try to delete a user with no auth token
     # Call delete user endpoint with no auth token header
     Given path 'user/12345'
-    And request {}
     When method delete
     Then status 401
     And match response.message == 'No Authentication Token Provided'
@@ -53,7 +52,6 @@ Feature: User endpoints tests
     # Call delete user endpoint with invalid auth token header
     Given path 'user/12345'
     And header token = '12345'
-    And request {}
     When method delete
     Then status 401
     And match response.message == 'Invalid Authentication Token Provided'
@@ -62,7 +60,6 @@ Feature: User endpoints tests
     # Call delete user endpoint with invalid user id
     Given path 'user/12345'
     And header token = auth_token
-    And request {}
     When method delete
     Then status 400
     And match response.message == 'Invalid User ID'
@@ -71,7 +68,6 @@ Feature: User endpoints tests
     # Call delete user endpoint with nonexistent user id
     Given path 'user/53cb6b9b4f4ddef1ad47f943'
     And header token = auth_token
-    And request {}
     When method delete
     Then status 404
     And match response.message == 'User Not Found'
