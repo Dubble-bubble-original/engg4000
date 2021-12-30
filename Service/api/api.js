@@ -1,6 +1,5 @@
 // Packages
 const uuidv4 = require('uuid').v4;
-const fs = require('fs');
 const { ObjectId } = require('mongoose').Types;
 
 // Utils
@@ -11,11 +10,13 @@ const { UserPost, User } = require('../db/dbSchema');
 
 // S3
 const {
-  uploadFile, checkFile, downloadFile, getFileUrl, deleteFile
+  checkFile, downloadFile, getFileUrl, deleteFile
 } = require('../s3/s3');
 
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
+
+const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -296,18 +297,15 @@ exports.createImage = async (req, res) => {
   }
 
   const { file } = req;
-  // Upload file to S3 bucket
-  uploadFile(file)
+
+  return UTILS.createImage(file)
     .then((result) => {
-      // Delete file from local server
-      fs.unlinkSync(file.path);
+      if (!result) {
+        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      }
 
       const response = { id: result.key };
       return res.status(201).send(response);
-    })
-    .catch((err) => {
-      logger.error(err.message);
-      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
 
@@ -367,5 +365,46 @@ exports.deleteImage = async (req, res) => {
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.createPost = async (req, res) => {
+  if (!req.files || req.files.length < 2) {
+    logger.info('Missing Images');
+    return res.status(400).send({ message: 'Missing Images' });
+  }
+
+  const avatar = req.files[0];
+  const picture = req.files[1];
+
+  return UTILS.createImage(avatar)
+    .then((avatarResult) => {
+      if (!avatarResult) {
+        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      }
+
+      const avatarKey = avatarResult.key;
+
+      return UTILS.createImage(picture)
+        .then((pictureResult) => {
+          if (!pictureResult) {
+            // Delete avatar
+            deleteFile(avatarId)
+              .then(() => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG }))
+              .catch((err) => {
+                logger.error(err.message);
+                return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+              });
+          }
+
+          const pictureKey = avatarResult.key;
+
+          const avatarurl = BUCKET_URL + avatarKey;
+          const pictureUrl = BUCKET_URL + pictureKey;
+
+          // Create user with avatar
+
+          // Create post with picture and user id
+        });
     });
 };
