@@ -48,6 +48,7 @@ APP.use(function(err, req, res, next) {
   logger.error('An Unknown Error Occurred');
   logger.error(err.message);
   res.status(500).send({ message: 'An Unknown Error Occurred' });
+  next();
 });
 
 // DB Connection

@@ -58,27 +58,35 @@ Feature: User endpoints tests
     Then status 401
     And match response.message == 'Invalid Authentication Token Provided'
 
-  Scenario: Try to delete a nonexistent user
-    # Call delete user endpoint with invalid user access key
+  Scenario: Try to delete a user with invalid id
+    # Call delete user endpoint with invalid user id
     Given path 'user/12345'
+    And header token = auth_token
+    And request {}
+    When method delete
+    Then status 400
+    And match response.message == 'Invalid User ID'
+  
+  Scenario: Try to delete a nonexistent user
+    # Call delete user endpoint with nonexistent user id
+    Given path 'user/53cb6b9b4f4ddef1ad47f943'
     And header token = auth_token
     And request {}
     When method delete
     Then status 404
     And match response.message == 'User Not Found'
 
-  Scenario: Try to delete a user with invalid access key
-    # Call create user endpoint with empty body
+  Scenario: Try to delete a user
+    # Call create user endpoint with
     Given path 'user'
     And header token = auth_token
     And request read('../data/user.json')
     When method post
     Then status 201
     * def user_id = response.user._id
-    * def user_access_key = response.user.access_key
 
     # Call delete user endpoint
-    Given path 'user/' + user_access_key
+    Given path 'user/' + user_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -127,7 +135,6 @@ Feature: User endpoints tests
     When method post
     Then status 201
     * def user_id = response.user._id
-    * def user_access_key = response.user.access_key
 
     # Call get user endpoint
     Given path 'user/' + user_id
@@ -137,7 +144,7 @@ Feature: User endpoints tests
     And match response._id == user_id
 
     # Call delete user endpoint
-    Given path 'user/' + user_access_key
+    Given path 'user/' + user_id
     And header token = auth_token
     When method delete
     Then status 200

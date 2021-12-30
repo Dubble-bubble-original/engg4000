@@ -139,30 +139,6 @@ types:
                 {
                   "message": "An Unknown Error Occurred"
                 }
-    delete:
-      description: "Deletes a user post."
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "message": "User Post Deleted Successfully"
-                }
-        404:
-          body:
-            application/json:
-              example: |
-                {
-                  "message": "User Post Not Found"
-                }
-        500:
-          body:
-            application/json:
-              example: |
-                {
-                  "message": "An Unknown Error Occurred"
-                }
     patch:
       description: "Update a userpost with data provided in an update field in req.body"
       body:
@@ -187,6 +163,31 @@ types:
                 {
                   "message": "An Unknown Error Occurred"
                 }
+  /{ak}:
+    delete:
+    description: "Deletes a user post."
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "User Post Deleted Successfully"
+              }
+      404:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "User Post Not Found"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
 
 /userPosts:
   post:
@@ -216,7 +217,7 @@ types:
       201:
         body:
           application/json:
-            type: user
+            type: User
       400:
         description: "A required field in the request is missing."
         body:

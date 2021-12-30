@@ -60,6 +60,7 @@ exports.createUserPost = (req, res) => {
   }
 
   const dateCreated = Date.now();
+  const accessKey = uuidv4();
   const newUserPost = new UserPost({
     author_ID: req.body.author_ID,
     body: req.body.body,
@@ -69,7 +70,7 @@ exports.createUserPost = (req, res) => {
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
-    access_key: req.body.access_key
+    access_key: accessKey
   });
 
   newUserPost.save((err) => {
@@ -218,12 +219,10 @@ exports.createUser = (req, res) => {
     return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
-  const accessKey = uuidv4();
   const newUser = new User({
     name: req.body.name,
     avatar_url: req.body.avatar_url,
-    email: req.body.email,
-    access_key: accessKey
+    email: req.body.email
   });
 
   newUser.save((err) => {
@@ -241,18 +240,22 @@ exports.createUser = (req, res) => {
         _id: newUser._id,
         name: newUser.name,
         avatar_url: newUser.avatar_url,
-        email: newUser.email,
-        access_key: newUser.access_key
+        email: newUser.email
       }
     });
   });
 };
 
 exports.deleteUser = (req, res) => {
-  const acessKey = req.params.ak;
+  const userId = req.params.id;
+
+  if (!ObjectId.isValid(userId)) {
+    logger.info('Invalid User ID');
+    return res.status(400).send({ message: 'Invalid User ID' });
+  }
 
   // Find the userpost with the matching access key
-  User.findOneAndDelete({ access_key: acessKey })
+  User.findByIdAndRemove(userId)
     .then((doc) => {
       if (!doc) {
         logger.info('User Not Found');
