@@ -251,11 +251,8 @@ Feature: User post endpoints tests
     Given path 'userposts'
     And header token = auth_token
     When method post
-    Then status 200
-    And assert response.length <= 25
-    And match response[*].title contains "Mclaren F1"
-    And match response[*].title contains "Ferrari"
-    And match response[*].title contains "Beautiful Mountain View!!"
+    Then status 400
+    And match response contains 'Invalid search filters provided'
 
     # Call userPosts endpoint with title as filter
 
@@ -281,11 +278,8 @@ Feature: User post endpoints tests
     And header token = auth_token
     And request { filter: { tags: [] } }
     When method post
-    Then status 200
-    And assert response.length <= 25
-    And match response[*].title contains "Mclaren F1"
-    And match response[*].title contains "Ferrari"
-    And match response[*].title contains "Beautiful Mountain View!!"
+    Then status 400
+    And match response contains 'Invalid search filters provided'
 
     # Call userPosts endpoint with a valid tag as filter
 

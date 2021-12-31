@@ -14,6 +14,9 @@ const {
   uploadFile, checkFile, downloadFile, getFileUrl, deleteFile
 } = require('../s3/s3');
 
+// Post Limit Constant
+const POST_LIMIT = 15;
+
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
   const timestamp = Date.now();
@@ -165,34 +168,22 @@ exports.getUserPost = (req, res) => {
     });
 };
 
-exports.getUserPosts = async (req, res) => {
+exports.getUserPosts = (req, res) => {
   // empty filter returns all docs from Userposts
   let searchFilters = [];
-  let recentPosts = false;
   let providedTags = [];
 
   if (req.body.filter) {
-    if (!req.body.filter.tags && !req.body.filter.title) {
-      searchFilters = null;
-    }
-    else {
-      const { filter } = req.body;
-
+    if (req.body.filter.tags || req.body.filter.title) {
       // Check if the filters have tags
       if (req.body.filter.tags?.length > 0) {
         searchFilters = [
           { $match: { tags: { $in: req.body.filter.tags } } }
         ];
-
-        // Delete the tags from the provided filters
-        providedTags = filter.tags;
-        delete filter.tags;
-      }
-      else if (req.body.filter.tags) {
-        recentPosts = true;
-        delete filter.tags;
+        providedTags = req.body.filter.tags;
       }
 
+      // Check id filters have Title
       if (req.body.filter.title) {
         searchFilters = [
           ...searchFilters,
@@ -201,24 +192,7 @@ exports.getUserPosts = async (req, res) => {
       }
     }
   }
-  else {
-    // Get recent posts
-    recentPosts = true;
-  }
 
-  if (recentPosts || searchFilters === []) {
-    searchFilters = [
-      { $sort: { date_created: -1, _id: 1 } }
-    ];
-
-    // Add the starting post date if provided (This is for paginating recent posts)
-    if (req.body.date) {
-      searchFilters = [
-        { $match: { date_created: { $lt: new Date(req.body.date) } } },
-        ...searchFilters
-      ];
-    }
-  }
   // Create new search format for partial matching tags
   if (providedTags.length > 0) {
     searchFilters = [
@@ -242,29 +216,20 @@ exports.getUserPosts = async (req, res) => {
     ];
   }
 
-  // If the searchFilters is null an invalid filter was provided
-  if (searchFilters === null) {
+  // If the searchFilters are empty an invalid (or no) filter was provided
+  if (searchFilters.length === 0) {
     return res.status(400).send('Invalid search filters provided');
   }
 
   // Get current page number
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
-  // Limit the returned results to 100 user posts
-  let postData = [];
 
-  try {
-    if (recentPosts) {
-      postData = await UserPost.aggregate(searchFilters).limit(25);
-    }
-    else {
-      postData = await UserPost.aggregate(searchFilters).skip(pageNumber * 25).limit(25);
-    }
-  }
-  catch (error) {
-    logger.error(error.message);
-    return res.status(500).send(error);
-  }
-  return res.status(200).send(postData);
+  UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
+    .then((docs) => res.status(200).send(docs))
+    .catch((error) => {
+      logger.error(error.message);
+      return res.status(500).send(error);
+    });
 };
 
 exports.getRecentPosts = (req, res) => {
@@ -279,7 +244,7 @@ exports.getRecentPosts = (req, res) => {
     ];
   }
 
-  UserPost.aggregate(searchFilters).limit(15)
+  UserPost.aggregate(searchFilters).limit(POST_LIMIT)
     .then((docs) => res.status(200).send(docs))
     .catch((error) => {
       logger.error(error.message);
