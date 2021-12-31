@@ -5,22 +5,24 @@
     border-radius: 0;
 }
 
+/* Separator line */
+#navbar .basic-navbar-nav {
+    border-left: 3px solid black;
+    width: 100%;
+}
+
 /* Page links */
-#navbar .nav-link {
+#nav-link-container .nav-link {
     border-radius: 20px;
     margin-left: 10px;
     width: 115px;
+    text-align: center;
 }
-#navbar .nav-link.active {
+#nav-link-container .nav-link.active {
     font-weight: bold;
 }
-#navbar .nav-link:hover {
+#nav-link-container .nav-link:hover {
     background-color: lightgray;
-}
-
-/* Aling items right in hamburger menu */
-#navbar .navbar-nav {
-    align-items: flex-end;
 }
 
 /* Rounded corners */
@@ -29,15 +31,15 @@
 }
 
 /* Elipsis dropdown override */
-#navbar #basic-nav-dropdown {
-    width: auto;
+#basic-nav-dropdown.nav-link {
+    width: fit-content;
     padding: 0.35rem 1rem;
 }
-#navbar #basic-nav-dropdown svg {
+#basic-nav-dropdown svg {
     width: 2rem;
     height: 2rem;
 }
-#navbar #basic-nav-dropdown::after {
+#basic-nav-dropdown::after {
     display: none;
 }
 
@@ -49,10 +51,24 @@
     /* Reference: https://stackoverflow.com/a/50942954 */
     filter: invert(52%) sepia(124%) saturate(5844%) hue-rotate(341deg) brightness(120%) contrast(200%);
 }
+/* Remove gray outline of hamburger menu */
+#navbar.navbar-light button.navbar-toggler {
+    border-color: transparent;
+}
 
-/* Only show black line separator when hamburger menu is not shown (i.e., on large screens) */
-@media screen and (min-width: 576px) {
-    #navbar #basic-navbar-nav {
-        border-left: 3px solid black;
+/* Hide navbar elements when hamburger menu is shown (i.e., on small screens) */
+@media screen and (max-width: 576px) {
+    #navbar .basic-navbar-nav {
+        display: none;
     }
+}
+
+/* Remove margin for links in the popup menu */
+#offcanvasNavbar .nav-link {
+    margin-left: 0px;
+}
+
+/* Make offcanvas popup smaller */
+.offcanvas.offcanvas-end {
+    width: 250px;
 }
