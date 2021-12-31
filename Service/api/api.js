@@ -267,6 +267,26 @@ exports.getUserPosts = async (req, res) => {
   return res.status(200).send(postData);
 };
 
+exports.getRecentPosts = (req, res) => {
+  let searchFilters = [
+    { $sort: { date_created: -1, _id: 1 } }
+  ];
+
+  if (req.body.date) {
+    searchFilters = [
+      { $match: { date_created: { $lt: new Date(req.body.date) } } },
+      ...searchFilters
+    ];
+  }
+
+  UserPost.aggregate(searchFilters).limit(15)
+    .then((docs) => res.status(200).send(docs))
+    .catch((error) => {
+      logger.error(error.message);
+      return res.status(500).send(error);
+    });
+};
+
 exports.createImage = async (req, res) => {
   if (!req.file) {
     logger.info('No Image Provided');
