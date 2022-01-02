@@ -103,7 +103,7 @@ types:
           application/json:
             type: UserPost
       400:
-        description: "A required field in the request is missing."
+        description: "A required field in the request is missing or is invalid."
         body:
           application/json:
             example: |
@@ -219,7 +219,7 @@ types:
           application/json:
             type: User
       400:
-        description: "A required field in the request is missing."
+        description: "A required field in the request is missing or is invalid."
         body:
           application/json:
             example: |
@@ -266,7 +266,7 @@ types:
                   "message": "User Deleted Successfully"
                 }
         400:
-          description: "A required field in the request is missing."
+          description: "A required field in the request is missing or is invalid."
           body:
             application/json:
               example: |
