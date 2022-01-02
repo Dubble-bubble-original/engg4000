@@ -265,6 +265,14 @@ types:
                 {
                   "message": "User Deleted Successfully"
                 }
+        400:
+          description: "A required field in the request is missing."
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Invalid Request Body Format"
+                }
         404:
           body:
             application/json:
