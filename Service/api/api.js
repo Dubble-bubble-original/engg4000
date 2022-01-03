@@ -397,6 +397,11 @@ exports.deletePost = async (req, res) => {
     return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
+  // Delete the post
+  await UserPost.deleteOne(post);
+  // Delete the user
+  await User.deleteOne(user);
+
   res.status(200).send({ post, user });
 };
 
