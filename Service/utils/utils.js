@@ -1,6 +1,9 @@
 // Packages
 const fs = require('fs');
 
+// DB
+const { UserPost, User } = require('../db/dbSchema');
+
 // S3
 const {
   uploadFile // , checkFile, downloadFile, getFileUrl, deleteFile
@@ -31,6 +34,37 @@ exports.createImage = async (file) => (
       fs.unlinkSync(file.path);
 
       return result;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return null;
+    })
+);
+
+exports.getUser = async (userID) => (
+  User.findById(userID)
+    .then((doc) => {
+      if (!doc) {
+        // If no user found return an empty array
+        logger.info('User Not Found');
+        return [];
+      }
+      return doc;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return null;
+    })
+);
+
+exports.getPost = async (acessKey) => (
+  UserPost.findOne({ access_key: acessKey })
+    .then((doc) => {
+      if (!doc) {
+        logger.info('User Post Not Found');
+        return [];
+      }
+      return doc;
     })
     .catch((err) => {
       logger.error(err.message);

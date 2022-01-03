@@ -122,4 +122,10 @@ ROUTER.post(
   USE(API.createPost)
 );
 
+ROUTER.delete(
+  '/post/:ak',
+  USE(API.verifyAuthToken),
+  USE(API.deletePost)
+);
+
 module.exports = ROUTER;
