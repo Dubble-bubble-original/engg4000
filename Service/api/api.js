@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 // Packages
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
@@ -374,7 +375,22 @@ exports.deleteImage = async (req, res) => {
 exports.deletePost = async (req, res) => {
   const acessKey = req.params.ak;
 
-  // Get the post to be deleted
+  // Delete the User Post
+  return UTILS.deletePost(acessKey)
+    .then((post) => {
+      if (post === undefined) {
+        return res.status(404).send({ message: 'No Post Found' });
+      }
+      if (!post) {
+        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      }
+
+      // After the post is deleted, use author_ID to find and delete the user
+
+      // At the end
+      return res.status(200).send(post);
+    });
+
   const post = await UTILS.getPost(acessKey);
   if (post === []) {
     return res.status(404).send({ message: 'No Post Found' });

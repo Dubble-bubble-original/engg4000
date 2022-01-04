@@ -57,12 +57,12 @@ exports.getUser = async (userID) => (
     })
 );
 
-exports.getPost = async (acessKey) => (
-  UserPost.findOne({ access_key: acessKey })
+exports.deletePost = async (acessKey) => (
+  UserPost.findOneAndDelete({ access_key: acessKey })
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
-        return [];
+        return undefined;
       }
       return doc;
     })
