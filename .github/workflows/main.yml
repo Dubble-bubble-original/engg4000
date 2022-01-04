@@ -44,13 +44,15 @@ jobs:
 
       # Setup Node
       - name: Setup Node.js v14
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
 
       # Run single commands using the runner's shell
       - name: Install dependencies
-        run: npm install --no-optional -f
+        run: npm install
       - name: Run ${{ matrix.command }} command in ${{ matrix.directory }} directory
         run: npm run ${{ matrix.command }}
 
@@ -69,6 +71,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
+          cache-dependency-path: Service/package-lock.json
 
       # Setup JDK
       - name: Set up JDK 8
@@ -81,7 +86,7 @@ jobs:
       - name: Start Service
         run: |
           cd Service
-          npm install --no-optional --force
+          npm install
           npm run dev &
 
       # Run Karate API Tests
