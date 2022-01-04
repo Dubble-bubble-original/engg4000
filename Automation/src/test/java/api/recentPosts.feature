@@ -12,14 +12,14 @@ Feature: User post endpoints tests
     Given path 'recentposts'
     When method post
     Then status 401
-    And match response contains 'No Authentication Token Provided'
+    And match response.message contains 'No Authentication Token Provided'
 
   Scenario: Try to get posts with an invalid auth token
     Given path 'recentposts'
     And header token = 'Invalid_Token'
     When method post
     Then status 401
-    And match response contains 'Invalid Authentication Token Provided'
+    And match response.message contains 'Invalid Authentication Token Provided'
 
   Scenario: Calling recentposts endpoint
     # Creating 2 Temporary User Posts
