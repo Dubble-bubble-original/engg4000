@@ -21,7 +21,7 @@ const corsOptions = {
   origin: ENV.FRONTEND_URL
 };
 
-// Allow the app to uase CORS with the defined routes in routes.js
+// Allow the app to use CORS with the defined routes in routes.js
 APP.use(cors(corsOptions), require('./routes/routes'));
 
 // Define all routes in routes.js
@@ -43,13 +43,23 @@ if (ENV.NODE_ENV === 'dev') {
   logger.info('Service logger initialized');
 }
 
+// Global error handler
+APP.use(function(err, req, res, next) {
+  logger.error('An Unknown Error Occurred');
+  logger.error(err.message);
+  res.status(500).send({ message: 'An Unknown Error Occurred' });
+  next();
+});
+
 // DB Connection
 const db = require('./db/dbUtils');
 db.connectDatabase();
 const dbConnection = mongoose.connection;
+
 dbConnection.on('error', function() {
   logger.error('Mongodb connection error');
 });
+
 dbConnection.once('open', function() {
   logger.info('Mongodb connection successful');
 });

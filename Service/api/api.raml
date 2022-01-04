@@ -21,7 +21,7 @@ types:
       timestamp:
         required: true
         type: number
-  userPost:
+  UserPost:
     type: object
     properties:
       _id:
@@ -51,6 +51,19 @@ types:
         type: boolean
       access_key:
         type: string
+  User:
+    type: object
+    properties:
+      _id:
+        type: number
+      name:
+        type: string
+      avatar_url:
+        type: string
+      email:
+        type: string
+      access_key:
+        type: string
 
 /auth:
   post:
@@ -59,7 +72,6 @@ types:
       200:
         body:
           application/json:
-            type: Token
             example: |
               {
                 "token": "6bf73119-ff54-40d6-bbd5-a2590b9eb66f",
@@ -76,8 +88,11 @@ types:
           example: "Service v0.0.0"
       401:
         body:
-          type: string
-          example: "No Authentication Token Provided"
+          application/json:
+            example: |
+              {
+                "message": "No Authentication Token Provided"
+              }
 
 /userpost:
   post:
@@ -86,15 +101,22 @@ types:
       201:
         body:
           application/json:
-            type: userPost
+            type: UserPost
       400:
-        description: "A required field in the request is missing."
+        description: "A required field in the request is missing or is invalid."
         body:
-          type: string
-          example: "UserPost validation failed: author: Path `author` is required."
+          application/json:
+            example: |
+              {
+                "message": "Invalid Request Body Format"
+              }
       500:
         body:
-          type: string
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
   /{id}:
     get: 
       description: "Returns the post with the matching id"
@@ -102,25 +124,21 @@ types:
         200:
           body:
             application/json:
-              type: userPost
+              type: UserPost
         404:
           body:
-            type: string
-            example: "User Not Found"
+            application/json:
+              example: |
+                {
+                  "message": "User Post Not Found"
+                }
         500:
           body:
-            type: string
-    delete:
-      description: "Deletes a user post."
-      responses:
-        200:
-        404:
-          body:
-            type: string
-            example: "User Post Not Found"
-        500:
-          body:
-            type: string
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
     patch:
       description: "Update a userpost with data provided in an update field in req.body"
       body:
@@ -130,14 +148,46 @@ types:
         200:
           body:
             application/json:            
-              type: userPost
+              type: UserPost
         404:
           body:
-            type: string
-            example: "User Post Not Found"
+            application/json:
+              example: |
+                {
+                  "message": "User Post Not Found"
+                }
         500:
           body:
-            type: string
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+  /{ak}:
+    delete:
+    description: "Deletes a user post."
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "User Post Deleted Successfully"
+              }
+      404:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "User Post Not Found"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
 
 /userPosts:
   post:
@@ -171,10 +221,92 @@ types:
           application/json:
             type: array
             items:
-              type: userPost
+              type: UserPost
       500:
         body:
-          type: string
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/user:
+  post:
+    description: "Creates a new user document and returns it."
+    responses:
+      201:
+        body:
+          application/json:
+            type: User
+      400:
+        description: "A required field in the request is missing or is invalid."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Invalid Request Body Format"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+  /{id}:
+    get: 
+      description: "Returns the user with the matching id"
+      responses:
+        200:
+          body:
+            application/json:
+              type: User
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Not Found"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+    delete:
+      description: "Deletes a user."
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Deleted Successfully"
+                }
+        400:
+          description: "A required field in the request is missing or is invalid."
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Invalid Request Body Format"
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Not Found"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
 
 /image:
   post:
@@ -183,7 +315,6 @@ types:
       201:
         body:
           application/json:
-            type: string,
             example: |
               {
                 "id": "a2590b9eb66f"
@@ -191,11 +322,18 @@ types:
       400:
         description: "No image file was provided in the request body."
         body:
-          type: string
-          example: "No Image Provided"
+          application/json:
+            example: |
+              {
+                "message": "No Image Provided"
+              }
       500:
         body:
-          type: string
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
   /{id}:
     get: 
       description: "Returns the image with the matching id."
@@ -205,15 +343,28 @@ types:
             type: data
         500:
           body:
-            type: string
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
     delete:
       description: "Delete an image."
       responses:
         200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Image Deleted Successfully"
+                }
         500:
           body:
-            type: string
-
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
 
 /imageurl/{id}:
     get: 
@@ -222,11 +373,14 @@ types:
         200:
           body:
             application/json:
-              type: string,
               example: |
                 {
                   "url": "https://google.com"
                 }
         500:
           body:
-            type: string
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
