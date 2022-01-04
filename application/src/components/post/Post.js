@@ -29,7 +29,7 @@ function Post({postData}) {
             <FCol  className="post-description">
               <FRow className="title-section">
                 <div className="post-title">{postData.title}</div> 
-                <div className="grey">{postData.date}</div>
+                <div className="text-muted">{postData.date}</div>
               </FRow>
               <div className="post-body">{postData.postBody}</div>
               <FRow className="tag-container">
@@ -39,7 +39,7 @@ function Post({postData}) {
 
             <FCol className="post-location">
               <StaticMap width={2000} height={200} position={postData.position}/>
-              <div className="grey map-description">{postData.location}</div>
+              <div className="text-muted map-description">{postData.location}</div>
             </FCol>
           </FRow>
           <div>
