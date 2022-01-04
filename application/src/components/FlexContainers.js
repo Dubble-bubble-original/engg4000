@@ -1,9 +1,6 @@
 // React
 import PropTypes from 'prop-types'
 
-// Stylesheet
-import './components.css';
-
 // These FRow and FCol components are just container divs with a specific class attached to them.
 // The "complicated stuff" is just so that it preserves props and classes given, and allow children within them.
 
