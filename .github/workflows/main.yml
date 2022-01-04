@@ -49,6 +49,7 @@ jobs:
           node-version: '14.x'
           # Cache the dependencies based on package-lock.json
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
 
       # Run single commands using the runner's shell
       - name: Install dependencies
