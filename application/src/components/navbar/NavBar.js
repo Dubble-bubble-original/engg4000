@@ -60,9 +60,6 @@ function NavBar(props) {
           placement="end"
           className="navbar-light"
         >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title id="offcanvasNavbarLabel">Menu</Offcanvas.Title>
-          </Offcanvas.Header>
           <Offcanvas.Body id="nav-link-container" className="h5">
             <NavLinks {...props} closePopup={closePopup}/>
           </Offcanvas.Body>
