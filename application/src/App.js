@@ -8,13 +8,13 @@ import { LoadScript } from '@react-google-maps/api';
 
 const App = () => {
   // The state that determines what page we are on
-  const [page, setPage] = useState('welcome_page');
+  const [page, setPage] = useState('welcomePage');
 
   return (
-    <If condition={page === 'welcome_page'}>
+    <If condition={page === 'welcomePage'}>
       <Then>
         <div className="App" id="welcome-page" >
-          <WelcomePage data={setPage} />
+          <WelcomePage setPage={setPage} />
         </div>
       </Then>
       <Else>

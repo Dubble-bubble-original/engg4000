@@ -1,6 +1,6 @@
 // React
-import { useState, useEffect } from 'react';
-import { If, Then } from 'react-if';
+import { useState } from 'react';
+import { Switch, Case, Default } from 'react-if';
 
 // Resources
 import './components.css';
@@ -25,40 +25,32 @@ import ImageForm from './testing/ImageForm';
 //   postImage: PostImage,
 // }
 
+// Components
+import NavBar from './navbar/NavBar';
+import Home from './Home';
+import Search from './Search';
+import Create from './Create';
+import Delete from './Delete';
+import TermsModal from './terms/termsModal';
+
 // Homepage component for the application
 function MainPage() {
 
   // State variables
-  const [isLoading, setLoading] = useState(true);
-  const [page, setPage] = useState(null);
-
-  const fetchData = async () => {
-    // API Calls will come here
-    setPage('recent_posts');
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Render is loading page until version gets its value
-  if(isLoading) {
-    return (
-      <div className="home-page" data-testid="home-page">
-        Loading...
-      </div>
-    )
-  }
-
+  const [content, setContent] = useState('home');
+  const [showTerms, setShowTerms] = useState(false);
+  
   return (
-    <div id="home-page" data-testid="home-page">
-      <If condition={page === 'recent_posts'}>
-        <Then>
-          {/*<Post postData={postData}/> */}
-          <ImageForm></ImageForm>
-        </Then>
-      </If>
+    <div>
+      <NavBar content={content} setContent={setContent} setShowTerms={setShowTerms} />
+      <Switch>
+        <Case condition={content === 'search'}><Search/></Case>
+        <Case condition={content === 'create'}><Create/></Case>
+        <Case condition={content === 'delete'}><Delete/></Case>
+        <Default><Home/></Default>
+      </Switch>
+      <TermsModal show={showTerms} setShow={setShowTerms} />
+      <ImageForm></ImageForm>
     </div>
   )
 }
