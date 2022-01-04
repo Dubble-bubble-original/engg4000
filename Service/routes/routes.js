@@ -52,6 +52,12 @@ ROUTER.post(
   API.getUserPosts
 );
 
+ROUTER.post(
+  '/recentposts',
+  API.verifyAuthToken,
+  API.getRecentPosts
+);
+
 // Image endpoints
 
 ROUTER.post(
