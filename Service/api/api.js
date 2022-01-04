@@ -64,7 +64,7 @@ exports.createUserPost = (req, res) => {
   const dateCreated = Date.now();
   const accessKey = uuidv4();
   const newUserPost = new UserPost({
-    author_ID: req.body.author_ID,
+    author: req.body.author_ID,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
@@ -88,7 +88,7 @@ exports.createUserPost = (req, res) => {
     return res.status(201).json({
       post: {
         _id: newUserPost._id,
-        author_ID: newUserPost.author_ID,
+        author: newUserPost.author,
         body: newUserPost.body,
         tags: newUserPost.tags,
         title: newUserPost.title,
@@ -118,6 +118,8 @@ exports.updateUserPost = (req, res) => {
 
   const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
+    .populate('author')
+    .exec()
     .then((doc) => {
       if (!doc) {
         return res.status(404).send({ message: 'User Post Not Found' });
@@ -135,6 +137,8 @@ exports.deleteUserPost = (req, res) => {
 
   // Find the userpost with the matching access key
   UserPost.findOneAndDelete({ access_key: acessKey })
+    .populate('author')
+    .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
@@ -158,6 +162,8 @@ exports.getUserPost = (req, res) => {
   }
 
   UserPost.findById(userPostId)
+    .populate('author')
+    .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
@@ -198,7 +204,7 @@ exports.getUserPosts = (req, res) => {
   }
 
   // Create new search format for partial matching tags
-  if (providedTags.length > 1) {
+  if (providedTags.length > 0) {
     searchFilters = [
       ...searchFilters,
       {
@@ -206,6 +212,7 @@ exports.getUserPosts = (req, res) => {
           title: 1,
           body: 1,
           tags: 1,
+          author: 1,
           img_URL: 1,
           date_created: 1,
           location: 1,
@@ -230,7 +237,10 @@ exports.getUserPosts = (req, res) => {
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
 
   UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
-    .then((docs) => res.status(200).send(docs))
+    .then((docs) => {
+      UserPost.populate(docs, 'author')
+        .then((combinedDocs) => res.status(200).send(combinedDocs));
+    })
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
@@ -250,7 +260,10 @@ exports.getRecentPosts = (req, res) => {
   }
 
   UserPost.aggregate(searchFilters).limit(POST_LIMIT)
-    .then((docs) => res.status(200).send(docs))
+    .then((docs) => {
+      UserPost.populate(docs, 'author')
+        .then((combinedDocs) => res.status(200).send(combinedDocs));
+    })
     .catch((error) => {
       logger.error(error.message);
       return res.status(500).send(error);
