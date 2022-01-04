@@ -251,17 +251,14 @@ Feature: User post endpoints tests
     Given path 'userposts'
     And header token = auth_token
     When method post
-    Then status 200
-    And assert response.length <= 100
-    And match response[*].title contains "Mclaren F1"
-    And match response[*].title contains "Ferrari"
-    And match response[*].title contains "Beautiful Mountain View!!"
+    Then status 400
+    And match response contains 'No Request Body Provided'
 
     # Call userPosts endpoint with title as filter
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { title: "Ferrari" } }
+    And request { title: "Ferrari" }
     When method post
     Then status 200
     And match each response contains { title: "Ferrari" }
@@ -270,7 +267,7 @@ Feature: User post endpoints tests
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { title: "Unused Title" } }
+    And request { title: "Unused Title" }
     When method post
     Then status 200
     And match response == '#[0]'
@@ -279,19 +276,16 @@ Feature: User post endpoints tests
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { tags: [] } }
+    And request { tags: [] }
     When method post
-    Then status 200
-    And assert response.length <= 100
-    And match response[*].title contains "Mclaren F1"
-    And match response[*].title contains "Ferrari"
-    And match response[*].title contains "Beautiful Mountain View!!"
+    Then status 400
+    And match response contains 'Invalid search filters provided'
 
     # Call userPosts endpoint with a valid tag as filter
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { tags: ["Test Tag 1"] } }
+    And request { tags: ["Test Tag 1"] }
     When method post
     Then status 200
     And match response[*].tags[*] contains "Test Tag 1"
@@ -300,7 +294,7 @@ Feature: User post endpoints tests
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { tags: ["Unused Tag"] } }
+    And request { tags: ["Unused Tag"] }
     When method post
     Then status 200
     And match response == '#[0]'
@@ -309,7 +303,7 @@ Feature: User post endpoints tests
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { tags: ["Two Seater", "Ferrari"] } }
+    And request { tags: ["Two Seater", "Ferrari"] }
     When method post
     Then status 200
     And match response[*].tags[*] contains "Ferrari"
@@ -319,7 +313,7 @@ Feature: User post endpoints tests
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { tags: ["Red-Gray"], title: "Ferrari" } }
+    And request { tags: ["Red-Gray"], title: "Ferrari" }
     When method post
     Then status 200
     And match response[*].tags[*] contains "Red-Gray"
@@ -329,10 +323,10 @@ Feature: User post endpoints tests
 
     Given path 'userposts'
     And header token = auth_token
-    And request { filter: { authorID: "1234" } }
+    And request { authorID: "1234" }
     When method post
     Then status 400
-    And match response contains 'Invalid search filters filters provided'
+    And match response contains 'Invalid search filters provided'
 
     # Delete Added Posts
 
