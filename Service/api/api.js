@@ -169,32 +169,33 @@ exports.getUserPost = (req, res) => {
 };
 
 exports.getUserPosts = (req, res) => {
-  // empty filter returns all docs from Userposts
+  // No request body provided
+  if (!req.body || !Object.keys(req.body).length) {
+    logger.info('No Request Body Provided');
+    return res.status(400).send('No Request Body Provided');
+  }
+
   let searchFilters = [];
   let providedTags = [];
 
-  if (req.body.filter) {
-    if (req.body.filter.tags || req.body.filter.title) {
-      // Check if the filters have tags
-      if (req.body.filter.tags?.length > 0) {
-        searchFilters = [
-          { $match: { tags: { $in: req.body.filter.tags } } }
-        ];
-        providedTags = req.body.filter.tags;
-      }
+  // Check if the filters have tags
+  if (req.body.tags?.length > 0) {
+    searchFilters = [
+      { $match: { tags: { $in: req.body.tags } } }
+    ];
+    providedTags = req.body.tags;
+  }
 
-      // Check id filters have Title
-      if (req.body.filter.title) {
-        searchFilters = [
-          ...searchFilters,
-          { $match: { title: req.body.filter.title } }
-        ];
-      }
-    }
+  // Check id filters have Title
+  if (req.body.title) {
+    searchFilters = [
+      ...searchFilters,
+      { $match: { title: req.body.title } }
+    ];
   }
 
   // Create new search format for partial matching tags
-  if (providedTags.length > 0) {
+  if (providedTags.length > 1) {
     searchFilters = [
       ...searchFilters,
       {
@@ -218,6 +219,7 @@ exports.getUserPosts = (req, res) => {
 
   // If the searchFilters are empty an invalid (or no) filter was provided
   if (searchFilters.length === 0) {
+    logger.info('Invalid search filters provided');
     return res.status(400).send('Invalid search filters provided');
   }
 
