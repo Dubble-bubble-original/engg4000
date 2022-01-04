@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Modal } from 'react-bootstrap';
-import '../components.css';
 import placeholderImage from '../../resources/images/placeholder-image.png';
 
 // Map size expands to fit its container's size
@@ -39,7 +38,7 @@ function StaticMap(props) {
   
   return (
     <React.Fragment>
-      <img style={imgStyle} src={URL} onClick={() => setShowModal(true)} className="clickable" onError={handleImgError} />
+      <img style={imgStyle} src={URL} tabIndex="0" onClick={() => setShowModal(true)} className="clickable hover-outline" onError={handleImgError} />
 
       <Modal size='xl' scrollable show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -56,7 +55,10 @@ StaticMap.propTypes = {
   zoom: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
-  position: PropTypes.object
+  position: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  })
 }
 
 function DynamicMap(props) {
@@ -79,7 +81,10 @@ function DynamicMap(props) {
 }
 
 DynamicMap.propTypes = {
-  position: PropTypes.object,
+  position: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  }),
   zoom: PropTypes.number
 }
 
