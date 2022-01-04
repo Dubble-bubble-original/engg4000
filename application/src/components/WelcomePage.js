@@ -27,7 +27,7 @@ function WelcomePage(props) {
     }
   }
 
-  let termsAndConditions = <span id="terms-conditions-link" className="clickable" onClick={() => setShowTerms(true)}>terms and conditions</span>;
+  let termsAndConditions = <a id="terms-conditions-link" className="clickable" onClick={() => setShowTerms(true)}>terms and conditions</a>;
 
   // This is the handler for the checkbox
   const checkBoxHandler = () => {
@@ -36,11 +36,11 @@ function WelcomePage(props) {
 
   return (
     <div className="container">
-      <img className="logo" src={logo} alt="Logo" />
-      <div className="terms-conditions" data-testid="terms-conditions">
-        <p className="h5">By entering this website, you are ageering to our {termsAndConditions}.</p>
+      <img className="large-logo mt-5 mb-4" src={logo} alt="Logo" />
+      <div className="terms-conditions h5 mb-5" data-testid="terms-conditions">
+        By entering this website, you are ageering to our {termsAndConditions}.
       </div>
-      <div className="i-agree h5">
+      <div className="i-agree h5 mb-3">
         <Form.Check
           data-testid="agree-checkbox"
           id="agree-checkbox"
@@ -49,7 +49,7 @@ function WelcomePage(props) {
           onChange={checkBoxHandler}
         />
       </div>
-      <Button data-testid="enter-btn" id="enter-btn" disabled={!agree} onClick={enterButtonHandler}>
+      <Button data-testid="enter-btn" id="enter-btn" className="mb-4" disabled={!agree} onClick={enterButtonHandler}>
         Enter Site
       </Button>
 

@@ -38,7 +38,7 @@ function StaticMap(props) {
   
   return (
     <React.Fragment>
-      <img style={imgStyle} src={URL} onClick={() => setShowModal(true)} className="clickable" onError={handleImgError} />
+      <img style={imgStyle} src={URL} tabIndex="0" onClick={() => setShowModal(true)} className="clickable hover-outline" onError={handleImgError} />
 
       <Modal size='xl' scrollable show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>

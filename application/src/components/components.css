@@ -6,37 +6,29 @@
 
 /* Tags */
 
-label {
-    padding-left: 0px;
-    padding-right: 0px;
-}
 
 /* Classes */
 
-.terms-conditions {
-    padding-bottom: 75px;
-    white-space: pre-wrap;
-}
-
 .i-agree {
     display: flex;
-    padding-bottom: 10px;
     justify-content: center;
 }
 
-.logo {
-    margin-top: 50px;
+.large-logo {
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: 45%;
     max-height: 50vh; /* Prevent the logo from taking too much space on large screens */
     object-fit: contain;
-    padding-bottom: 35px;
 }
 
 .clickable {
     cursor: pointer;
+}
+
+.hover-outline:hover {
+    outline: 1px solid var(--bs-primary);
 }
 
 .f-row {
@@ -53,17 +45,4 @@ label {
     gap: 10px;
 }
 
-.grey {
-    color: #A09F9F;
-}
-
 /* IDs */
-
-#terms-conditions-link {
-    color: var(--bs-primary);
-    text-decoration: underline;
-}
-
-#enter-btn {
-    margin-bottom: 30px;
-}

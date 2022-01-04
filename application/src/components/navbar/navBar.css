@@ -22,7 +22,7 @@
     font-weight: bold;
 }
 #nav-link-container .nav-link:hover {
-    background-color: lightgray;
+    background-color: var(--bs-gray-300);
 }
 
 /* Rounded corners */
@@ -47,10 +47,6 @@
 #navbar.navbar-light button.navbar-toggler {
     color: var(--bs-primary);
 }
-#navbar.navbar-light button.navbar-toggler .navbar-toggler-icon {
-    /* Reference: https://stackoverflow.com/a/50942954 */
-    filter: invert(52%) sepia(124%) saturate(5844%) hue-rotate(341deg) brightness(120%) contrast(200%);
-}
 /* Remove gray outline of hamburger menu */
 #navbar.navbar-light button.navbar-toggler {
     border-color: transparent;
@@ -66,9 +62,4 @@
 /* Remove margin for links in the popup menu */
 #offcanvasNavbar .nav-link {
     margin-left: 0px;
-}
-
-/* Make offcanvas popup smaller */
-.offcanvas.offcanvas-end {
-    width: 250px;
 }
