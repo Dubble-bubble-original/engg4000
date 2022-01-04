@@ -12,7 +12,7 @@ Feature: User post endpoints tests
     Given path 'userpost'
     When method post
     Then status 401
-    And match response contains 'No Authentication Token Provided'
+    And match response.message == 'No Authentication Token Provided'
 
   Scenario: Try to create a user post with invalid auth token
     # Call create user post endpoint with invalid auth token header
@@ -20,7 +20,7 @@ Feature: User post endpoints tests
     And header token = '12345'
     When method post
     Then status 401
-    And match response contains 'Invalid Authentication Token Provided'
+    And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Try to create a user post with empty request body
     # Call create user post endpoint with empty body
@@ -28,7 +28,7 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method post
     Then status 400
-    And match response contains 'No Request Body Provided'
+    And match response.message == 'No Request Body Provided'
 
   Scenario: Try to create a user post with missing required field
     # Call create user post endpoint with missing required field
@@ -37,7 +37,7 @@ Feature: User post endpoints tests
     And request read('../data/userPost_missingTittle.json')
     When method post
     Then status 400
-    And match response contains 'UserPost validation failed: title: Path `title` is required'
+    And match response.message == 'Invalid Request Body Format'
 
   # Delete user posts
 
@@ -47,7 +47,7 @@ Feature: User post endpoints tests
     And request {}
     When method delete
     Then status 401
-    And match response contains 'No Authentication Token Provided'
+    And match response.message == 'No Authentication Token Provided'
 
   Scenario: Try to delete a user post with invalid auth token
     # Call delete user post endpoint with invalid auth token header
@@ -56,7 +56,7 @@ Feature: User post endpoints tests
     And request {}
     When method delete
     Then status 401
-    And match response contains 'Invalid Authentication Token Provided'
+    And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Try to delete a nonexistent user post
     # Call delete user post endpoint with invalid user post id
@@ -65,7 +65,7 @@ Feature: User post endpoints tests
     And request {}
     When method delete
     Then status 404
-    And match response contains 'User Post Not Found'
+    And match response.message == 'User Post Not Found'
 
   Scenario: Try to delete a user post with invalid access key
     # Call create user post endpoint with empty body
@@ -82,13 +82,14 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method delete
     Then status 404
-    And match response contains 'User Post Not Found'
+    And match response.message == 'User Post Not Found'
 
     # Call delete user post endpoint
     Given path 'userpost/' + post_access_key
     And header token = auth_token
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'
 
   # Get user posts
 
@@ -97,7 +98,7 @@ Feature: User post endpoints tests
     Given path 'userpost/12345'
     When method get
     Then status 401
-    And match response contains 'No Authentication Token Provided'
+    And match response.message == 'No Authentication Token Provided'
 
   Scenario: Try to get a user post with invalid auth token
     # Call get user post endpoint with invalid auth token header
@@ -105,7 +106,7 @@ Feature: User post endpoints tests
     And header token = '12345'
     When method get
     Then status 401
-    And match response contains 'Invalid Authentication Token Provided'
+    And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Try to get a user post with invalid id
     # Call get user post endpoint with invalid user post id
@@ -113,7 +114,7 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method get
     Then status 400
-    And match response contains 'Invalid User Post ID'
+    And match response.message == 'Invalid User Post ID'
 
   Scenario: Try to get a nonexistent user post
     # Call get user post endpoint with nonexistent user post id
@@ -121,7 +122,7 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method get
     Then status 404
-    And match response contains 'User Post Not Found'
+    And match response.message == 'User Post Not Found'
 
   # Update User posts
 
@@ -130,7 +131,7 @@ Feature: User post endpoints tests
     Given path 'userpost/12345'
     When method patch
     Then status 401
-    And match response contains 'No Authentication Token Provided'
+    And match response.message == 'No Authentication Token Provided'
 
   Scenario: Try to update a user post with invalid auth token
     # Call update user post endpoint with invalid auth token header
@@ -138,7 +139,7 @@ Feature: User post endpoints tests
     And header token = '12345'
     When method patch
     Then status 401
-    And match response contains 'Invalid Authentication Token Provided'
+    And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Try to update a user post with empty request body
     # Call update user post endpoint with empty body
@@ -146,7 +147,7 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method patch
     Then status 400
-    And match response contains 'No Request Body Provided'
+    And match response.message == 'No Request Body Provided'
 
   Scenario: Try to update a user post with invalid id
     # Call update user post endpoint with invalid user post id
@@ -155,7 +156,7 @@ Feature: User post endpoints tests
     And request { title: 'new title' }
     When method patch
     Then status 400
-    And match response contains 'Invalid User Post ID'
+    And match response.message == 'Invalid User Post ID'
 
   Scenario: Try to update a nonexistent user post
     # Call update user post endpoint with nonexistent user post id
@@ -164,9 +165,9 @@ Feature: User post endpoints tests
     And request { title: 'new title' }
     When method patch
     Then status 404
-    And match response contains 'User Post Not Found'
+    And match response.message == 'User Post Not Found'
 
-  # Create, get, update, delete user posts
+  # Create, get, update, delete user post
 
   Scenario: Create, get, update, and delete a userPost
     # Call create user post endpoint
@@ -185,7 +186,7 @@ Feature: User post endpoints tests
     Then status 200
     And match response._id == post_id
 
-    # Call update user post endpoint with nonexistent user post id
+    # Call update user post endpoint
     Given path 'userpost/' + post_id
     And header token = auth_token
     And request { update: { title: 'new title' } }
@@ -196,9 +197,9 @@ Feature: User post endpoints tests
     # Call delete user post endpoint
     Given path 'userpost/' + post_access_key
     And header token = auth_token
-    And request {access_key: post_access_key}
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'
 
   # Test Cases for POST userposts endpoint
 
@@ -206,14 +207,14 @@ Feature: User post endpoints tests
     Given path 'userposts'
     When method post
     Then status 401
-    And match response contains 'No Authentication Token Provided'
+    And match response.message == 'No Authentication Token Provided'
 
   Scenario: Try to get posts with an invalid auth token
     Given path 'userposts'
     And header token = 'Invalid_Token'
     When method post
     Then status 401
-    And match response contains 'Invalid Authentication Token Provided'
+    And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Calling userposts endpoint
     # Creating Temporary User Posts
@@ -334,18 +335,22 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'
 
     Given path 'userpost/' + post2_access_key
     And header token = auth_token
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'
 
     Given path 'userpost/' + post3_access_key
     And header token = auth_token
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'
 
     Given path 'userpost/' + post4_access_key
     And header token = auth_token
     When method delete
     Then status 200
+    And match response.message == 'User Post Deleted Successfully'

@@ -10,14 +10,14 @@ Feature: Version endpoint tests
     Given path 'version'
     When method get
     Then status 401
-    And match response contains 'No Authentication Token Provided'
+    And match response.message == 'No Authentication Token Provided'
 
     # Call version endpoint with invalid auth token header
     Given path 'version'
     And header token = '12345'
     When method get
     Then status 401
-    And match response contains 'Invalid Authentication Token Provided'
+    And match response.message == 'Invalid Authentication Token Provided'
 
     # Call version endpoint with valid auth token header
     Given path 'version'

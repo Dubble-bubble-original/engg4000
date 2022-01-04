@@ -7,15 +7,17 @@ const { ObjectId } = require('mongoose').Types;
 const UTILS = require('../utils/utils');
 
 // DB
-const { UserPost } = require('../db/dbSchema');
+const { UserPost, User } = require('../db/dbSchema');
 
 // S3
 const {
   uploadFile, checkFile, downloadFile, getFileUrl, deleteFile
 } = require('../s3/s3');
 
-// Post Limit Constant
+// Constants
 const POST_LIMIT = 15;
+const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
+const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -33,7 +35,7 @@ exports.verifyAuthToken = (req, res, next) => {
   // No auth token provided
   if (!token) {
     logger.info('No Authentication Token Provided');
-    return res.status(401).send('No Authentication Token Provided');
+    return res.status(401).send({ message: 'No Authentication Token Provided' });
   }
 
   const timeStamp = auth_tokens.get(token);
@@ -42,7 +44,7 @@ exports.verifyAuthToken = (req, res, next) => {
   if (!timeStamp || UTILS.isAuthTokenStale(currentTime, timeStamp)) {
     UTILS.removeStaleTokens(token);
     logger.info('Invalid Authentication Token Provided');
-    return res.status(401).send('Invalid Authentication Token Provided');
+    return res.status(401).send({ message: 'Invalid Authentication Token Provided' });
   }
   return next();
 };
@@ -56,11 +58,11 @@ exports.createUserPost = (req, res) => {
   // No request body provided
   if (!req.body || !Object.keys(req.body).length) {
     logger.info('No Request Body Provided');
-    return res.status(400).send('No Request Body Provided');
+    return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
-  const accessKey = uuidv4();
   const dateCreated = Date.now();
+  const accessKey = uuidv4();
   const newUserPost = new UserPost({
     author_ID: req.body.author_ID,
     body: req.body.body,
@@ -77,10 +79,10 @@ exports.createUserPost = (req, res) => {
     if (err) {
       if (err.name === 'ValidationError') {
         logger.info(err.message);
-        return res.status(400).send(err.message);
+        return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
       }
-      logger.error(err);
-      return res.status(500).send(err);
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     }
 
     return res.status(201).json({
@@ -104,45 +106,46 @@ exports.updateUserPost = (req, res) => {
   // No request body provided
   if (!req.body || !Object.keys(req.body).length) {
     logger.info('No Request Body Provided');
-    return res.status(400).send('No Request Body Provided');
+    return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
   const userPostId = req.params.id;
 
   if (!ObjectId.isValid(userPostId)) {
     logger.info('Invalid User Post ID');
-    return res.status(400).send('Invalid User Post ID');
+    return res.status(400).send({ message: 'Invalid User Post ID' });
   }
 
   const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
     .then((doc) => {
       if (!doc) {
-        return res.status(404).send('User Post Not Found');
+        return res.status(404).send({ message: 'User Post Not Found' });
       }
       return res.status(200).send(doc);
     })
     .catch((err) => {
       logger.error(err.message);
-      return res.status(500).send(err);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
 
 exports.deleteUserPost = (req, res) => {
   const acessKey = req.params.ak;
+
   // Find the userpost with the matching access key
   UserPost.findOneAndDelete({ access_key: acessKey })
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
-        return res.status(404).send('User Post Not Found');
+        return res.status(404).send({ message: 'User Post Not Found' });
       }
 
-      return res.status(200).send();
+      return res.status(200).send({ message: 'User Post Deleted Successfully' });
     })
     .catch((err) => {
       logger.error(err.message);
-      return res.status(500).send(err);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
 
@@ -151,20 +154,20 @@ exports.getUserPost = (req, res) => {
 
   if (!ObjectId.isValid(userPostId)) {
     logger.info('Invalid User Post ID');
-    return res.status(400).send('Invalid User Post ID');
+    return res.status(400).send({ message: 'Invalid User Post ID' });
   }
 
   UserPost.findById(userPostId)
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
-        return res.status(404).send('User Post Not Found');
+        return res.status(404).send({ message: 'User Post Not Found' });
       }
       return res.status(200).send(doc);
     })
     .catch((err) => {
       logger.error(err.message);
-      return res.status(500).send(err);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
 
@@ -228,9 +231,9 @@ exports.getUserPosts = (req, res) => {
 
   UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
     .then((docs) => res.status(200).send(docs))
-    .catch((error) => {
-      logger.error(error.message);
-      return res.status(500).send(error);
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
 
@@ -254,10 +257,90 @@ exports.getRecentPosts = (req, res) => {
     });
 };
 
+exports.createUser = (req, res) => {
+  // No request body provided
+  if (!req.body || !Object.keys(req.body).length) {
+    logger.info('No Request Body Provided');
+    return res.status(400).send({ message: 'No Request Body Provided' });
+  }
+
+  const newUser = new User({
+    name: req.body.name,
+    avatar_url: req.body.avatar_url,
+    email: req.body.email
+  });
+
+  newUser.save((err) => {
+    if (err) {
+      if (err.name === 'ValidationError') {
+        logger.info(err.message);
+        return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
+      }
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    }
+
+    return res.status(201).json({
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        avatar_url: newUser.avatar_url,
+        email: newUser.email
+      }
+    });
+  });
+};
+
+exports.deleteUser = (req, res) => {
+  const userId = req.params.id;
+
+  if (!ObjectId.isValid(userId)) {
+    logger.info('Invalid User ID');
+    return res.status(400).send({ message: 'Invalid User ID' });
+  }
+
+  // Find the userpost with the matching access key
+  User.findByIdAndRemove(userId)
+    .then((doc) => {
+      if (!doc) {
+        logger.info('User Not Found');
+        return res.status(404).send({ message: 'User Not Found' });
+      }
+
+      return res.status(200).send({ message: 'User Deleted Successfully' });
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.getUser = (req, res) => {
+  const userId = req.params.id;
+
+  if (!ObjectId.isValid(userId)) {
+    logger.info('Invalid User ID');
+    return res.status(400).send({ message: 'Invalid User ID' });
+  }
+
+  User.findById(userId)
+    .then((doc) => {
+      if (!doc) {
+        logger.info('User Not Found');
+        return res.status(404).send({ message: 'User Not Found' });
+      }
+      return res.status(200).send(doc);
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
 exports.createImage = async (req, res) => {
   if (!req.file) {
     logger.info('No Image Provided');
-    return res.status(400).send('No Image Provided');
+    return res.status(400).send({ message: 'No Image Provided' });
   }
 
   const { file } = req;
@@ -272,7 +355,7 @@ exports.createImage = async (req, res) => {
     })
     .catch((err) => {
       logger.error(err.message);
-      return res.status(500).send('Failed to Create Image');
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
 
@@ -283,7 +366,7 @@ exports.getImage = async (req, res) => {
 
   if (!fileExists) {
     logger.error('Image Does Not Exist');
-    return res.status(404).send('Image Does Not Exist');
+    return res.status(404).send({ message: 'Image Does Not Exist' });
   }
 
   try {
@@ -292,7 +375,7 @@ exports.getImage = async (req, res) => {
   }
   catch (err) {
     logger.error(err.message);
-    return res.status(500).send('Failed to Fetch Image');
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 };
 
@@ -303,14 +386,14 @@ exports.getImageUrl = async (req, res) => {
 
   if (!fileExists) {
     logger.error('Image Does Not Exist');
-    return res.status(404).send('Image Does Not Exist');
+    return res.status(404).send({ message: 'Image Does Not Exist' });
   }
 
   const result = getFileUrl(fileKey);
 
   if (!result) {
     logger.error('Failed to Get Image URL');
-    return res.status(500).send('Failed to Get Image URL');
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
   const response = { url: result };
@@ -324,13 +407,13 @@ exports.deleteImage = async (req, res) => {
 
   if (!fileExists) {
     logger.error('Image Does Not Exist');
-    return res.status(404).send('Image Does Not Exist');
+    return res.status(404).send({ message: 'Image Does Not Exist' });
   }
 
   deleteFile(fileKey)
-    .then(() => res.status(200).send())
+    .then(() => res.status(200).send({ message: 'Image Deleted Successfully' }))
     .catch((err) => {
       logger.error(err.message);
-      return res.status(500).send('Failed to Delete Image');
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
