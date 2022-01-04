@@ -44,9 +44,12 @@ jobs:
 
       # Setup Node
       - name: Setup Node.js v14
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
 
       # Run single commands using the runner's shell
       - name: Install dependencies
@@ -69,6 +72,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
+          cache-dependency-path: Service/package-lock.json
 
       # Setup JDK
       - name: Set up JDK 8
