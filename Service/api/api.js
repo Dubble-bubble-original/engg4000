@@ -397,6 +397,10 @@ exports.deletePost = async (req, res) => {
     return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
+  // Get Image ID from avatar_url
+
+  // Get Image ID from img_url
+
   // Delete the post
   await UserPost.deleteOne(post);
   // Delete the user
