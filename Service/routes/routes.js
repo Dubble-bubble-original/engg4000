@@ -86,6 +86,12 @@ if (ENV.NODE_ENV === 'dev') {
   );
 }
 
+ROUTER.post(
+  '/recentposts',
+  API.verifyAuthToken,
+  API.getRecentPosts
+);
+
 // Image endpoints
 
 if (ENV.NODE_ENV === 'dev') {

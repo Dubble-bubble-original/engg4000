@@ -103,7 +103,7 @@ types:
           application/json:
             type: UserPost
       400:
-        description: "A required field in the request is missing."
+        description: "A required field in the request is missing or is invalid."
         body:
           application/json:
             example: |
@@ -191,10 +191,30 @@ types:
 
 /userPosts:
   post:
-    description: Returns an array of Userposts which match a filter field passed in the req.body. An empty filter returns all userposts.
+    description: Returns an array of Userposts which matches the filters provided in req.body.
     body:
       application/json:
-        example: { "filter": { "title" : "exampleTitle", "body" : "exampleBody"}}
+        example: { "title" : "Post Title", "tags" : ["Tag1", "Tag2"] }, "page": "1" }
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items:
+              type: userPost
+      500:
+        body:
+          type: string
+      400:
+        body:
+          type: string
+
+/recentposts:
+  post:
+    description: Returns an array of recently added user posts.
+    body:
+      application/json:
+        example: { "date": "2021-11-07T13:57:49.280+00:00" }
     responses:
       200:
         body:
@@ -219,7 +239,7 @@ types:
           application/json:
             type: User
       400:
-        description: "A required field in the request is missing."
+        description: "A required field in the request is missing or is invalid."
         body:
           application/json:
             example: |
@@ -264,6 +284,14 @@ types:
               example: |
                 {
                   "message": "User Deleted Successfully"
+                }
+        400:
+          description: "A required field in the request is missing or is invalid."
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Invalid Request Body Format"
                 }
         404:
           body:

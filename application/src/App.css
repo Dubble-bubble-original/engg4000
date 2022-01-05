@@ -6,14 +6,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   color: black;
 }
 
 /* IDs */
 
 #main-page {
-  background: #A09F9F;
+  background: #CACACA;
 }
 
 #welcome-page {

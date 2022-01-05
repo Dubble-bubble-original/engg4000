@@ -14,6 +14,8 @@ const {
   checkFile, downloadFile, getFileUrl, deleteFile
 } = require('../s3/s3');
 
+// Constants
+const POST_LIMIT = 15;
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
 
@@ -172,45 +174,88 @@ exports.getUserPost = (req, res) => {
 };
 
 exports.getUserPosts = (req, res) => {
-  // empty filter returns all docs from Userposts
-  let searchFilters = {};
-
-  if (req.body.filter) {
-    if (!req.body.filter.tags && !req.body.filter.title) {
-      searchFilters = null;
-    }
-    else {
-      const { filter } = req.body;
-
-      // Check if the filters have tags
-      if (req.body.filter.tags?.length > 0) {
-        const tagFilter = {
-          tags: { $all: req.body.filter.tags }
-        };
-        searchFilters = { ...tagFilter };
-
-        // Delete the tags from the provided filters
-        delete filter.tags;
-      }
-      else if (req.body.filter.tags) {
-        delete filter.tags;
-      }
-
-      searchFilters = { ...searchFilters, ...filter };
-    }
+  // No request body provided
+  if (!req.body || !Object.keys(req.body).length) {
+    logger.info('No Request Body Provided');
+    return res.status(400).send('No Request Body Provided');
   }
 
-  // If the searchFilters is null an invalid filter was provided
-  if (searchFilters === null) {
-    return res.status(400).send('Invalid search filters filters provided');
+  let searchFilters = [];
+  let providedTags = [];
+
+  // Check if the filters have tags
+  if (req.body.tags?.length > 0) {
+    searchFilters = [
+      { $match: { tags: { $in: req.body.tags } } }
+    ];
+    providedTags = req.body.tags;
   }
 
-  // Limit the returned results to 100 user posts
-  UserPost.find(searchFilters).limit(100)
+  // Check id filters have Title
+  if (req.body.title) {
+    searchFilters = [
+      ...searchFilters,
+      { $match: { title: req.body.title } }
+    ];
+  }
+
+  // Create new search format for partial matching tags
+  if (providedTags.length > 1) {
+    searchFilters = [
+      ...searchFilters,
+      {
+        $project: {
+          title: 1,
+          body: 1,
+          tags: 1,
+          img_URL: 1,
+          date_created: 1,
+          location: 1,
+          maxTagMatch: {
+            $size: {
+              $setIntersection: ['$tags', providedTags]
+            }
+          }
+        }
+      },
+      { $sort: { maxTagMatch: -1, date_created: -1, _id: 1 } }
+    ];
+  }
+
+  // If the searchFilters are empty an invalid (or no) filter was provided
+  if (searchFilters.length === 0) {
+    logger.info('Invalid search filters provided');
+    return res.status(400).send('Invalid search filters provided');
+  }
+
+  // Get current page number
+  const pageNumber = req.body.page ? (req.body.page - 1) : 0;
+
+  UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
     .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.getRecentPosts = (req, res) => {
+  let searchFilters = [
+    { $sort: { date_created: -1, _id: 1 } }
+  ];
+
+  if (req.body.date) {
+    searchFilters = [
+      { $match: { date_created: { $lt: new Date(req.body.date) } } },
+      ...searchFilters
+    ];
+  }
+
+  UserPost.aggregate(searchFilters).limit(POST_LIMIT)
+    .then((docs) => res.status(200).send(docs))
+    .catch((error) => {
+      logger.error(error.message);
+      return res.status(500).send(error);
     });
 };
 
