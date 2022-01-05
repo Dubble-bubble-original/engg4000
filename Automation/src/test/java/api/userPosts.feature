@@ -253,7 +253,7 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method post
     Then status 400
-    And match response contains 'No Request Body Provided'
+    And match response.message == 'No Request Body Provided'
 
     # Call userPosts endpoint with title as filter
 
@@ -280,7 +280,7 @@ Feature: User post endpoints tests
     And request { tags: [] }
     When method post
     Then status 400
-    And match response contains 'Invalid search filters provided'
+    And match response.message == 'Invalid search filters provided'
 
     # Call userPosts endpoint with a valid tag as filter
 
@@ -327,7 +327,7 @@ Feature: User post endpoints tests
     And request { authorID: "1234" }
     When method post
     Then status 400
-    And match response contains 'Invalid search filters provided'
+    And match response.message == 'Invalid search filters provided'
 
     # Delete Added Posts
 

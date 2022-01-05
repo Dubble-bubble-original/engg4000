@@ -19,7 +19,7 @@ export const getAuthToken = async () => {
   try {
     const response = await axios({
       method: 'POST',
-      url: serviceUrl+'/auth'
+      url: serviceUrl + '/auth'
     })
     authToken = response.data.token;
   } catch(error) {
@@ -99,6 +99,47 @@ export const deleteImage = async (id) => {
       }
     });
     return response.data
+  });
+}
+
+// Upload images required for user and user post
+export const postImages = async (avatar, picture) => {
+  return await requestWithToken(async() => {
+    const formData = new FormData();
+    formData.append('images', avatar);
+    formData.append('images', picture);
+
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/postimages',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Create a user and user post
+export const post = async (avatarId, pictureId, user, userPost) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/post',
+      data: {
+        avatarId,
+        pictureId,
+        user,
+        post: userPost
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'token': authToken
+      }
+    });
+    return response.data;
   });
 }
 

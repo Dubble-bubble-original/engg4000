@@ -15,10 +15,9 @@ const {
 
 // Constants
 const POST_LIMIT = 15;
+const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
-
-const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -65,11 +64,11 @@ exports.createUserPost = (req, res) => {
   const dateCreated = Date.now();
   const accessKey = uuidv4();
   const newUserPost = new UserPost({
-    author_ID: req.body.author_ID,
+    author_id: req.body.author_id,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
-    img_URL: req.body.img_URL,
+    img_url: req.body.img_url,
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
@@ -89,11 +88,11 @@ exports.createUserPost = (req, res) => {
     return res.status(201).json({
       post: {
         _id: newUserPost._id,
-        author_ID: newUserPost.author_ID,
+        author_id: newUserPost.author_id,
         body: newUserPost.body,
         tags: newUserPost.tags,
         title: newUserPost.title,
-        img_URL: newUserPost.img_URL,
+        img_url: newUserPost.img_url,
         date_created: newUserPost.date_created,
         location: newUserPost.location,
         true_location: newUserPost.true_location,
@@ -176,7 +175,7 @@ exports.getUserPosts = (req, res) => {
   // No request body provided
   if (!req.body || !Object.keys(req.body).length) {
     logger.info('No Request Body Provided');
-    return res.status(400).send('No Request Body Provided');
+    return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
   let searchFilters = [];
@@ -207,7 +206,7 @@ exports.getUserPosts = (req, res) => {
           title: 1,
           body: 1,
           tags: 1,
-          img_URL: 1,
+          img_url: 1,
           date_created: 1,
           location: 1,
           maxTagMatch: {
@@ -224,7 +223,7 @@ exports.getUserPosts = (req, res) => {
   // If the searchFilters are empty an invalid (or no) filter was provided
   if (searchFilters.length === 0) {
     logger.info('Invalid search filters provided');
-    return res.status(400).send('Invalid search filters provided');
+    return res.status(400).send({ message: 'Invalid search filters provided' });
   }
 
   // Get current page number
@@ -254,7 +253,7 @@ exports.getRecentPosts = (req, res) => {
     .then((docs) => res.status(200).send(docs))
     .catch((error) => {
       logger.error(error.message);
-      return res.status(500).send(error);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
 
@@ -338,7 +337,7 @@ exports.getUser = (req, res) => {
     });
 };
 
-exports.createImage = async (req, res) => {
+exports.uploadImage = async (req, res) => {
   if (!req.file) {
     logger.info('No Image Provided');
     return res.status(400).send({ message: 'No Image Provided' });
@@ -346,7 +345,7 @@ exports.createImage = async (req, res) => {
 
   const { file } = req;
 
-  return UTILS.createImage(file)
+  UTILS.createImage(file)
     .then((result) => {
       if (!result) {
         return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
@@ -416,27 +415,18 @@ exports.deleteImage = async (req, res) => {
     });
 };
 
-exports.createPost = async (req, res) => {
-  // Request body must contain two images, user data, and post data
+exports.uploadPostImages = async (req, res) => {
+  // Request body must contain two images
   if (!req.files || req.files.length < 2) {
     logger.info('Missing Images');
     return res.status(400).send({ message: 'Missing Images' });
   }
-  if (!req.user) {
-    logger.info('Missing User');
-    return res.status(400).send({ message: 'Missing User' });
-  }
-  if (!req.post) {
-    logger.info('Missing User Post');
-    return res.status(400).send({ message: 'Missing User Post' });
-  }
 
   const avatar = req.files[0];
   const picture = req.files[1];
-  const { user, post } = req;
 
   // Upload the avatar to S3 bucket
-  return UTILS.createImage(avatar)
+  UTILS.createImage(avatar)
     .then((avatarResult) => {
       if (!avatarResult) {
         return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
@@ -445,7 +435,7 @@ exports.createPost = async (req, res) => {
       const avatarKey = avatarResult.key;
 
       // Upload post picture to S3 bucket
-      return UTILS.createImage(picture)
+      UTILS.createImage(picture)
         .then((pictureResult) => {
           if (!pictureResult) {
             // Delete avatar
@@ -459,103 +449,117 @@ exports.createPost = async (req, res) => {
 
           const pictureKey = pictureResult.key;
 
-          const avatarurl = BUCKET_URL + avatarKey;
-          const pictureUrl = BUCKET_URL + pictureKey;
-
-          // Create user with uploaded avatar
-          const newUser = new User({
-            name: user.name,
-            avatar_url: avatarurl,
-            email: user.email
-          });
-
-          newUser.save((userError) => {
-            if (userError) {
-              logger.info(userError.message);
-
-              // Delete avatar
-              deleteFile(avatarKey)
-                .catch((avatarError) => {
-                  logger.error(avatarError.message);
-                });
-
-              // Delete picture
-              deleteFile(pictureKey)
-                .catch((pictureError) => {
-                  logger.error(pictureError.message);
-                });
-
-              if (err.name === 'ValidationError') {
-                return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
-              }
-              return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-            }
-
-            // Create post with new user id and uploaded post picture
-            const dateCreated = Date.now();
-            const accessKey = uuidv4();
-            const newUserPost = new UserPost({
-              author_ID: newUser._id,
-              body: post.body,
-              tags: post.tags,
-              title: post.title,
-              img_URL: pictureUrl,
-              date_created: dateCreated,
-              location: post.location,
-              true_location: post.true_location,
-              access_key: accessKey
-            });
-
-            newUserPost.save((postError) => {
-              if (postError) {
-                logger.info(postError.message);
-
-                // Delete avatar
-                deleteFile(avatarKey)
-                  .catch((avatarError) => {
-                    logger.error(avatarError.message);
-                  });
-
-                // Delete picture
-                deleteFile(pictureKey)
-                  .catch((pictureError) => {
-                    logger.error(pictureError.message);
-                  });
-
-                // Delete user
-                User.findByIdAndRemove(userId)
-                  .catch((deleteUserError) => {
-                    logger.error(deleteUserError.message);
-                  });
-
-                if (postError.name === 'ValidationError') {
-                  return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
-                }
-                return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-              }
-
-              return res.status(201).json({
-                post: {
-                  _id: newUserPost._id,
-                  author_ID: newUserPost.author_ID,
-                  body: newUserPost.body,
-                  tags: newUserPost.tags,
-                  title: newUserPost.title,
-                  img_URL: newUserPost.img_URL,
-                  date_created: newUserPost.date_created,
-                  location: newUserPost.location,
-                  true_location: newUserPost.true_location,
-                  access_key: newUserPost.access_key
-                },
-                user: {
-                  _id: newUser._id,
-                  name: newUser.name,
-                  avatar_url: newUser.avatar_url,
-                  email: newUser.email
-                }
-              });
-            });
-          });
+          const response = { avatarId: avatarKey, pictureId: pictureKey };
+          return res.status(201).send(response);
         });
     });
+};
+
+exports.createPost = async (req, res) => {
+  // Request body must contain user and user post data
+  if (!req.body.user) {
+    logger.info('Missing User');
+    return res.status(400).send({ message: 'Missing User' });
+  }
+  if (!req.body.post) {
+    logger.info('Missing User Post');
+    return res.status(400).send({ message: 'Missing User Post' });
+  }
+  if (!req.body.avatarId || !req.body.pictureId) {
+    logger.info('Missing Image IDs');
+    return res.status(400).send({ message: 'Missing Image IDs' });
+  }
+
+  const {
+    user, post, avatarId, pictureId
+  } = req.body;
+
+  // Create user with uploaded avatar
+  const newUser = new User({
+    name: user.name,
+    avatar_url: BUCKET_URL + avatarId,
+    email: user.email
+  });
+
+  newUser.save((userError) => {
+    if (userError) {
+      logger.info(userError.message);
+
+      // Delete avatar
+      deleteFile(avatarId)
+        .catch((avatarError) => {
+          logger.error(avatarError.message);
+        });
+
+      // Delete picture
+      deleteFile(pictureId)
+        .catch((pictureError) => {
+          logger.error(pictureError.message);
+        });
+
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
+      }
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    }
+
+    // Create post with new user id and uploaded post picture
+    const dateCreated = Date.now();
+    const accessKey = uuidv4();
+    const newUserPost = new UserPost({
+      author_id: newUser._id,
+      body: post.body,
+      tags: post.tags,
+      title: post.title,
+      img_url: BUCKET_URL + pictureId,
+      date_created: dateCreated,
+      location: post.location,
+      true_location: post.true_location,
+      access_key: accessKey
+    });
+
+    newUserPost.save((postError) => {
+      if (postError) {
+        logger.info(postError.message);
+
+        // Delete avatar
+        deleteFile(avatarId)
+          .catch((avatarError) => {
+            logger.error(avatarError.message);
+          });
+
+        // Delete picture
+        deleteFile(pictureId)
+          .catch((pictureError) => {
+            logger.error(pictureError.message);
+          });
+
+        // Delete user
+        User.findByIdAndRemove(newUser._id)
+          .catch((deleteUserError) => {
+            logger.error(deleteUserError.message);
+          });
+
+        if (postError.name === 'ValidationError') {
+          return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
+        }
+        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      }
+
+      return res.status(201).json({
+        post: {
+          _id: newUserPost._id,
+          author: newUser,
+          body: newUserPost.body,
+          tags: newUserPost.tags,
+          title: newUserPost.title,
+          img_url: newUserPost.img_url,
+          date_created: newUserPost.date_created,
+          location: newUserPost.location,
+          true_location: newUserPost.true_location,
+          access_key: newUserPost.access_key
+        }
+      });
+    });
+  });
 };
