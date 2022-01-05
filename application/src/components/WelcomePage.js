@@ -35,7 +35,7 @@ function WelcomePage(props) {
   }
 
   return (
-    <div className="container">
+    <div className="container text-center">
       <img className="large-logo mt-5 mb-4" src={logo} alt="Logo" />
       <div className="terms-conditions h5 mb-5" data-testid="terms-conditions">
         By entering this website, you are ageering to our {termsAndConditions}.

@@ -1,5 +1,5 @@
 // React
-import { Container } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
@@ -13,7 +13,7 @@ function Post({postData}) {
 
   // Create Tags for rendering
   const tags = postData.tags.map(tag => {
-    return <span className="tag" key={tag}>{tag}</span>;
+    return <Button variant="outline-primary" className="tag" key={tag}>{tag}</Button>;
   });
 
   return (
@@ -24,7 +24,7 @@ function Post({postData}) {
           <div className="user-name">{postData.user}</div>
         </FCol>
 
-        <FCol>
+        <FCol className="post-body">
           <FRow className="post-content">
             <FCol  className="post-description">
               <FRow className="title-section">
@@ -39,7 +39,7 @@ function Post({postData}) {
 
             <FCol className="post-location">
               <StaticMap width={2000} height={200} position={postData.position}/>
-              <div className="text-muted map-description">{postData.location}</div>
+              <div className="text-muted text-center">{postData.location}</div>
             </FCol>
           </FRow>
           <div>

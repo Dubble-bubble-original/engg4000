@@ -2,7 +2,6 @@
 #navbar .navbar-brand img {
     width: 40px;
     height: 40px;
-    border-radius: 0;
 }
 
 /* Separator line */
@@ -23,6 +22,9 @@
 }
 #nav-link-container .nav-link:hover {
     background-color: var(--bs-gray-300);
+}
+#nav-link-container .dropdown-menu {
+    border-radius: 0.25rem;
 }
 
 /* Rounded corners */

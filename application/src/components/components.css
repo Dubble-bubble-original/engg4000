@@ -45,4 +45,10 @@
     gap: 10px;
 }
 
+div.outer-container { /* The div is added so it takes precedence over bootstrap's CSS */
+    padding: 20px;
+    background: #ffff;
+    border-radius: 20px;
+}
+
 /* IDs */

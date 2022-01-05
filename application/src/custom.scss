@@ -15,6 +15,8 @@ $navbar-light-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3
 // Change popup menu width
 $offcanvas-horizontal-width: 220px;
 
+// Make all bootstrap element have very rounded corners by default
+$border-radius: 20px;
 
 // Import Bootstrap and its default variables
 @import '~bootstrap/scss/bootstrap.scss';
