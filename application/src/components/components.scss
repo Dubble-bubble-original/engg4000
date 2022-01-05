@@ -27,8 +27,19 @@
     cursor: pointer;
 }
 
-.hover-outline:hover {
-    outline: 1px solid var(--bs-primary);
+.hover-outline {
+    transition: box-shadow .15s ease-in-out;
+    &:hover {
+        box-shadow: 0 0 0 0.25rem var(--bs-primary);
+        outline: 0;
+        text-decoration: none;
+    }
+    &:not(:focus-visible) {
+        outline: 0;
+    }
+    &:focus:not(:hover) {
+        box-shadow: none;
+    }
 }
 
 .f-row {

@@ -4,7 +4,7 @@ import { Button, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
-import './components.css';
+import './components.scss';
 
 // Resources
 import logo from '../resources/images/nota-logo.png';
