@@ -137,8 +137,6 @@ exports.deleteUserPost = (req, res) => {
 
   // Find the userpost with the matching access key
   UserPost.findOneAndDelete({ access_key: acessKey })
-    .populate('author')
-    .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
@@ -204,7 +202,7 @@ exports.getUserPosts = (req, res) => {
   }
 
   // Create new search format for partial matching tags
-  if (providedTags.length > 0) {
+  if (providedTags.length > 1) {
     searchFilters = [
       ...searchFilters,
       {
@@ -226,6 +224,13 @@ exports.getUserPosts = (req, res) => {
       { $sort: { maxTagMatch: -1, date_created: -1, _id: 1 } }
     ];
   }
+  else if (providedTags.length === 1) {
+    // When only one tag is provided sort by date_created
+    searchFilters = [
+      ...searchFilters,
+      { $sort: { date_created: -1, _id: 1 } }
+    ];
+  }
 
   // If the searchFilters are empty an invalid (or no) filter was provided
   if (searchFilters.length === 0) {
@@ -233,14 +238,25 @@ exports.getUserPosts = (req, res) => {
     return res.status(400).send('Invalid search filters provided');
   }
 
+  // Add Authors to the searach filters
+  searchFilters = [
+    ...searchFilters,
+    {
+      $lookup: {
+        from: User.collection.name,
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author'
+      }
+    },
+    { $unwind: '$author' }
+  ];
+
   // Get current page number
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
 
   UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
-    .then((docs) => {
-      UserPost.populate(docs, 'author')
-        .then((combinedDocs) => res.status(200).send(combinedDocs));
-    })
+    .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
@@ -249,6 +265,15 @@ exports.getUserPosts = (req, res) => {
 
 exports.getRecentPosts = (req, res) => {
   let searchFilters = [
+    {
+      $lookup: {
+        from: User.collection.name,
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author'
+      }
+    },
+    { $unwind: '$author' },
     { $sort: { date_created: -1, _id: 1 } }
   ];
 
@@ -260,10 +285,7 @@ exports.getRecentPosts = (req, res) => {
   }
 
   UserPost.aggregate(searchFilters).limit(POST_LIMIT)
-    .then((docs) => {
-      UserPost.populate(docs, 'author')
-        .then((combinedDocs) => res.status(200).send(combinedDocs));
-    })
+    .then((combinedDocs) => res.status(200).send(combinedDocs))
     .catch((error) => {
       logger.error(error.message);
       return res.status(500).send(error);
