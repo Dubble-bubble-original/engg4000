@@ -41,13 +41,12 @@ exports.createImage = async (file) => (
     })
 );
 
-exports.getUser = async (userID) => (
+exports.deleteUser = async (userID) => (
   User.findById(userID)
     .then((doc) => {
       if (!doc) {
-        // If no user found return an empty array
         logger.info('User Not Found');
-        return [];
+        return undefined;
       }
       return doc;
     })
@@ -58,7 +57,9 @@ exports.getUser = async (userID) => (
 );
 
 exports.deletePost = async (acessKey) => (
-  UserPost.findOneAndDelete({ access_key: acessKey })
+  UserPost.findOne({ access_key: acessKey })
+    .populate('author')
+    .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');

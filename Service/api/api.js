@@ -455,17 +455,32 @@ exports.deleteImage = async (req, res) => {
 exports.deletePost = async (req, res) => {
   const acessKey = req.params.ak;
 
-  // Delete the User Post
-  return UTILS.deletePost(acessKey)
+  // Deleting User Post
+  UTILS.deletePost(acessKey)
     .then((post) => {
       if (post === undefined) {
-        return res.status(404).send({ message: 'No Post Found' });
+        return res.status(404).send({ message: 'User Post Not Found' });
       }
       if (!post) {
         return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
       }
 
-      // After the post is deleted, use author_ID to find and delete the user
+      console.log('POST DELETED');
+
+      // Deleting User
+      UTILS.deleteUser(post.author._id)
+        .then((user) => {
+          if (user === undefined) {
+            return res.status(404).send({ message: 'User Not Found' });
+          }
+          if (!user) {
+            return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+          }
+
+          console.log('USER DELETED');
+        });
+
+      // Deleting post image
 
       // At the end
       return res.status(200).send(post);
