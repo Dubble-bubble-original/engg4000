@@ -1,4 +1,4 @@
-Feature: User post endpoints tests
+Feature: Recent Posts endpoint tests
 
   Background:
     * url baseUrl
