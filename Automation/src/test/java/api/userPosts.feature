@@ -59,15 +59,15 @@ Feature: User post endpoints tests
     And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Try to delete a nonexistent user post
-    # Call delete user post endpoint with invalid user post id
-    Given path 'userpost/12345'
+    # Call delete user post endpoint with valid id that doesn't exist
+    Given path 'userpost/507f1f77bcf86cd799439011'
     And header token = auth_token
     And request {}
     When method delete
     Then status 404
     And match response.message == 'User Post Not Found'
 
-  Scenario: Try to delete a user post with invalid access key
+  Scenario: Try to delete a user post with invalid id
     # Call create user post endpoint with empty body
     Given path 'userpost'
     And header token = auth_token
@@ -75,17 +75,16 @@ Feature: User post endpoints tests
     When method post
     Then status 201
     * def post_id = response.post._id
-    * def post_access_key = response.post.access_key
 
-    # Call delete user post endpoint with invalid access key
+    # Call delete user post endpoint with invalid id
     Given path 'userpost/12345'
     And header token = auth_token
     When method delete
-    Then status 404
-    And match response.message == 'User Post Not Found'
+    Then status 400
+    And match response.message == 'Invalid User Post ID'
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_access_key
+    Given path 'userpost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -108,17 +107,17 @@ Feature: User post endpoints tests
     Then status 401
     And match response.message == 'Invalid Authentication Token Provided'
 
-  Scenario: Try to get a user post with invalid id
-    # Call get user post endpoint with invalid user post id
+  Scenario: Try to get a user post with invalid access key
+    # Call get user post endpoint with invalid access key
     Given path 'userpost/12345'
     And header token = auth_token
     When method get
-    Then status 400
-    And match response.message == 'Invalid User Post ID'
+    Then status 404
+    And match response.message == 'User Post Not Found'
 
   Scenario: Try to get a nonexistent user post
-    # Call get user post endpoint with nonexistent user post id
-    Given path 'userpost/53cb6b9b4f4ddef1ad47f943'
+    # Call get user post endpoint with nonexistent access key
+    Given path 'userpost/00000000-0000-4000-8900-000000000000'
     And header token = auth_token
     When method get
     Then status 404
@@ -180,11 +179,11 @@ Feature: User post endpoints tests
     * def post_access_key = response.post.access_key
 
     # Call get user post endpoint
-    Given path 'userpost/' + post_id
+    Given path 'userpost/' + post_access_key
     And header token = auth_token
     When method get
     Then status 200
-    And match response._id == post_id
+    And match response.access_key == post_access_key
 
     # Call update user post endpoint
     Given path 'userpost/' + post_id
@@ -195,7 +194,7 @@ Feature: User post endpoints tests
     And match response.title == 'new title'
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_access_key
+    Given path 'userpost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -224,28 +223,28 @@ Feature: User post endpoints tests
     And request read('../data/filter_userPosts_data.json').post1
     When method post
     Then status 201
-    * def post1_access_key = response.post.access_key
+    * def post1_id = response.post._id
 
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/filter_userPosts_data.json').post2
     When method post
     Then status 201
-    * def post2_access_key = response.post.access_key
+    * def post2_id = response.post._id
 
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/filter_userPosts_data.json').post3
     When method post
     Then status 201
-    * def post3_access_key = response.post.access_key
+    * def post3_id = response.post._id
 
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/filter_userPosts_data.json').post4
     When method post
     Then status 201
-    * def post4_access_key = response.post.access_key
+    * def post4_id = response.post._id
 
     # Call userPosts with no filters
 
@@ -331,25 +330,25 @@ Feature: User post endpoints tests
 
     # Delete Added Posts
 
-    Given path 'userpost/' + post1_access_key
+    Given path 'userpost/' + post1_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
 
-    Given path 'userpost/' + post2_access_key
+    Given path 'userpost/' + post2_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
 
-    Given path 'userpost/' + post3_access_key
+    Given path 'userpost/' + post3_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
 
-    Given path 'userpost/' + post4_access_key
+    Given path 'userpost/' + post4_id
     And header token = auth_token
     When method delete
     Then status 200

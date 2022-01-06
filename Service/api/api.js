@@ -131,10 +131,14 @@ exports.updateUserPost = (req, res) => {
 };
 
 exports.deleteUserPost = (req, res) => {
-  const acessKey = req.params.ak;
+  const userPostId = req.params.id;
 
-  // Find the userpost with the matching access key
-  UserPost.findOneAndDelete({ access_key: acessKey })
+  if (!ObjectId.isValid(userPostId)) {
+    logger.info('Invalid User Post ID');
+    return res.status(400).send({ message: 'Invalid User Post ID' });
+  }
+
+  UserPost.findByIdAndDelete(userPostId)
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
@@ -150,14 +154,9 @@ exports.deleteUserPost = (req, res) => {
 };
 
 exports.getUserPost = (req, res) => {
-  const userPostId = req.params.id;
+  const acessKey = req.params.ak;
 
-  if (!ObjectId.isValid(userPostId)) {
-    logger.info('Invalid User Post ID');
-    return res.status(400).send({ message: 'Invalid User Post ID' });
-  }
-
-  UserPost.findById(userPostId)
+  UserPost.findOne({ access_key: acessKey })
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');

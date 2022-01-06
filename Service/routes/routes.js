@@ -41,13 +41,13 @@ ROUTER.patch(
 );
 
 ROUTER.delete(
-  '/userpost/:ak',
+  '/userpost/:id',
   USE(API.verifyAuthToken),
   USE(API.deleteUserPost)
 );
 
 ROUTER.get(
-  '/userpost/:id',
+  '/userpost/:ak',
   USE(API.verifyAuthToken),
   USE(API.getUserPost)
 );
