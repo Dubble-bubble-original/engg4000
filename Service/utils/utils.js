@@ -6,7 +6,7 @@ const { UserPost, User } = require('../db/dbSchema');
 
 // S3
 const {
-  uploadFile // , checkFile, downloadFile, getFileUrl, deleteFile
+  uploadFile, deleteFile
 } = require('../s3/s3');
 
 exports.removeStaleTokens = (token) => {
@@ -41,8 +41,20 @@ exports.createImage = async (file) => (
     })
 );
 
+exports.deleteImage = async (file) => (
+  deleteFile(file)
+    .then(() => {
+      logger.info('Image Deleted Successfully');
+      return 'Done';
+    })
+    .catch((error) => {
+      logger.error(error.message);
+      return null;
+    })
+);
+
 exports.deleteUser = async (userID) => (
-  User.findById(userID)
+  User.findByIdAndDelete(userID)
     .then((doc) => {
       if (!doc) {
         logger.info('User Not Found');
@@ -57,7 +69,7 @@ exports.deleteUser = async (userID) => (
 );
 
 exports.deletePost = async (acessKey) => (
-  UserPost.findOne({ access_key: acessKey })
+  UserPost.findOneAndDelete({ access_key: acessKey })
     .populate('author')
     .exec()
     .then((doc) => {

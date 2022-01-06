@@ -456,7 +456,7 @@ exports.deletePost = async (req, res) => {
   const acessKey = req.params.ak;
 
   // Deleting User Post
-  UTILS.deletePost(acessKey)
+  return UTILS.deletePost(acessKey)
     .then((post) => {
       if (post === undefined) {
         return res.status(404).send({ message: 'User Post Not Found' });
@@ -464,8 +464,6 @@ exports.deletePost = async (req, res) => {
       if (!post) {
         return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
       }
-
-      console.log('POST DELETED');
 
       // Deleting User
       UTILS.deleteUser(post.author._id)
@@ -476,13 +474,41 @@ exports.deletePost = async (req, res) => {
           if (!user) {
             return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
           }
-
-          console.log('USER DELETED');
         });
 
       // Deleting post image
+      const postImageID = post.img_URL.substring(post.img_URL.lastIndexOf('/') + 1);
+      checkFile(postImageID)
+        .then((fileExists) => {
+          if (!fileExists) {
+            logger.error('Post Image Does Not Exist');
+            return res.status(404).send({ message: 'Post Image Does Not Exist' });
+          }
+        });
+      UTILS.deleteImage(postImageID)
+        .then((result) => {
+          if (!result) {
+            return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+          }
+        });
 
-      // At the end
+      // Deleting avatar image
+      const avatarID = post.author.avatar_url.substring(post.author.avatar_url.lastIndexOf('/') + 1);
+      checkFile(avatarID)
+        .then((fileExists) => {
+          if (!fileExists) {
+            logger.error('Avatar Image Does Not Exist');
+            return res.status(404).send({ message: 'Avatar Image Does Not Exist' });
+          }
+        });
+      UTILS.deleteImage(avatarID)
+        .then((result) => {
+          if (!result) {
+            return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+          }
+        });
+
+      // Return the deleted post with the author
       return res.status(200).send(post);
     });
 };
