@@ -470,39 +470,6 @@ exports.deletePost = async (req, res) => {
       // At the end
       return res.status(200).send(post);
     });
-
-  const post = await UTILS.getPost(acessKey);
-  if (post === []) {
-    return res.status(404).send({ message: 'No Post Found' });
-  }
-  if (!post) {
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-  }
-
-  // Get the user to de deleted
-  const author = post.author_ID;
-  if (!ObjectId.isValid(author)) {
-    logger.info('Invalid User ID');
-    return res.status(400).send({ message: 'Invalid User ID' });
-  }
-  const user = await UTILS.getUser(author);
-  if (user === []) {
-    return res.status(404).send({ message: 'User Not Found' });
-  }
-  if (!user) {
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-  }
-
-  // Get Image ID from avatar_url
-
-  // Get Image ID from img_url
-
-  // Delete the post
-  await UserPost.deleteOne(post);
-  // Delete the user
-  await User.deleteOne(user);
-
-  res.status(200).send({ post, user });
 };
 
 exports.createPost = async (req, res) => {
