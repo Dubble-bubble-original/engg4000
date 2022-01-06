@@ -144,7 +144,7 @@ Feature: User post endpoints tests
     * Collections.sort(after, Collections.reverseOrder())
     And match before == after
     * def result = true
-    * def checkOrder = function(post) { if(post.date_created > post2_date) { result = false } }
+    * def checkOrder = function(post) { if(post.date_created >= post2_date) { result = false } }
     * karate.forEach(response, checkOrder)
     And assert result
     And match response[*]._id contains post1_id
