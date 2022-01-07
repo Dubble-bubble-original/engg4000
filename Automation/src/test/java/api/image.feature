@@ -39,6 +39,13 @@ Feature: image endpoints tests
     Then status 404
     And match response.message contains 'Image Does Not Exist'
 
+  Scenario: Try to delete image with invalid ID
+    Given path 'image/invalidID'
+    And header token = auth_token
+    When method delete
+    Then status 404
+    And match response.message contains 'Image Does Not Exist'
+
   Scenario: Post image, Get & Delete w/o proper auth tokens
       # Post the new image
     Given path 'image'
