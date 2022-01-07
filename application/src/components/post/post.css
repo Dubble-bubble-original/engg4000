@@ -62,7 +62,7 @@
 }
 
 /* For screens that are 768px or less */
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
     .avatar {
         /* Reduce avatar size on small screens */
         width: 80px;
@@ -71,7 +71,7 @@
 }
 
 /* For screens that are 576px or less */
-@media screen and (max-width: 576px) {
+@media (max-width: 576px) {
     div.outer-container {
         /* Reduce padding around the overall post on smaller screens */
         padding: 10px;
@@ -85,7 +85,7 @@
 }
 
 /* For screens that are 450px or less (For Phone Browsers)*/
-@media screen and (max-width: 480px) {
+@media (max-width: 480px) {
 
     /* Switch the map to be below post body on small screens (mobile) */
     .post-content { flex-direction: column; }

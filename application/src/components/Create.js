@@ -4,14 +4,10 @@ import { Container } from 'react-bootstrap';
 function Create() {
 
   return (
-    <div>
+    <Container className="outer-container">
       {/* Temporary content (change me) */}
-      <Container style={{width: 1234}}>
-        <br/>
-        <b>Create component goes here.</b><br/>
-        <br/>
-      </Container>
-    </div>
+      <div className="h4">Follow these steps to create a new post</div>
+    </Container>
   )
 }
 

@@ -1,6 +1,7 @@
 #navbar {
-    /* Navbar rounded corners */
+    /* Navbar rounded corners & margin */
     border-radius: 0 0 20px 20px;
+    margin-bottom: 1.25rem;
 
     /* Logo */
     .navbar-brand img {
@@ -31,9 +32,9 @@
 }
 
 /* Link hover outline */
+@import '../components.scss'; // Needed since .hover-outline is defined in components.scss
 #nav-link-container .nav-link, 
 #navbar button.navbar-toggler {
-    @import '../components.scss'; // Needed since .hover-outline is defined in components.scss
     @extend .hover-outline;
 }
 
@@ -59,7 +60,7 @@
 }
 
 /* Hide navbar elements when hamburger menu is shown (i.e., on small screens) */
-@media screen and (max-width: 576px) {
+@media (max-width: 576px) {
     #navbar .basic-navbar-nav {
         display: none;
     }
