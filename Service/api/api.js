@@ -383,8 +383,8 @@ exports.uploadImage = async (req, res) => {
 
   UTILS.createImage(file)
     .then((result) => {
-      if (result.message) {
-        return res.status(500).send({ message: result.message });
+      if (!result) {
+        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
       }
 
       const response = { id: result.key };
@@ -474,8 +474,8 @@ exports.uploadPostImages = async (req, res) => {
   // Upload the avatar to S3 bucket
   UTILS.createImage(avatar)
     .then((avatarResult) => {
-      if (!avatarResult) {
-        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      if (avatarResult.message) {
+        return res.status(500).send({ message: avatarResult.message });
       }
 
       const avatarKey = avatarResult.key;
@@ -483,13 +483,13 @@ exports.uploadPostImages = async (req, res) => {
       // Upload post picture to S3 bucket
       UTILS.createImage(picture)
         .then((pictureResult) => {
-          if (!pictureResult) {
+          if (pictureResult.message) {
             // Delete avatar
             deleteFile(avatarKey)
-              .then(() => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG }))
+              .then(() => res.status(500).send({ message: pictureResult.message }))
               .catch((deleteAvatarError) => {
                 logger.error(deleteAvatarError.message);
-                return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+                return res.status(500).send({ message: pictureResult.message });
               });
           }
 
