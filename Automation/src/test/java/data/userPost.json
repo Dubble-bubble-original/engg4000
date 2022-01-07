@@ -8,5 +8,6 @@
         "latitude": 0,
         "longitude": 0
     },
+    "location_string": "New Brunswick, Canada",
     "true_location": true
 }

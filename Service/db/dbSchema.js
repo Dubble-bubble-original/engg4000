@@ -21,6 +21,7 @@ const userPostSchema = new Schema({
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
   },
+  location_string: { type: String, required: true },
   true_location: { type: Boolean, required: true },
   access_key: { type: String, required: true, unique: true }
 });

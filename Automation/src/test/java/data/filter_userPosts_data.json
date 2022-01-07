@@ -10,6 +10,7 @@
       "longitude": 0
     },
     "true_location": true,
+    "location_string": "New Brunswick, Canada",
     "access_key": "7f3a187f-115b-455d-892b-d8465e316123"
   },
 
@@ -23,6 +24,7 @@
       "latitude": 0,
       "longitude": 0
     },
+    "location_string": "New Brunswick, Canada",
     "true_location": true,
     "access_key": "7f3a187f-115b-455d-892b-d8465e316456"
   },
@@ -38,6 +40,7 @@
       "longitude": 0
     },
     "true_location": true,
+    "location_string": "New Brunswick, Canada",
     "access_key": "7f3a187f-115b-455d-892b-d8465e316789"
   },
 
@@ -52,6 +55,7 @@
       "longitude": 0
     },
     "true_location": true,
+    "location_string": "New Brunswick, Canada",
     "access_key": "7f3a187f-115b-455d-892b-d8465e316012"
   }
 }

@@ -72,6 +72,7 @@ exports.createUserPost = (req, res) => {
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
+    location_string: req.body.location_string,
     access_key: accessKey
   });
 
@@ -96,6 +97,7 @@ exports.createUserPost = (req, res) => {
         date_created: newUserPost.date_created,
         location: newUserPost.location,
         true_location: newUserPost.true_location,
+        location_string: newUserPost.location_string,
         access_key: newUserPost.access_key
       }
     });
