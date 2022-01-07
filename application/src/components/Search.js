@@ -6,7 +6,7 @@ function Search() {
   return (
     <Container className="outer-container">
       {/* Temporary content (change me) */}
-      <div className="h4">Select tags to search</div>
+      <div className="h4 mb-0">Select tags to search</div>
     </Container>
   )
 }
