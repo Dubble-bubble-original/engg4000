@@ -57,6 +57,8 @@ Feature: User post endpoints tests
     When method get
     Then status 200
     And match response._id == post_id
+    And match response.author._id == '618981693b4ab71971e9f73e'
+    And match response.author.name == 'Goblin'
 
     # Call update user post endpoint
     Given path 'userpost/' + post_id
@@ -65,6 +67,8 @@ Feature: User post endpoints tests
     When method patch
     Then status 200
     And match response.title == 'new title'
+    And match response.author._id == '618981693b4ab71971e9f73e'
+    And match response.author.name == 'Goblin'
 
     # Call delete user post endpoint
     Given path 'userpost/' + post_access_key
