@@ -101,10 +101,35 @@ Feature: User post endpoints tests
     # Call post images endpoint with missing image
     Given path 'postimages'
     And header token = auth_token
-    And multipart file images = { read: '../data/nota-logo.jpg', filename: 'nota-logo.jpg', contentType: 'multipart/form-data' }
+    And multipart file avatar = { read: '../data/nota-logo.jpg', filename: 'nota-logo.jpg', contentType: 'multipart/form-data' }
     When method post
     Then status 400
     And match response.message == 'Missing Images'
+
+  Scenario: Try to upload avatar and post picture
+    # Call post images endpoint
+    Given path 'postimages'
+    And header token = auth_token
+    And multipart file avatar = { read: '../data/nota-logo.jpg', filename: 'nota-logo1.jpg', contentType: 'multipart/form-data' }
+    And multipart file picture = { read: '../data/nota-logo.jpg', filename: 'nota-logo2.jpg', contentType: 'multipart/form-data' }
+    When method post
+    Then status 201
+    * def avatarId = response.avatarId
+    * def pictureId = response.pictureId
+
+    # Call delete image endpoint to delete avatar
+    Given path 'image/' + avatarId
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'Image Deleted Successfully'
+
+    # Call delete image endpoint to delete post picture
+    Given path 'image/' + pictureId
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'Image Deleted Successfully'
 
   Scenario: Try to create a user and user post with no auth token
     # Call create user post endpoint with no auth token header
@@ -155,3 +180,28 @@ Feature: User post endpoints tests
     When method post
     Then status 400
     And match response.message == 'Missing Image IDs'
+
+  Scenario: Try to create a user and user post
+    # Call create user post endpoint
+    Given path 'post'
+    And header token = auth_token
+    And request read('../data/user_userPost.json')
+    When method post
+    Then status 201
+    * def post_id = response.post._id
+    * def post_access_key = response.post.access_key
+    * def user_id = response.post.author._id
+
+    # Call delete user post endpoint
+    Given path 'userpost/' + post_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Post Deleted Successfully'
+
+    # Call delete user endpoint
+    Given path 'user/' + user_id
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Deleted Successfully'

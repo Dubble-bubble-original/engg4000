@@ -106,8 +106,8 @@ export const deleteImage = async (id) => {
 export const postImages = async (avatar, picture) => {
   return await requestWithToken(async() => {
     const formData = new FormData();
-    formData.append('images', avatar);
-    formData.append('images', picture);
+    formData.append('avatar', avatar);
+    formData.append('picture', picture);
 
     const response = await axios({
       method: 'POST',

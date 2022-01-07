@@ -418,17 +418,23 @@ exports.deleteImage = async (req, res) => {
 
 exports.uploadPostImages = async (req, res) => {
   // Request body must contain two images
-  if (!req.files || req.files.length < 2) {
-    if (req.files) {
-      // Delete file from local server
-      fs.unlinkSync(req.files[0].path);
+  if (!req.files || req.files.length < 2 || !req.files.avatar || !req.files.picture) {
+    // Delete uploaded files
+    if (req.files && req.files.avatar && !req.files.picture) {
+      const avatarPath = req.files.avatar[0].path;
+      await fs.promises.unlink(avatarPath);
     }
+    else if (req.files && !req.files.avatar && req.files.picture) {
+      const picturePath = req.files.picture[0].path;
+      await fs.promises.unlink(picturePath);
+    }
+
     logger.info('Missing Images');
     return res.status(400).send({ message: 'Missing Images' });
   }
 
-  const avatar = req.files[0];
-  const picture = req.files[1];
+  const avatar = req.files.avatar[0];
+  const picture = req.files.picture[0];
 
   // Upload the avatar to S3 bucket
   UTILS.createImage(avatar)

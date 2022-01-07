@@ -124,7 +124,7 @@ if (ENV.NODE_ENV === 'dev') {
 ROUTER.post(
   '/postimages',
   USE(API.verifyAuthToken),
-  USE(upload.array('images', 2)),
+  USE(upload.fields([{ name: 'avatar' }, { name: 'picture' }])),
   USE(API.uploadPostImages)
 );
 

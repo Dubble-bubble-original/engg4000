@@ -28,7 +28,7 @@ exports.createImage = async (file) => (
   uploadFile(file)
     .then((result) => {
       // Delete file from local server
-      fs.unlinkSync(file.path);
+      fs.promises.unlink(file.path);
 
       return result;
     })
