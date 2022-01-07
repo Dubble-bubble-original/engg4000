@@ -52,14 +52,12 @@ function Home() {
   }
 
   return (
-    <div className="home-page" data-testid="home-page">
-      <Container>
-        <br/>
-        <b>Home Page goes here.</b><br/>
-        <br/>
+    <>
+      <Container className="home-page outer-container" data-testid="home-page">
+        <div className="h4">Recent posts</div>
       </Container>
       <Post postData={postData}/>
-    </div>
+    </>
   )
 }
 

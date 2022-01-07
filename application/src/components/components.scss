@@ -23,9 +23,9 @@
     object-fit: contain;
 }
 
-.clickable {
-    cursor: pointer;
-}
+.clickable { cursor: pointer; }
+.green { color: var(--bs-green); }
+.red { color: var(--bs-red); }
 
 .hover-outline {
     transition: box-shadow .15s ease-in-out;
