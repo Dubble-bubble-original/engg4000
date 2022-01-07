@@ -383,8 +383,8 @@ exports.uploadImage = async (req, res) => {
 
   UTILS.createImage(file)
     .then((result) => {
-      if (!result) {
-        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      if (result.message) {
+        return res.status(500).send({ message: result.message });
       }
 
       const response = { id: result.key };
