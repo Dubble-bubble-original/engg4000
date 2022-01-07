@@ -1,6 +1,6 @@
 {
   "post1": {
-    "author_id": "21cb6b9b4f4ddef1ad47f043",
+    "author": "6189828380b43f0744d0a035",
     "tags": ["Mclaren", "Desert", "Test Tag 1", "Two Seater"],
     "title": "Mclaren F1",
     "body": "Mclaren F1, Colour Orange",
@@ -9,12 +9,11 @@
       "latitude": 0,
       "longitude": 0
     },
-    "true_location": true,
-    "access_key": "7f3a187f-115b-455d-892b-d8465e316123"
+    "true_location": true
   },
 
   "post2": {
-    "author_id": "51cb6b9b4f4ddef1ad47f053",
+    "author": "6189828380b43f0744d0a035",
     "tags": ["Ferrari", "Red", "Two Seater"],
     "title": "Ferrari",
     "body": "Ferrari, Colour: Red and Black",
@@ -23,12 +22,11 @@
       "latitude": 0,
       "longitude": 0
     },
-    "true_location": true,
-    "access_key": "7f3a187f-115b-455d-892b-d8465e316456"
+    "true_location": true
   },
 
   "post3": {
-    "author_id": "71cb6b9b4f4ddef1ad47f073",
+    "author": "6189828380b43f0744d0a035",
     "tags": ["Mountains", "Snow", "Test Tag 1"],
     "title": "Beautiful Mountain View!!",
     "body": "Mountains covered with snow",
@@ -37,12 +35,11 @@
       "latitude": 0,
       "longitude": 0
     },
-    "true_location": true,
-    "access_key": "7f3a187f-115b-455d-892b-d8465e316789"
+    "true_location": true
   },
 
   "post4": {
-    "author_id": "91cb6b9b4f4ddef1ad47f093",
+    "author": "6189828380b43f0744d0a035",
     "tags": ["Ferrari", "Red-Gray", "Two Seater"],
     "title": "Ferrari",
     "body": "Ferrari, Colour: Red and Gray",
@@ -51,7 +48,6 @@
       "latitude": 0,
       "longitude": 0
     },
-    "true_location": true,
-    "access_key": "7f3a187f-115b-455d-892b-d8465e316012"
+    "true_location": true
   }
 }
