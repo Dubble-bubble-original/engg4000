@@ -1,6 +1,7 @@
 // Packages
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
+const fs = require('fs');
 
 // Utils
 const UTILS = require('../utils/utils');
@@ -418,6 +419,10 @@ exports.deleteImage = async (req, res) => {
 exports.uploadPostImages = async (req, res) => {
   // Request body must contain two images
   if (!req.files || req.files.length < 2) {
+    if (req.files) {
+      // Delete file from local server
+      fs.unlinkSync(req.files[0].path);
+    }
     logger.info('Missing Images');
     return res.status(400).send({ message: 'Missing Images' });
   }
@@ -456,6 +461,12 @@ exports.uploadPostImages = async (req, res) => {
 };
 
 exports.createPost = async (req, res) => {
+  // No request body provided
+  if (!req.body || !Object.keys(req.body).length) {
+    logger.info('No Request Body Provided');
+    return res.status(400).send({ message: 'No Request Body Provided' });
+  }
+
   // Request body must contain user and user post data
   if (!req.body.user) {
     logger.info('Missing User');
