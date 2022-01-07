@@ -1,7 +1,6 @@
 // Packages
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
-const fs = require('fs');
 
 // Utils
 const UTILS = require('../utils/utils');
@@ -452,53 +451,80 @@ exports.deleteImage = async (req, res) => {
 };
 
 exports.uploadPostImages = async (req, res) => {
-  // Request body must contain two images
-  if (!req.files || req.files.length < 2 || !req.files.avatar || !req.files.picture) {
-    // Delete uploaded files
-    if (req.files && req.files.avatar && !req.files.picture) {
-      const avatarPath = req.files.avatar[0].path;
-      await fs.promises.unlink(avatarPath);
-    }
-    else if (req.files && !req.files.avatar && req.files.picture) {
-      const picturePath = req.files.picture[0].path;
-      await fs.promises.unlink(picturePath);
-    }
-
-    logger.info('Missing Images');
-    return res.status(400).send({ message: 'Missing Images' });
+  // Request body must contain at least one image
+  if (!req.files || req.files.length < 1) {
+    logger.info('No Images Provided');
+    return res.status(400).send({ message: 'No Images Provided' });
   }
 
-  const avatar = req.files.avatar[0];
-  const picture = req.files.picture[0];
+  // Uploading both an avatar and a post picture
+  if (req.files.avatar && req.files.picture) {
+    const avatar = req.files.avatar[0];
+    const picture = req.files.picture[0];
 
-  // Upload the avatar to S3 bucket
-  UTILS.createImage(avatar)
-    .then((avatarResult) => {
-      if (!avatarResult) {
-        return res.status(500).send({ message: avatarResult.message });
-      }
+    // Upload the avatar to S3 bucket
+    UTILS.createImage(avatar)
+      .then((avatarResult) => {
+        if (!avatarResult) {
+          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+        }
 
-      const avatarKey = avatarResult.key;
+        const avatarKey = avatarResult.key;
 
-      // Upload post picture to S3 bucket
-      UTILS.createImage(picture)
-        .then((pictureResult) => {
-          if (!pictureResult) {
-            // Delete avatar
-            deleteFile(avatarKey)
-              .then(() => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG }))
-              .catch((deleteAvatarError) => {
-                logger.error(deleteAvatarError.message);
-                return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-              });
-          }
+        // Upload post picture to S3 bucket
+        UTILS.createImage(picture)
+          .then((pictureResult) => {
+            if (!pictureResult) {
+              // Delete avatar
+              deleteFile(avatarKey)
+                .then(() => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG }))
+                .catch((deleteAvatarError) => {
+                  logger.error(deleteAvatarError.message);
+                  return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+                });
+            }
 
-          const pictureKey = pictureResult.key;
+            const pictureKey = pictureResult.key;
 
-          const response = { avatarId: avatarKey, pictureId: pictureKey };
-          return res.status(201).send(response);
-        });
-    });
+            const response = { avatarId: avatarKey, pictureId: pictureKey };
+            return res.status(201).send(response);
+          });
+      });
+  }
+  // Uploading only an avatar
+  else if (req.files.avatar && !req.files.picture) {
+    const avatar = req.files.avatar[0];
+
+    // Upload the avatar to S3 bucket
+    UTILS.createImage(avatar)
+      .then((avatarResult) => {
+        if (!avatarResult) {
+          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+        }
+
+        const avatarKey = avatarResult.key;
+
+        const response = { avatarId: avatarKey };
+        return res.status(201).send(response);
+      });
+  }
+  // Uploading only a post picture
+  else if (!req.files.avatar && req.files.picture) {
+    const picture = req.files.picture[0];
+
+    // Upload the avatar to S3 bucket
+    UTILS.createImage(picture)
+      .then((pictureResult) => {
+        if (!pictureResult) {
+          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+        }
+
+        const pictureKey = pictureResult.key;
+
+        const response = { pictureId: pictureKey };
+        return res.status(201).send(response);
+      });
+  }
 };
 
 exports.createPost = async (req, res) => {

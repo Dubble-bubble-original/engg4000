@@ -262,16 +262,39 @@ Feature: User post endpoints tests
     And header token = auth_token
     When method post
     Then status 400
-    And match response.message == 'Missing Images'
+    And match response.message == 'No Images Provided'
 
-  Scenario: Try to upload avatar and post picture with missing picture
-    # Call post images endpoint with missing image
+  Scenario: Try to upload avatar only
+    # Call post images endpoint with avatar only
     Given path 'postimages'
     And header token = auth_token
     And multipart file avatar = { read: '../data/nota-logo.jpg', filename: 'nota-logo.jpg', contentType: 'multipart/form-data' }
     When method post
-    Then status 400
-    And match response.message == 'Missing Images'
+    Then status 201
+    * def avatarId = response.avatarId
+
+    # Call delete image endpoint to delete avatar
+    Given path 'image/' + avatarId
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'Image Deleted Successfully'
+
+  Scenario: Try to upload post picture only
+    # Call post images endpoint with post picture only
+    Given path 'postimages'
+    And header token = auth_token
+    And multipart file picture = { read: '../data/nota-logo.jpg', filename: 'nota-logo.jpg', contentType: 'multipart/form-data' }
+    When method post
+    Then status 201
+    * def pictureId = response.pictureId
+
+    # Call delete image endpoint to delete post picture
+    Given path 'image/' + pictureId
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'Image Deleted Successfully'
 
   Scenario: Try to upload avatar and post picture
     # Call post images endpoint
