@@ -474,7 +474,7 @@ exports.uploadPostImages = async (req, res) => {
   // Upload the avatar to S3 bucket
   UTILS.createImage(avatar)
     .then((avatarResult) => {
-      if (avatarResult.message) {
+      if (!avatarResult) {
         return res.status(500).send({ message: avatarResult.message });
       }
 
@@ -483,13 +483,13 @@ exports.uploadPostImages = async (req, res) => {
       // Upload post picture to S3 bucket
       UTILS.createImage(picture)
         .then((pictureResult) => {
-          if (pictureResult.message) {
+          if (!pictureResult) {
             // Delete avatar
             deleteFile(avatarKey)
-              .then(() => res.status(500).send({ message: pictureResult.message }))
+              .then(() => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG }))
               .catch((deleteAvatarError) => {
                 logger.error(deleteAvatarError.message);
-                return res.status(500).send({ message: pictureResult.message });
+                return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
               });
           }
 

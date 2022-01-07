@@ -34,7 +34,6 @@ exports.createImage = async (file) => (
     })
     .catch((err) => {
       logger.error(err.message);
-      const result = { message: err.message };
-      return result;
+      return null;
     })
 );
