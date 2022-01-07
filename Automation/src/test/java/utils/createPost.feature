@@ -1,5 +1,5 @@
 @ignore
-Feature: Get Created Post
+Feature: Create a complete User Post
 
   Background:
     * url baseUrl

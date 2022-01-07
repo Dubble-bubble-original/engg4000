@@ -453,10 +453,10 @@ exports.deleteImage = async (req, res) => {
 };
 
 exports.deletePost = async (req, res) => {
-  const acessKey = req.params.ak;
+  const userPostID = req.params.id;
 
   // Deleting User Post
-  return UTILS.deletePost(acessKey)
+  return UTILS.deletePost(userPostID)
     .then((post) => {
       if (post === undefined) {
         return res.status(404).send({ message: 'User Post Not Found' });

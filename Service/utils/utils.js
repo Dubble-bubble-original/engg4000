@@ -68,8 +68,8 @@ exports.deleteUser = async (userID) => (
     })
 );
 
-exports.deletePost = async (acessKey) => (
-  UserPost.findOneAndDelete({ access_key: acessKey })
+exports.deletePost = async (postID) => (
+  UserPost.findByIdAndDelete(postID)
     .populate('author')
     .exec()
     .then((doc) => {
