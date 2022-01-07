@@ -18,8 +18,8 @@ const userPostSchema = new Schema({
   img_URL: { type: String },
   date_created: { type: Date, default: Date.now, immutable: true },
   location: {
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true }
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true }
   },
   location_string: { type: String, required: true },
   true_location: { type: Boolean, required: true },
