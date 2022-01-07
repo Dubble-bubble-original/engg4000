@@ -184,6 +184,9 @@ Feature: User post endpoints tests
     When method get
     Then status 200
     And match response.access_key == post_access_key
+    And match response._id == post_id
+    And match response.author._id == '618981693b4ab71971e9f73e'
+    And match response.author.name == 'Goblin'
 
     # Call update user post endpoint
     Given path 'userpost/' + post_id
@@ -192,6 +195,8 @@ Feature: User post endpoints tests
     When method patch
     Then status 200
     And match response.title == 'new title'
+    And match response.author._id == '618981693b4ab71971e9f73e'
+    And match response.author.name == 'Goblin'
 
     # Call delete user post endpoint
     Given path 'userpost/' + post_id
@@ -262,6 +267,8 @@ Feature: User post endpoints tests
     When method post
     Then status 200
     And match each response contains { title: "Ferrari" }
+    And match response[*].author._id contains '6189828380b43f0744d0a035'
+    And match response[*].author.name contains 'Ghoul'
 
     # Call userPosts endpoint with an unused title as filter
 
@@ -289,6 +296,8 @@ Feature: User post endpoints tests
     When method post
     Then status 200
     And match response[*].tags[*] contains "Test Tag 1"
+    And match response[*].author._id contains '6189828380b43f0744d0a035'
+    And match response[*].author.name contains 'Ghoul'
 
     # Call userPosts endpoint with a unused tag as filter
 
@@ -308,6 +317,8 @@ Feature: User post endpoints tests
     Then status 200
     And match response[*].tags[*] contains "Ferrari"
     And match response[*].tags[*] contains "Two Seater"
+    And match response[*].author._id contains '6189828380b43f0744d0a035'
+    And match response[*].author.name contains 'Ghoul'
 
     # Call userposts endpoint with tags and title as search filters
 
@@ -318,6 +329,8 @@ Feature: User post endpoints tests
     Then status 200
     And match response[*].tags[*] contains "Red-Gray"
     And match each response contains { title: "Ferrari" }
+    And match response[*].author._id contains '6189828380b43f0744d0a035'
+    And match response[*].author.name contains 'Ghoul'
 
     # Call userposts endpoint with an invalid filter
 

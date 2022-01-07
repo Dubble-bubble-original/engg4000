@@ -64,7 +64,7 @@ exports.createUserPost = (req, res) => {
   const dateCreated = Date.now();
   const accessKey = uuidv4();
   const newUserPost = new UserPost({
-    author_ID: req.body.author_ID,
+    author: req.body.author_ID,
     body: req.body.body,
     tags: req.body.tags,
     title: req.body.title,
@@ -88,7 +88,7 @@ exports.createUserPost = (req, res) => {
     return res.status(201).json({
       post: {
         _id: newUserPost._id,
-        author_ID: newUserPost.author_ID,
+        author: newUserPost.author,
         body: newUserPost.body,
         tags: newUserPost.tags,
         title: newUserPost.title,
@@ -118,6 +118,8 @@ exports.updateUserPost = (req, res) => {
 
   const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
+    .populate('author')
+    .exec()
     .then((doc) => {
       if (!doc) {
         return res.status(404).send({ message: 'User Post Not Found' });
@@ -157,6 +159,8 @@ exports.getUserPost = (req, res) => {
   const acessKey = req.params.ak;
 
   UserPost.findOne({ access_key: acessKey })
+    .populate('author')
+    .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
@@ -205,6 +209,7 @@ exports.getUserPosts = (req, res) => {
           title: 1,
           body: 1,
           tags: 1,
+          author: 1,
           img_URL: 1,
           date_created: 1,
           location: 1,
@@ -218,12 +223,33 @@ exports.getUserPosts = (req, res) => {
       { $sort: { maxTagMatch: -1, date_created: -1, _id: 1 } }
     ];
   }
+  else if (providedTags.length === 1) {
+    // When only one tag is provided sort by date_created
+    searchFilters = [
+      ...searchFilters,
+      { $sort: { date_created: -1, _id: 1 } }
+    ];
+  }
 
   // If the searchFilters are empty an invalid (or no) filter was provided
   if (searchFilters.length === 0) {
     logger.info('Invalid search filters provided');
     return res.status(400).send('Invalid search filters provided');
   }
+
+  // Add Authors to the searach filters
+  searchFilters = [
+    ...searchFilters,
+    {
+      $lookup: {
+        from: User.collection.name,
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author'
+      }
+    },
+    { $unwind: '$author' }
+  ];
 
   // Get current page number
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
@@ -238,6 +264,15 @@ exports.getUserPosts = (req, res) => {
 
 exports.getRecentPosts = (req, res) => {
   let searchFilters = [
+    {
+      $lookup: {
+        from: User.collection.name,
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author'
+      }
+    },
+    { $unwind: '$author' },
     { $sort: { date_created: -1, _id: 1 } }
   ];
 
@@ -249,7 +284,7 @@ exports.getRecentPosts = (req, res) => {
   }
 
   UserPost.aggregate(searchFilters).limit(POST_LIMIT)
-    .then((docs) => res.status(200).send(docs))
+    .then((combinedDocs) => res.status(200).send(combinedDocs))
     .catch((error) => {
       logger.error(error.message);
       return res.status(500).send(error);
