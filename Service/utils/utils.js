@@ -2,9 +2,7 @@
 const fs = require('fs');
 
 // S3
-const {
-  uploadFile // , checkFile, downloadFile, getFileUrl, deleteFile
-} = require('../s3/s3');
+const { uploadFile } = require('../s3/s3');
 
 exports.removeStaleTokens = (token) => {
   // Clear the stale token
