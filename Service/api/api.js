@@ -329,7 +329,7 @@ exports.createUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-  const userId = req.params.id;
+  const userId = req.params.ak;
 
   if (!ObjectId.isValid(userId)) {
     logger.info('Invalid User ID');
