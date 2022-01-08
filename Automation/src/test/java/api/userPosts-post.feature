@@ -362,7 +362,59 @@ Feature: User post endpoints tests
     Then status 400
     And match response.message == 'Missing User Post'
 
-  Scenario: Try to create a user and user post
+  Scenario: Try to create a user and user post with only an avatar
+    # Call create user post endpoint
+    Given path 'post'
+    And header token = auth_token
+    And request read('../data/user_userPost_missingPictureId.json')
+    When method post
+    Then status 201
+    * match response.post !contains { img_url: '#notnull' }
+    * def post_id = response.post._id
+    * def post_access_key = response.post.access_key
+    * def user_id = response.post.author._id
+
+    # Call delete user post endpoint
+    Given path 'userpost/' + post_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Post Deleted Successfully'
+
+    # Call delete user endpoint
+    Given path 'user/' + user_id
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Deleted Successfully'
+
+  Scenario: Try to create a user and user post with only a post picture
+    # Call create user post endpoint
+    Given path 'post'
+    And header token = auth_token
+    And request read('../data/user_userPost_missingAvatarId.json')
+    When method post
+    Then status 201
+    * match response.post.author !contains { avatar_url: '#notnull' }
+    * def post_id = response.post._id
+    * def post_access_key = response.post.access_key
+    * def user_id = response.post.author._id
+
+    # Call delete user post endpoint
+    Given path 'userpost/' + post_access_key
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Post Deleted Successfully'
+
+    # Call delete user endpoint
+    Given path 'user/' + user_id
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Deleted Successfully'
+
+  Scenario: Try to create a user and user post with both an avatar and post picture
     # Call create user post endpoint
     Given path 'post'
     And header token = auth_token
