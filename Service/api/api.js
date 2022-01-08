@@ -528,18 +528,6 @@ exports.createPost = async (req, res) => {
     if (userError) {
       logger.info(userError.message);
 
-      // Delete avatar
-      deleteFile(avatarId)
-        .catch((avatarError) => {
-          logger.error(avatarError.message);
-        });
-
-      // Delete picture
-      deleteFile(pictureId)
-        .catch((pictureError) => {
-          logger.error(pictureError.message);
-        });
-
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
       }
@@ -566,18 +554,6 @@ exports.createPost = async (req, res) => {
     newUserPost.save((postError) => {
       if (postError) {
         logger.info(postError.message);
-
-        // Delete avatar
-        deleteFile(avatarId)
-          .catch((avatarError) => {
-            logger.error(avatarError.message);
-          });
-
-        // Delete picture
-        deleteFile(pictureId)
-          .catch((pictureError) => {
-            logger.error(pictureError.message);
-          });
 
         // Delete user
         User.findByIdAndRemove(newUser._id)
