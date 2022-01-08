@@ -362,15 +362,6 @@ Feature: User post endpoints tests
     Then status 400
     And match response.message == 'Missing User Post'
 
-  Scenario: Try to create a user and user post with missing picture id
-    # Call create user post endpoint with missing picture id
-    Given path 'post'
-    And header token = auth_token
-    And request read('../data/user_userPost_missingPictureId.json')
-    When method post
-    Then status 400
-    And match response.message == 'Missing Image IDs'
-
   Scenario: Try to create a user and user post
     # Call create user post endpoint
     Given path 'post'

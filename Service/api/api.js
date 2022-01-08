@@ -457,74 +457,41 @@ exports.uploadPostImages = async (req, res) => {
     return res.status(400).send({ message: 'No Images Provided' });
   }
 
-  // Uploading both an avatar and a post picture
-  if (req.files.avatar && req.files.picture) {
+  const response = {
+    avatarId: null,
+    pictureId: null
+  };
+
+  // Uploading avatar
+  if (req.files.avatar) {
     const avatar = req.files.avatar[0];
+    const avatarResult = await UTILS.createImage(avatar);
+    if (!avatarResult) {
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    }
+    response.avatarId = avatarResult.key;
+  }
+
+  // Uploading post picture
+  if (req.files.picture) {
     const picture = req.files.picture[0];
-
-    // Upload the avatar to S3 bucket
-    UTILS.createImage(avatar)
-      .then((avatarResult) => {
-        if (!avatarResult) {
-          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-        }
-
-        const avatarKey = avatarResult.key;
-
-        // Upload post picture to S3 bucket
-        UTILS.createImage(picture)
-          .then((pictureResult) => {
-            if (!pictureResult) {
-              // Delete avatar
-              deleteFile(avatarKey)
-                .then(() => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG }))
-                .catch((deleteAvatarError) => {
-                  logger.error(deleteAvatarError.message);
-                  return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-                });
-            }
-
-            const pictureKey = pictureResult.key;
-
-            const response = { avatarId: avatarKey, pictureId: pictureKey };
-            return res.status(201).send(response);
+    const pictureResult = await UTILS.createImage(picture);
+    if (!pictureResult) {
+      // Delete avatar
+      if (response.avatarId) {
+        // Delete avatar
+        deleteFile(avatarKey)
+          .then(() => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG }))
+          .catch((deleteAvatarError) => {
+            logger.error(deleteAvatarError.message);
+            return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
           });
-      });
+      }
+    }
+    response.pictureId = pictureResult.key;
   }
-  // Uploading only an avatar
-  else if (req.files.avatar && !req.files.picture) {
-    const avatar = req.files.avatar[0];
 
-    // Upload the avatar to S3 bucket
-    UTILS.createImage(avatar)
-      .then((avatarResult) => {
-        if (!avatarResult) {
-          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-        }
-
-        const avatarKey = avatarResult.key;
-
-        const response = { avatarId: avatarKey };
-        return res.status(201).send(response);
-      });
-  }
-  // Uploading only a post picture
-  else if (!req.files.avatar && req.files.picture) {
-    const picture = req.files.picture[0];
-
-    // Upload the avatar to S3 bucket
-    UTILS.createImage(picture)
-      .then((pictureResult) => {
-        if (!pictureResult) {
-          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-        }
-
-        const pictureKey = pictureResult.key;
-
-        const response = { pictureId: pictureKey };
-        return res.status(201).send(response);
-      });
-  }
+  return res.status(201).send(response);
 };
 
 exports.createPost = async (req, res) => {
@@ -543,10 +510,6 @@ exports.createPost = async (req, res) => {
     logger.info('Missing User Post');
     return res.status(400).send({ message: 'Missing User Post' });
   }
-  if (!req.body.avatarId || !req.body.pictureId) {
-    logger.info('Missing Image IDs');
-    return res.status(400).send({ message: 'Missing Image IDs' });
-  }
 
   const {
     user, post, avatarId, pictureId
@@ -555,9 +518,11 @@ exports.createPost = async (req, res) => {
   // Create user with uploaded avatar
   const newUser = new User({
     name: user.name,
-    avatar_url: BUCKET_URL + avatarId,
     email: user.email
   });
+  if (avatarId) {
+    newUser.avatar_url = BUCKET_URL + avatarId;
+  }
 
   newUser.save((userError) => {
     if (userError) {
@@ -589,12 +554,14 @@ exports.createPost = async (req, res) => {
       body: post.body,
       tags: post.tags,
       title: post.title,
-      img_url: BUCKET_URL + pictureId,
       date_created: dateCreated,
       location: post.location,
       true_location: post.true_location,
       access_key: accessKey
     });
+    if (pictureId) {
+      newUserPost.img_url = BUCKET_URL + pictureId;
+    }
 
     newUserPost.save((postError) => {
       if (postError) {
