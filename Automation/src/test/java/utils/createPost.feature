@@ -45,3 +45,4 @@ Scenario: Create a post
   When method post
   * set response.author = user
   Then status 201
+  And print response
