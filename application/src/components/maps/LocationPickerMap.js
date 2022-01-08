@@ -1,6 +1,8 @@
 // React
 import PropTypes from 'prop-types'
+import ReactDOM from 'react-dom'
 import { useState } from 'react'
+import { Button } from 'react-bootstrap';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 
 // Map size expands to fit its container's size
@@ -47,7 +49,7 @@ function LocationPickerMap(props) {
     infoWindow.setPosition(map.getCenter());
     infoWindow.setContent(
       browserHasGeolocation
-        ? 'Error: The Geolocation service failed.' 
+        ? 'Error: The Geolocation service failed.<br/>Make sure to allow location access in your browser settings.' 
         : 'Error: Your browser doesn\'t support geolocation.'
     );
     infoWindow.open(map);
@@ -55,34 +57,16 @@ function LocationPickerMap(props) {
 
   // Create a custom map control inside the given div
   function customControl(controlDiv, map) {
-    // Set CSS for the control border.
-    const controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#fff';
-    controlUI.style.border = '2px solid #fff';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginTop = '8px';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'center';
-    controlUI.title = 'Click to use your current location';
-    controlDiv.appendChild(controlUI);
+    const controlUI = 
+      <Button 
+        title="Click to use your current location"
+        className="button-shadow mt-2"
+        onClick={() => getUserPosition(map)}
+      >
+        Use Current Location
+      </Button>;
 
-    // Set CSS for the control interior.
-    const controlText = document.createElement('div');
-    controlText.style.color = 'rgb(25,25,25)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Use Current Location';
-    controlUI.appendChild(controlText);
-
-    // Setup the click event listener
-    controlUI.addEventListener('click', () => {
-      getUserPosition(map);
-    });
+    ReactDOM.render(controlUI, controlDiv);
   }
 
   // Add the 'Use Current Location' button when map loads

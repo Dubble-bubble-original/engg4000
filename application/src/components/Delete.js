@@ -67,7 +67,7 @@ function Delete() {
           <div className="h4">Delete a post</div>
           <div>To delete a post you must enter the access code that was given to you when you created the post.</div>
           <br/>
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group>
             <Form.Label>Access code</Form.Label>
             <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
               <Col style={{maxWidth: '400px'}} className="flex-grow-1">

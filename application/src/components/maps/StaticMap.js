@@ -1,6 +1,6 @@
 // React
 import PropTypes from 'prop-types'
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Modal } from 'react-bootstrap';
 import placeholderImage from '../../resources/images/placeholder-image.png';
@@ -37,7 +37,7 @@ function StaticMap(props) {
   const URL = encodeURI(baseURL + parameters.join('&'));
   
   return (
-    <React.Fragment>
+    <>
       <img style={imgStyle} src={URL} tabIndex="0" onClick={() => setShowModal(true)} className="clickable hover-outline" onError={handleImgError} />
 
       <Modal size='xl' scrollable show={showModal} onHide={() => setShowModal(false)}>
@@ -47,7 +47,7 @@ function StaticMap(props) {
           <DynamicMap position={props.position} zoom={zoom} />
         </Modal.Body>
       </Modal>
-    </React.Fragment>
+    </>
   );
 }
 
