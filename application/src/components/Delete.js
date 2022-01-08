@@ -110,9 +110,7 @@ function Delete() {
                 <Row>
                   <Col>
                     <Alert variant="danger" className="mb-0 mt-3" dismissible onClose={() => setSearchResult('found')}>
-                      <Alert.Heading className="mb-0">
-                        Post could not be deleted. Please try again later.
-                      </Alert.Heading>
+                      Post could not be deleted. Please try again later.
                     </Alert>
                   </Col>
                 </Row>
@@ -136,9 +134,7 @@ function Delete() {
         <Case condition={searchResult === 'deleted'}>
           <Container className="outer-container">
             <Alert variant="success" className="mb-0" dismissible onClose={() => setSearchResult(null)}>
-              <Alert.Heading className="mb-0">
-                Post deleted successfully
-              </Alert.Heading>
+              Post deleted successfully
             </Alert>
           </Container>
         </Case>
