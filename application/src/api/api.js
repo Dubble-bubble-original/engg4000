@@ -57,7 +57,7 @@ export const getPostByAccessKey = async (accessKey) => {
 
 // Delete post
 export const deletePostByID = async (_id) => {
-  // TODO: Call the exposed delete post endpoint
+  // TODO: Call the exposed delete post endpoint (DBO-57)
   // return await requestWithToken(async() => {
   //   const response = await axios({
   //       method: 'DELETE',

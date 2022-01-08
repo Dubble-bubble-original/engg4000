@@ -148,18 +148,15 @@ function Delete() {
 
       <ConfirmationModal
         title="Confirmation"
-        body={
-          <div>
-            Do you really want to delete this post?<br/>
-            This cannot be undone.
-          </div>
-        }
         acceptString="Delete"
         cancelString="Cancel"
         acceptCallback={deletePost}
         show={showConfirmationModal}
         setShow={setShowConfirmationModal}
-      />
+      >
+        Do you really want to delete this post?<br/>
+        This cannot be undone.
+      </ConfirmationModal>
     </>
   )
 }
