@@ -11,7 +11,7 @@ const { UserPost, User } = require('../db/dbSchema');
 
 // S3
 const {
-  uploadFile, checkFile, downloadFile, getFileUrl, deleteFile
+  uploadFile, checkFile, downloadFile, deleteFile
 } = require('../s3/s3');
 
 // Constants
