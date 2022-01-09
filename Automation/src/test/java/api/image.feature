@@ -40,10 +40,10 @@ Feature: image endpoints tests
     And match response.message contains 'Image Does Not Exist'
 
   Scenario: Post, Get image, Get URL & Delete image
-    # Post the new image
+      # Post the new image
     Given path 'image'
     And header token = auth_token
-    And multipart file image = { read: '../data/image-default.png', filename: 'karate_test.png', contentType: 'multipart/form-data'}
+    And multipart file image = { read: '../data/image-default.png', filename: 'karate_test.png', contentType: 'image/png'}
     When method post
     Then status 201
     * def img_id = response.id
@@ -51,6 +51,12 @@ Feature: image endpoints tests
     # Get the image without auth_token
     Given path 'image/' + img_id
     When method get
+    Then status 401
+    And match response.message contains 'No Authentication Token Provided'
+
+    # Delete the image without auth_token
+    Given path 'image/' + img_id
+    When method delete
     Then status 401
     And match response.message contains 'No Authentication Token Provided'
 
@@ -68,12 +74,6 @@ Feature: image endpoints tests
     When method get
     Then status 200
     And match responseBytes == img_data
-
-    # Delete the image without auth_token
-    Given path 'image/' + img_id
-    When method delete
-    Then status 401
-    And match response.message contains 'No Authentication Token Provided'
 
     # Delete the image with invalid auth_token
     Given path 'image/' + img_id
