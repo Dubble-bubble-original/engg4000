@@ -452,146 +452,97 @@ exports.deleteImage = async (req, res) => {
     });
 };
 
-exports.deletePost2 = async (req, res) => {
-  const userPostID = req.params.id;
-
-  if (!ObjectId.isValid(userPostID)) {
-    logger.info('Invalid Post ID');
-    return res.status(400).send({ message: 'Invalid Post ID' });
-  }
-
-  // Deleting User Post
-  const post = await UTILS.deletePost(userPostID);
-  if (post === undefined) {
-    return res.status(404).send({ message: 'User Post Not Found' });
-  }
-  if (!post) {
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-  }
-
-  // Deleting User
-  const user = await UTILS.deleteUser(post.author._id);
-  if (user === undefined) {
-    return res.status(404).send({ message: 'User Not Found' });
-  }
-  if (!user) {
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-  }
-
-  const postImageID = post.img_URL?.substring(post.img_URL.lastIndexOf('/') + 1);
-  const avatarID = post.author.avatar_url?.substring(post.author.avatar_url.lastIndexOf('/') + 1);
-  let postImage = true;
-  let avatarImage = true;
-
-  // Checking if Avatar Image Exists
-  const avatarExists = await checkFile(avatarID);
-  if (!avatarExists) {
-    logger.error('Avatar Image Does Not Exist');
-    avatarImage = false;
-    return res.status(404).send({ message: 'Avatar Image Does Not Exist' });
-  }
-  // Checking if Post Image Exists
-  const postImageExists = await checkFile(postImageID);
-  if (!postImageExists) {
-    postImage = false;
-    logger.error('Post Image Does Not Exist');
-    return res.status(404).send({ message: 'Post Image Does Not Exist' });
-  }
-
-  // Deleting avatar image
-  if (avatarImage) {
-    UTILS.deleteImage(avatarID)
-      .then((image) => {
-        if (!image) {
-          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-        }
-      });
-  }
-  // Deleting post image
-  if (postImage) {
-    UTILS.deleteImage(postImageID)
-      .then((image) => {
-        if (!image) {
-          return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-        }
-      });
-  }
-
-  // Return the deleted post with the author
-  return res.status(200).send(post);
-};
-
 exports.deletePost = async (req, res) => {
-  const userPostID = req.params.id;
-
-  if (!ObjectId.isValid(userPostID)) {
-    logger.info('Invalid Post ID');
-    return res.status(400).send({ message: 'Invalid Post ID' });
+  // No request body provided
+  if (!req.body || !Object.keys(req.body).length) {
+    logger.info('No Request Body Provided');
+    return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
-  // Deleting User Post
-  UTILS.deletePost(userPostID)
-    .then((post) => {
+  const userPostID = req.body?.postId;
+  const authorID = req.body?.authorId;
+  let post = {};
+  let user = {};
+
+  // When both postId and authorId is provided
+  if (userPostID && authorID) {
+    let postDeleted = false;
+    if (!ObjectId.isValid(userPostID) || !ObjectId.isValid(authorID)) {
+      logger.info('Invalid ID Provided');
+      return res.status(400).send({ message: 'Invalid ID Provided' });
+    }
+
+    // Deleting User
+    user = await UTILS.deleteUser(authorID);
+    if (user === undefined) {
+      // If the user is not found try to delete the post if it exists
+      post = await UTILS.deletePost(userPostID);
       if (post === undefined) {
-        return res.status(404).send({ message: 'User Post Not Found' });
+        return res.status(404).send({ message: 'User and Post Not Found' });
       }
       if (!post) {
         return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
       }
+      postDeleted = true;
 
-      // Deleting User
-      UTILS.deleteUser(post.author._id)
-        .then(async (user) => {
-          if (user === undefined) {
-            return res.status(404).send({ message: 'User Not Found' });
-          }
-          if (!user) {
-            return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-          }
+      return res.status(404).send({ message: 'Post deleted without User', post });
+    }
+    if (!user) {
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    }
 
-          const postImageID = post.img_URL?.substring(post.img_URL.lastIndexOf('/') + 1);
-          const avatarID = post.author.avatar_url?.substring(post.author.avatar_url.lastIndexOf('/') + 1);
-          let postImage = true;
-          let avatarImage = true;
+    // Deleting Post
+    if (!postDeleted) {
+      post = await UTILS.deletePost(userPostID);
+      if (post === undefined) {
+        return res.status(404).send({ message: 'User deleted without Post', user });
+      }
+      if (!post) {
+        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      }
+    }
 
-          // Checking if Avatar Image Exists
-          const avatarExists = await checkFile(avatarID);
-          if (!avatarExists) {
-            logger.error('Avatar Image Does Not Exist');
-            avatarImage = false;
-            return res.status(404).send({ message: 'Avatar Image Does Not Exist' });
-          }
-          // Checking if Post Image Exists
-          const postImageExists = await checkFile(postImageID);
-          if (!postImageExists) {
-            postImage = false;
-            logger.error('Post Image Does Not Exist');
-            return res.status(404).send({ message: 'Post Image Does Not Exist' });
-          }
+    // Return the deleted post with the author
+    return res.status(200).send({ post, user });
+  }
 
-          // Deleting avatar image
-          if (avatarImage) {
-            UTILS.deleteImage(avatarID)
-              .then((image) => {
-                if (!image) {
-                  return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-                }
-              });
-          }
-          // Deleting post image
-          if (postImage) {
-            UTILS.deleteImage(postImageID)
-              .then((image) => {
-                if (!image) {
-                  return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-                }
-              });
-          }
+  // If only postID is provided
+  if (userPostID) {
+    if (!ObjectId.isValid(userPostID)) {
+      logger.info('Invalid Post ID');
+      return res.status(400).send({ message: 'Invalid Post ID' });
+    }
+    // Deleting User Post
+    post = await UTILS.deletePost(userPostID);
+    if (post === undefined) {
+      return res.status(404).send({ message: 'User Post Not Found' });
+    }
+    if (!post) {
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    }
 
-          // Return the deleted post with the author
-          return res.status(200).send(post);
-        });
-    });
+    // Return the deleted post
+    return res.status(200).send(post);
+  }
+
+  // If only authorId is provided
+  if (authorID) {
+    if (!ObjectId.isValid(authorID)) {
+      logger.info('Invalid Author ID');
+      return res.status(400).send({ message: 'Invalid Author ID' });
+    }
+    // Deleting User
+    user = await UTILS.deleteUser(authorID);
+    if (user === undefined) {
+      return res.status(404).send({ message: 'User Not Found' });
+    }
+    if (!user) {
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    }
+
+    // Return the deleted post with the author
+    return res.status(200).send(user);
+  }
 };
 
 exports.createPost = async (req, res) => {

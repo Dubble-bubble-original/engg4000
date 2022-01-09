@@ -41,18 +41,6 @@ exports.createImage = async (file) => (
     })
 );
 
-exports.deleteImage = async (file) => (
-  deleteFile(file)
-    .then(() => {
-      logger.info('Image Deleted Successfully');
-      return 'Done';
-    })
-    .catch((error) => {
-      logger.error(error.message);
-      return null;
-    })
-);
-
 exports.deleteUser = async (userID) => (
   User.findByIdAndDelete(userID)
     .then((doc) => {
@@ -70,8 +58,6 @@ exports.deleteUser = async (userID) => (
 
 exports.deletePost = async (postID) => (
   UserPost.findByIdAndDelete(postID)
-    .populate('author')
-    .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
