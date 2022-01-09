@@ -99,12 +99,6 @@ ROUTER.get(
   USE(API.getImage)
 );
 
-ROUTER.get(
-  '/imageurl/:id',
-  USE(API.verifyAuthToken),
-  USE(API.getImageUrl)
-);
-
 ROUTER.delete(
   '/image/:id',
   USE(API.verifyAuthToken),
