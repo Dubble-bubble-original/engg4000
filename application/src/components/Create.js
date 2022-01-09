@@ -1,12 +1,13 @@
 // React
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Container, Row, Col, Form, Alert } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Resources
 import LocationPickerMap from './maps/LocationPickerMap';
 import PlaceholderAvatar from '../resources/images/placeholder-avatar.png';
-import AvatarUploadButton from './AvatarUploadButton';
+import AvatarUploadButton from './upload/AvatarUploadButton';
+import ImageUploadButton from './upload/ImageUploadButton';
 import TagButtonGroup from './TagButtonGroup';
 
 function Number(props) {
@@ -46,7 +47,9 @@ function Create() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [tags, setTags] = useState([]);
-  const [invalidTagsMsg, setInvalidTagsMsg] = useState('');
+  const [invalidTagsMsg, setInvalidTagsMsg] = useState();
+  const [picture, setPicture] = useState(null);
+  const pictureFileInputRef = useRef(null);
   const MAX_TAGS = 5;
 
   useEffect(() => {
@@ -105,7 +108,7 @@ function Create() {
                 <Col>
                   <Form.Group>
                     <Form.Label>Avatar<Optional/></Form.Label><br/>
-                    <AvatarUploadButton setAvatarImg={setAvatarImg}/>
+                    <AvatarUploadButton setAvatarImg={setAvatarImg} defaultImg={PlaceholderAvatar}/>
                   </Form.Group>
                 </Col>
               </Row>
@@ -160,11 +163,24 @@ function Create() {
           </Form.Group>
         </Section>
 
-        <Section num="5" title={<span>Image<Optional/></span>}>
-          <div>A picture is worth a thousand words!</div>
-          <br/>
-          
-        </Section>
+        <Container className="outer-container">
+          <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
+            <Col>
+              <div className="h4"><Number num="5"/> Picture <Optional/></div>
+              <div>A picture is worth a thousand words!</div>
+              <br/>
+              <ImageUploadButton 
+                setUploadedImg={setPicture}
+                fileInputRef={pictureFileInputRef}
+              >
+                Upload Picture
+              </ImageUploadButton>
+            </Col>
+            <Col hidden={!picture} className="img-preview">
+              <img src={picture ? URL.createObjectURL(picture) : null}/>
+            </Col>
+          </Row>
+        </Container>
 
         <Section num="6" title="Preview">
         </Section>
