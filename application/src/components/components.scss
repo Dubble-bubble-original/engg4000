@@ -81,6 +81,23 @@ div.outer-container { /* The div is added so it takes precedence over bootstrap'
     box-shadow: 0 2px 6px rgba(0,0,0,.3);
 }
 
+div.tag-container {
+    /* Allow tags to wrap to a new line */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    /* Use small padding for tags */
+    .tag { padding: 0px 6px; }
+
+    /* Override Bootstrap's button-group CSS for tag-container */
+    &.btn-group > .btn.btn {
+        border-radius: 20px;
+        margin-left: 0;
+        flex: none;
+    }
+}
+
 /* IDs */
 #avatar-preview {
     max-width: calc(3.875rem + 0.625rem);

@@ -1,12 +1,13 @@
 // React
-import { useState } from 'react';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Row, Col, Form, Alert } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Resources
-import LocationPickerMap from './maps/LocationPickerMap.js';
+import LocationPickerMap from './maps/LocationPickerMap';
 import PlaceholderAvatar from '../resources/images/placeholder-avatar.png';
-import AvatarUploadButton from './AvatarUploadButton.js';
+import AvatarUploadButton from './AvatarUploadButton';
+import TagButtonGroup from './TagButtonGroup';
 
 function Number(props) {
   return (
@@ -40,8 +41,20 @@ function Optional() {
 function Create() {
   // State variables
   const [position, setPosition] = useState(null);
-  const [name, setName] = useState('');
   const [avatarImg, setAvatarImg] = useState(PlaceholderAvatar);
+  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [tags, setTags] = useState([]);
+  const [invalidTagsMsg, setInvalidTagsMsg] = useState('');
+  const MAX_TAGS = 5;
+
+  useEffect(() => {
+    const numTags = tags.length;
+    if (numTags > MAX_TAGS) setInvalidTagsMsg('You cannot select more than 5 tags. (Current total: '+numTags+')');
+    else if (numTags == 0) setInvalidTagsMsg('You must select at least 1 tag.');
+    else setInvalidTagsMsg('');
+  }, [tags]);
 
   const handleSubmit = (event) => {
     // Prevent default form submission
@@ -57,65 +70,109 @@ function Create() {
 
       <Form noValidate validated={false} onSubmit={handleSubmit}>
 
-      <Section num="1" title="Location">
-        <div>Show us the location of your adventure!</div>
-        <br/>
-        <div style={{width:'100%', height:'350px'}}>
-          <LocationPickerMap onPositionChange={setPosition} />
-        </div>
-      </Section>
+        <Section num="1" title="Location">
+          <div>Show us the location of your adventure!</div>
+          <br/>
+          <div style={{width:'100%', height:'350px'}}>
+            <LocationPickerMap onPositionChange={setPosition} />
+          </div>
+        </Section>
 
-      <Section num="2" title="Avatar">
-        <div>Tell everyone who you are!</div>
-        <br/>
-        <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
-          <Col>
+        <Section num="2" title="Avatar">
+          <div>Tell everyone who you are!</div>
+          <br/>
+          <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
+            <Col>
+              <Form.Group>
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  required
+                  type="text"
+                  placeholder="What do people call you?"
+                  value={name}
+                  onChange={(e)=> {setName(e.target.value)}}
+                />
+                <Form.Control.Feedback type="invalid">
+                  A name is required.
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Row>
+                <Col id="avatar-preview">
+                  <img  src={avatarImg}></img>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Avatar<Optional/></Form.Label><br/>
+                    <AvatarUploadButton setAvatarImg={setAvatarImg}/>
+                  </Form.Group>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Section>
+
+        <Section num="3" title="Content">
+          <div>What do you want to share?</div>
+          <br/>
+          <Row sm={1} md={2}>
             <Form.Group>
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Title</Form.Label>
               <Form.Control 
                 required
                 type="text"
-                placeholder="What do people call you?"
-                value={name}
-                onChange={(e)=> {setName(e.target.value)}}
+                placeholder="Give a title to your post"
+                value={title}
+                onChange={(e)=> {setTitle(e.target.value)}}
               />
               <Form.Control.Feedback type="invalid">
-                A name is required.
+                A title is required.
               </Form.Control.Feedback>
             </Form.Group>
-          </Col>
-          <Col>
-            <Row>
-              <Col id="avatar-preview">
-                <img  src={avatarImg}></img>
-              </Col>
-              <Col>
-                <Form.Group>
-                  <Form.Label>Avatar<Optional/></Form.Label><br/>
-                  <AvatarUploadButton setAvatarImg={setAvatarImg}/>
-                </Form.Group>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Section>
+          </Row>
+          <br/>
+          <Form.Group>
+            <Form.Label>Body</Form.Label>
+            <Form.Control 
+              required
+              as="textarea"
+              rows={6}
+              placeholder="Share your thoughts!"
+              value={body}
+              onChange={(e)=> {setBody(e.target.value)}}
+            />
+          </Form.Group>
+        </Section>
 
-      <Section num="3" title="Content">
-      </Section>
+        <Section num="4" title="Tags">
+          <div>Select up to 5 tags that relate to your post.</div>
+          <br/>
+          <Form.Group>
+            <TagButtonGroup tags={tags} setTags={setTags} />
+            <Alert 
+              variant="danger" 
+              className="mb-0 mt-3" 
+              hidden={!invalidTagsMsg}
+            >
+              {invalidTagsMsg}
+            </Alert>
+          </Form.Group>
+        </Section>
 
-      <Section num="4" title="Tags">
-      </Section>
+        <Section num="5" title={<span>Image<Optional/></span>}>
+          <div>A picture is worth a thousand words!</div>
+          <br/>
+          
+        </Section>
 
-      <Section num="5" title={<span>Image<Optional/></span>}>
-      </Section>
+        <Section num="6" title="Preview">
+        </Section>
 
-      <Section num="6" title="Preview">
-      </Section>
+        {/* <Post /> */}
 
-      {/* <Post /> */}
-
-      <Section num="7" title="Publish">
-      </Section>
+        <Section num="7" title="Publish">
+        </Section>
 
       </Form>
     </>

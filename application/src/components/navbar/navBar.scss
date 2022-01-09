@@ -32,7 +32,7 @@
 }
 
 /* Link hover outline */
-@import '../components.scss'; // Needed since .hover-outline is defined in components.scss
+@import '../components'; // Needed since .hover-outline is defined in components.scss
 #nav-link-container .nav-link, 
 #navbar button.navbar-toggler {
     @extend .hover-outline;
