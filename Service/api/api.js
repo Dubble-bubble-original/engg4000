@@ -546,6 +546,7 @@ exports.createPost = async (req, res) => {
       date_created: dateCreated,
       location: post.location,
       true_location: post.true_location,
+      location_string: post.location_string,
       access_key: accessKey
     });
     if (pictureId) {
@@ -579,6 +580,7 @@ exports.createPost = async (req, res) => {
           date_created: newUserPost.date_created,
           location: newUserPost.location,
           true_location: newUserPost.true_location,
+          location_string: newUserPost.location_string,
           access_key: newUserPost.access_key
         }
       });
