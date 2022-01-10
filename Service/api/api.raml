@@ -26,7 +26,7 @@ types:
     properties:
       _id:
         type: number
-      author_ID:
+      author:
         type: string
       body:
         type: string
@@ -36,7 +36,7 @@ types:
           type: string
       title:
         type: string
-      img_URL:
+      img_url:
         type: string
       date_created:
         type: number
@@ -308,6 +308,58 @@ types:
                   "message": "An Unknown Error Occurred"
                 }
 
+/postimages:
+  post:
+    description: "Uploads an avatar and post picture on an S3 bucket. It returns the ids of both files."
+    responses:
+      201:
+        body:
+          application/json:
+            example: |
+              {
+                "avatarId": "a2590b9eb66f",
+                "pictureId": "a2590a8da55e"
+              }
+      400:
+        description: "Missing image files in the request body."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Missing Images"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/post:
+  post:
+    description: "Creates a new user, user post. It returns the user and user post."
+    responses:
+      201:
+        body:
+          application/json:
+            type: UserPost
+      400:
+        description: "Missing or invalid user data, user post data, or image ids in the request body."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Missing User"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
 /image:
   post:
     description: "Creates a image in an S3 bucket and returns the object key."
@@ -334,6 +386,7 @@ types:
               {
                 "message": "An Unknown Error Occurred"
               }
+
   /{id}:
     get: 
       description: "Returns the image with the matching id."

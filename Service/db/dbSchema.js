@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema({
   name: { type: String, required: true, immutable: true },
-  avatar_url: { type: String, required: true, immutable: true },
+  avatar_url: { type: String, immutable: true },
   email: { type: String, required: true, immutable: true }
 });
 const User = mongoose.model('User', userSchema, 'User');
@@ -15,7 +15,7 @@ const userPostSchema = new Schema({
   body: { type: String, required: true },
   tags: [{ type: String, required: true }],
   title: { type: String, required: true },
-  img_URL: { type: String },
+  img_url: { type: String },
   date_created: { type: Date, default: Date.now, immutable: true },
   location: {
     latitude: { type: Number, required: true },
