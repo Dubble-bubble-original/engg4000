@@ -328,7 +328,7 @@ exports.createUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-  const userId = req.params.ak;
+  const userId = req.params.id;
 
   if (!ObjectId.isValid(userId)) {
     logger.info('Invalid User ID');
@@ -452,96 +452,97 @@ exports.deleteImage = async (req, res) => {
 };
 
 exports.deletePost = async (req, res) => {
-  // No request body provided
-  if (!req.body || !Object.keys(req.body).length) {
-    logger.info('No Request Body Provided');
-    return res.status(400).send({ message: 'No Request Body Provided' });
+  const userPostID = req.params.id;
+  let status = {};
+  let fullyDeleted = true;
+  let postImageID = null;
+  let avatarID = null;
+
+  if (!ObjectId.isValid(userPostID)) {
+    logger.info('Invalid Post ID');
+    return res.status(400).send({ message: 'Invalid Post ID Provided' });
   }
 
-  const userPostID = req.body?.postId;
-  const authorID = req.body?.authorId;
-  let post = {};
-  let user = {};
+  // Deleting User Post
+  const post = await UTILS.deletePost(userPostID);
+  if (post === undefined) {
+    return res.status(404).send({ message: 'User Post Not Found' });
+  }
+  if (!post) {
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+  }
 
-  // When both postId and authorId is provided
-  if (userPostID && authorID) {
-    let postDeleted = false;
-    if (!ObjectId.isValid(userPostID) || !ObjectId.isValid(authorID)) {
-      logger.info('Invalid ID Provided');
-      return res.status(400).send({ message: 'Invalid ID Provided' });
-    }
-
-    // Deleting User
-    user = await UTILS.deleteUser(authorID);
-    if (user === undefined) {
-      // If the user is not found try to delete the post if it exists
-      post = await UTILS.deletePost(userPostID);
-      if (post === undefined) {
-        return res.status(404).send({ message: 'User and Post Not Found' });
-      }
-      if (!post) {
-        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-      }
-      postDeleted = true;
-
-      return res.status(404).send({ message: 'Post deleted without User', post });
-    }
+  // Check to see if a user exists
+  if (!post.author) {
+    fullyDeleted = false;
+    status = {
+      user: 'No User Provided'
+    };
+  }
+  else {
+    // Delete user
+    const user = await UTILS.deleteUser(post.author._id);
     if (!user) {
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     }
-
-    // Deleting Post
-    if (!postDeleted) {
-      post = await UTILS.deletePost(userPostID);
-      if (post === undefined) {
-        return res.status(404).send({ message: 'User deleted without Post', user });
-      }
-      if (!post) {
-        return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-      }
-    }
-
-    // Return the deleted post with the author
-    return res.status(200).send({ post, user });
-  }
-
-  // If only postID is provided
-  if (userPostID) {
-    if (!ObjectId.isValid(userPostID)) {
-      logger.info('Invalid Post ID');
-      return res.status(400).send({ message: 'Invalid Post ID' });
-    }
-    // Deleting User Post
-    post = await UTILS.deletePost(userPostID);
-    if (post === undefined) {
-      return res.status(404).send({ message: 'User Post Not Found' });
-    }
-    if (!post) {
-      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-    }
-
-    // Return the deleted post
-    return res.status(200).send(post);
-  }
-
-  // If only authorId is provided
-  if (authorID) {
-    if (!ObjectId.isValid(authorID)) {
-      logger.info('Invalid Author ID');
-      return res.status(400).send({ message: 'Invalid Author ID' });
-    }
-    // Deleting User
-    user = await UTILS.deleteUser(authorID);
     if (user === undefined) {
-      return res.status(404).send({ message: 'User Not Found' });
-    }
-    if (!user) {
-      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+      fullyDeleted = false;
+      status = {
+        user: 'User Not Found'
+      };
     }
 
-    // Return the deleted post with the author
-    return res.status(200).send(user);
+    // Delete avarat img if provided
+    if (post.author.avatar_url) {
+      // Get avatar image id
+      avatarID = post.author.avatar_url?.substring(post.author.avatar_url?.lastIndexOf('/') + 1);
+      // Checking if Avatar Image Exists
+      const avatarExists = await checkFile(avatarID);
+
+      // Delete avatar image if it exists
+      let avaratImg = {};
+      if (avatarExists) {
+        avaratImg = UTILS.deleteImage(avatarID);
+      }
+      if (!avaratImg || !avatarExists) {
+        status = {
+          ...status,
+          avatar: 'Avatar Image Not Found'
+        };
+        fullyDeleted = false;
+      }
+    }
   }
+
+  // Delete post image if provided
+  if (post.img_url) {
+    // Get post image id
+    postImageID = post.img_url?.substring(post.img_url?.lastIndexOf('/') + 1);
+    // Checking if Post Image Exists
+    const postImageExists = await checkFile(postImageID);
+
+    // Deleting post image if it exists
+    let postImg = {};
+    if (postImageExists) {
+      postImg = UTILS.deleteImage(postImageID);
+    }
+    if (!postImg || !postImageExists) {
+      status = {
+        ...status,
+        postImg: 'Post Image Not Found'
+      };
+      fullyDeleted = false;
+    }
+  }
+
+  // If the post is fully deleted update status
+  if (fullyDeleted) {
+    status = {
+      message: 'Post Deleted Successfully'
+    };
+  }
+  // Return the deleted post with the author
+  return res.status(201).send({ status, post });
 };
 
 exports.uploadPostImages = async (req, res) => {

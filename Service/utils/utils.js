@@ -5,7 +5,7 @@ const fs = require('fs');
 const { UserPost, User } = require('../db/dbSchema');
 
 // S3
-const { uploadFile } = require('../s3/s3');
+const { uploadFile, deleteFile } = require('../s3/s3');
 
 exports.removeStaleTokens = (token) => {
   // Clear the stale token
@@ -39,6 +39,19 @@ exports.createImage = async (file) => (
     })
 );
 
+exports.deleteImage = async (image) => (
+  // Delete image
+  deleteFile(image)
+    .then(() => {
+      logger.info('Image Deleted Successfully');
+      return 'Image Deleted';
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return null;
+    })
+);
+
 exports.deleteUser = async (userID) => (
   User.findByIdAndDelete(userID)
     .then((doc) => {
@@ -56,6 +69,8 @@ exports.deleteUser = async (userID) => (
 
 exports.deletePost = async (postID) => (
   UserPost.findByIdAndDelete(postID)
+    .populate('author')
+    .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');

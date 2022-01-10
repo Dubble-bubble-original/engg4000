@@ -135,7 +135,7 @@ ROUTER.post(
 );
 
 ROUTER.delete(
-  '/deletepost',
+  '/deletepost/:id',
   USE(API.verifyAuthToken),
   USE(API.deletePost)
 );
