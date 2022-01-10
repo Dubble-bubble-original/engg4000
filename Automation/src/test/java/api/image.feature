@@ -40,10 +40,10 @@ Feature: image endpoints tests
     And match response.message contains 'Image Does Not Exist'
 
   Scenario: Post, Get image, Get URL & Delete image
-      # Post the new image
+    # Post the new image
     Given path 'image'
     And header token = auth_token
-    And multipart file image = { read: '../data/image-default.png', filename: 'karate_test.png', contentType: 'image/png'}
+    And multipart file image = { read: '../data/image-default.png', filename: 'karate_test.png', contentType: 'multipart/form-data'}
     When method post
     Then status 201
     * def img_id = response.id
