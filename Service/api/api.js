@@ -1,4 +1,3 @@
-/* eslint-disable no-unreachable */
 // Packages
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
