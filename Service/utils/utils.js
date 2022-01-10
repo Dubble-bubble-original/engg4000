@@ -5,9 +5,7 @@ const fs = require('fs');
 const { UserPost, User } = require('../db/dbSchema');
 
 // S3
-const {
-  uploadFile, deleteFile
-} = require('../s3/s3');
+const { uploadFile } = require('../s3/s3');
 
 exports.removeStaleTokens = (token) => {
   // Clear the stale token
@@ -31,7 +29,7 @@ exports.createImage = async (file) => (
   uploadFile(file)
     .then((result) => {
       // Delete file from local server
-      fs.unlinkSync(file.path);
+      fs.promises.unlink(file.path);
 
       return result;
     })

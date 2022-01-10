@@ -99,7 +99,7 @@ if (ENV.NODE_ENV === 'dev') {
     '/image',
     USE(API.verifyAuthToken),
     USE(upload.single('image')),
-    USE(API.createImage)
+    USE(API.uploadImage)
   );
 
   ROUTER.get(
@@ -122,9 +122,15 @@ if (ENV.NODE_ENV === 'dev') {
 }
 
 ROUTER.post(
+  '/postimages',
+  USE(API.verifyAuthToken),
+  USE(upload.fields([{ name: 'avatar' }, { name: 'picture' }])),
+  USE(API.uploadPostImages)
+);
+
+ROUTER.post(
   '/post',
   USE(API.verifyAuthToken),
-  USE(upload.array('images', 2)),
   USE(API.createPost)
 );
 
