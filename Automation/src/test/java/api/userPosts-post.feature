@@ -52,11 +52,15 @@ Feature: User post endpoints tests
     * def post_access_key = response.post.access_key
 
     # Call get user post endpoint
-    Given path 'userpost/' + post_id
+    Given path 'userpost/' + post_access_key
     And header token = auth_token
     When method get
     Then status 200
+    And match response.access_key == post_access_key
     And match response._id == post_id
+    # TODO: update this with DBO-55
+    # And match response.author._id == '618981693b4ab71971e9f73e'
+    # And match response.author.name == 'Goblin'
 
     # Call update user post endpoint
     Given path 'userpost/' + post_id
@@ -65,9 +69,12 @@ Feature: User post endpoints tests
     When method patch
     Then status 200
     And match response.title == 'new title'
+    # TODO: update this with DBO-55
+    # And match response.author._id == '618981693b4ab71971e9f73e'
+    # And match response.author.name == 'Goblin'
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_access_key
+    Given path 'userpost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -96,28 +103,28 @@ Feature: User post endpoints tests
     And request read('../data/filter_userPosts_data.json').post1
     When method post
     Then status 201
-    * def post1_access_key = response.post.access_key
+    * def post1_id = response.post._id
 
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/filter_userPosts_data.json').post2
     When method post
     Then status 201
-    * def post2_access_key = response.post.access_key
+    * def post2_id = response.post._id
 
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/filter_userPosts_data.json').post3
     When method post
     Then status 201
-    * def post3_access_key = response.post.access_key
+    * def post3_id = response.post._id
 
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/filter_userPosts_data.json').post4
     When method post
     Then status 201
-    * def post4_access_key = response.post.access_key
+    * def post4_id = response.post._id
 
     # Call userPosts with no filters
 
@@ -211,25 +218,25 @@ Feature: User post endpoints tests
 
     # Delete Added Posts
 
-    Given path 'userpost/' + post1_access_key
+    Given path 'userpost/' + post1_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
 
-    Given path 'userpost/' + post2_access_key
+    Given path 'userpost/' + post2_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
 
-    Given path 'userpost/' + post3_access_key
+    Given path 'userpost/' + post3_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
 
-    Given path 'userpost/' + post4_access_key
+    Given path 'userpost/' + post4_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -367,11 +374,10 @@ Feature: User post endpoints tests
     Then status 201
     * match response.post !contains { img_url: '#notnull' }
     * def post_id = response.post._id
-    * def post_access_key = response.post.access_key
     * def user_id = response.post.author._id
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_access_key
+    Given path 'userpost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -393,11 +399,10 @@ Feature: User post endpoints tests
     Then status 201
     * match response.post.author !contains { avatar_url: '#notnull' }
     * def post_id = response.post._id
-    * def post_access_key = response.post.access_key
     * def user_id = response.post.author._id
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_access_key
+    Given path 'userpost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -418,11 +423,10 @@ Feature: User post endpoints tests
     When method post
     Then status 201
     * def post_id = response.post._id
-    * def post_access_key = response.post.access_key
     * def user_id = response.post.author._id
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_access_key
+    Given path 'userpost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200

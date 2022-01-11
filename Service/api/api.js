@@ -72,6 +72,7 @@ exports.createUserPost = (req, res) => {
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
+    location_string: req.body.location_string,
     access_key: accessKey
   });
 
@@ -96,6 +97,7 @@ exports.createUserPost = (req, res) => {
         date_created: newUserPost.date_created,
         location: newUserPost.location,
         true_location: newUserPost.true_location,
+        location_string: newUserPost.location_string,
         access_key: newUserPost.access_key
       }
     });
@@ -133,10 +135,14 @@ exports.updateUserPost = (req, res) => {
 };
 
 exports.deleteUserPost = (req, res) => {
-  const acessKey = req.params.ak;
+  const userPostId = req.params.id;
 
-  // Find the userpost with the matching access key
-  UserPost.findOneAndDelete({ access_key: acessKey })
+  if (!ObjectId.isValid(userPostId)) {
+    logger.info('Invalid User Post ID');
+    return res.status(400).send({ message: 'Invalid User Post ID' });
+  }
+
+  UserPost.findByIdAndDelete(userPostId)
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
@@ -152,14 +158,9 @@ exports.deleteUserPost = (req, res) => {
 };
 
 exports.getUserPost = (req, res) => {
-  const userPostId = req.params.id;
+  const acessKey = req.params.ak;
 
-  if (!ObjectId.isValid(userPostId)) {
-    logger.info('Invalid User Post ID');
-    return res.status(400).send({ message: 'Invalid User Post ID' });
-  }
-
-  UserPost.findById(userPostId)
+  UserPost.findOne({ access_key: acessKey })
     .populate('author')
     .exec()
     .then((doc) => {
@@ -639,6 +640,7 @@ exports.createPost = async (req, res) => {
       date_created: dateCreated,
       location: post.location,
       true_location: post.true_location,
+      location_string: post.location_string,
       access_key: accessKey
     });
     if (pictureId) {
@@ -672,6 +674,7 @@ exports.createPost = async (req, res) => {
           date_created: newUserPost.date_created,
           location: newUserPost.location,
           true_location: newUserPost.true_location,
+          location_string: newUserPost.location_string,
           access_key: newUserPost.access_key
         }
       });

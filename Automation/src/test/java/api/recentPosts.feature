@@ -92,22 +92,22 @@ Feature: Recent Posts endpoint tests
 
     # Delete Added Posts
 
-    Given path 'userpost/' + post1_access_key
+    Given path 'userpost/' + post1_id
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'userpost/' + post2_access_key
+    Given path 'userpost/' + post2_id
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'userpost/' + post3_access_key
+    Given path 'userpost/' + post3_id
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'userpost/' + post4_access_key
+    Given path 'userpost/' + post4_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -154,12 +154,12 @@ Feature: Recent Posts endpoint tests
 
     # Delete Added Posts
 
-    Given path 'userpost/' + post1_access_key
+    Given path 'userpost/' + post1_id
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'userpost/' + post2_access_key
+    Given path 'userpost/' + post2_id
     And header token = auth_token
     When method delete
     Then status 200

@@ -1,0 +1,67 @@
+/* Global */
+
+* {
+    font-family: Tahoma, sans-serif;
+}
+
+/* Tags */
+
+
+/* Classes */
+
+.i-agree {
+    display: flex;
+    justify-content: center;
+}
+
+.large-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 45%;
+    max-height: 50vh; /* Prevent the logo from taking too much space on large screens */
+    object-fit: contain;
+}
+
+.clickable { cursor: pointer; }
+.green { color: var(--bs-green); }
+.red { color: var(--bs-red); }
+
+.hover-outline {
+    transition: box-shadow .15s ease-in-out;
+    &:hover {
+        box-shadow: 0 0 0 0.25rem var(--bs-primary);
+        outline: 0;
+        text-decoration: none;
+    }
+    &:not(:focus-visible) {
+        outline: 0;
+    }
+    &:focus:not(:hover) {
+        box-shadow: none;
+    }
+}
+
+.f-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.f-col {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+div.outer-container { /* The div is added so it takes precedence over bootstrap's CSS */
+    padding: 20px;
+    background: #ffff;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+    width: 100vw;
+}
+
+/* IDs */
