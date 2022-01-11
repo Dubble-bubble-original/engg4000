@@ -9,18 +9,20 @@ import PostImage from '../resources/images/postImage.jpg';
 
 // Test Post Data
 const postData = {
-  user: 'Nota User',
-  avatar: Avatar,
-  title: 'Title Goes Here',
-  date: 'November 20, 2021',
-  postBody: 'The body of the message will be shown here. The font might need to be reduced so it contracts better with the title. If it goes on too long we can add elipses. This sentence is just here so that it can long enough to need something.',
+  author: {
+    name: 'Nota User',
+    avatar_url: Avatar,
+  },
+  body: 'The body of the message will be shown here. The font might need to be reduced so it contracts better with the title. If it goes on too long we can add elipses. This sentence is just here so that it can long enough to need something.',
   tags: ['Nature', 'Hiking', 'Mountain', 'Tag'],
-  position: {
+  title: 'Title Goes Here',
+  img_URL: PostImage,
+  date_created: '2021-11-20T17:31:03.914+00:00',
+  location: {
     lat: 45.963589,
     lng: -66.643112
   },
-  location: 'New Brunswick, Canada',
-  postImage: PostImage,
+  location_string: 'New Brunswick, Canada',
 }
 
 // Home component for the application
@@ -50,14 +52,12 @@ function Home() {
   }
 
   return (
-    <div className="home-page" data-testid="home-page">
-      <Container>
-        <br/>
-        <b>Home Page goes here.</b><br/>
-        <br/>
+    <>
+      <Container className="home-page outer-container" data-testid="home-page">
+        <div className="h4 mb-0">Recent posts</div>
       </Container>
       <Post postData={postData}/>
-    </div>
+    </>
   )
 }
 

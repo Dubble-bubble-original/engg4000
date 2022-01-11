@@ -41,6 +41,39 @@ export const getVersion = async () => {
   });
 }
 
+// Get post by access key
+export const getPostByAccessKey = async (accessKey) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+        method: 'GET',
+        url: serviceUrl + '/userpost/' + accessKey,
+        headers: {
+            'token': authToken
+        }
+    });
+    return response.data;
+  });
+}
+
+// Delete post
+export const deletePostByID = async (_id) => {
+  // TODO: Call the exposed delete post endpoint (DBO-57)
+  // return await requestWithToken(async() => {
+  //   const response = await axios({
+  //       method: 'DELETE',
+  //       url: serviceUrl + '/userpost/' + _id,
+  //       headers: {
+  //           'token': authToken
+  //       }
+  //   });
+  //   return response.data;
+  // });
+  
+  //! Temporary data
+  _id;
+  return { message: 'User Post Deleted Successfully' };
+}
+
 // Create an image
 export const postImage = async (file) => {
   return await requestWithToken(async() => {

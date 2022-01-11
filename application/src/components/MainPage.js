@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Switch, Case, Default } from 'react-if';
 
 // Resources
-import './components.css';
+import './components.scss';
 
 // Components
 import NavBar from './navbar/NavBar';

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { Navbar, Container, Nav, NavDropdown, Offcanvas } from 'react-bootstrap';
 
 // Resources
-import './navBar.css';
-import {IconContext} from 'react-icons';
-import {MdHome, MdSearch, MdAddLocation, MdMoreHoriz } from 'react-icons/md';
+import './navBar.scss';
+import { IconContext } from 'react-icons';
+import { MdHome, MdSearch, MdAddLocation, MdMoreHoriz } from 'react-icons/md';
 import Logo from '../../resources/images/nota-logo-no-text.png';
-import {FRow} from '../FlexContainers'
+import { FRow } from '../FlexContainers'
 
 function NavLinks(props) {
   // Handler to call closePopup() if it was given when clicking a link
@@ -36,7 +36,7 @@ function NavBar(props) {
 
   // Function to close the offcanvas popup
   function closePopup() {
-    document.querySelector('#offcanvasNavbar button.btn-close').click();
+    document.querySelector('body > .offcanvas-backdrop').click();
   }
 
   return (

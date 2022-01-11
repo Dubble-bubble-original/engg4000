@@ -46,7 +46,7 @@ function ImageForm() {
         console.log(file);
 
         const user = { name: 'John Doe', email: 'john.doe@mail.com' };
-        const userPost = { title: 'Title', body: 'Body.', tags: ['forest'], true_location: false, location: { 'latitude': 0, 'longitude': 0 } };
+        const userPost = { title: 'Title', body: 'Body.', tags: ['forest'], true_location: false, location: { 'lat': 0, 'lng': 0 }, location_string: 'New Brunswick, Canada' };
 
         event.preventDefault();
         const result = await post(avatarId, pictureId, user, userPost);

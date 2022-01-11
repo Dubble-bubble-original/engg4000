@@ -23,15 +23,15 @@ Feature: Delete user post endpoint tests
     And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Try to delete a nonexistent user post
-    # Call delete user post endpoint with invalid user post id
-    Given path 'userpost/12345'
+    # Call delete user post endpoint with valid id that doesn't exist
+    Given path 'userpost/507f1f77bcf86cd799439011'
     And header token = auth_token
     And request {}
     When method delete
     Then status 404
     And match response.message == 'User Post Not Found'
 
-  Scenario: Try to delete a user post with invalid access key
+  Scenario: Try to delete a user post with invalid id
     # Call create user post endpoint with empty body
     Given path 'userpost'
     And header token = auth_token
@@ -39,17 +39,16 @@ Feature: Delete user post endpoint tests
     When method post
     Then status 201
     * def post_id = response.post._id
-    * def post_access_key = response.post.access_key
 
     # Call delete user post endpoint with invalid access key
     Given path 'userpost/12345'
     And header token = auth_token
     When method delete
-    Then status 404
-    And match response.message == 'User Post Not Found'
+    Then status 400
+    And match response.message == 'Invalid User Post ID'
 
     # Call delete user post endpoint
-    Given path 'userpost/' + post_access_key
+    Given path 'userpost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
