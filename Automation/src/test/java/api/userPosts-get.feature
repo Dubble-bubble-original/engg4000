@@ -22,17 +22,17 @@ Feature: Get user post endpoints tests
     Then status 401
     And match response.message == 'Invalid Authentication Token Provided'
 
-  Scenario: Try to get a user post with invalid id
-    # Call get user post endpoint with invalid user post id
+  Scenario: Try to get a user post with invalid access key
+    # Call get user post endpoint with invalid access key
     Given path 'userpost/12345'
     And header token = auth_token
     When method get
-    Then status 400
-    And match response.message == 'Invalid User Post ID'
+    Then status 404
+    And match response.message == 'User Post Not Found'
 
   Scenario: Try to get a nonexistent user post
-    # Call get user post endpoint with nonexistent user post id
-    Given path 'userpost/53cb6b9b4f4ddef1ad47f943'
+    # Call get user post endpoint with nonexistent access key
+    Given path 'userpost/00000000-0000-4000-8900-000000000000'
     And header token = auth_token
     When method get
     Then status 404

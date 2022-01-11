@@ -6,10 +6,11 @@
     "body": "Mclaren F1, Colour Orange",
     "img_url": "https://static2.hotcarsimages.com/wordpress/wp-content/uploads/2020/08/mclaren-f1-2-e1597355115369.jpg",
     "location": {
-      "latitude": 0,
-      "longitude": 0
+      "lat": 0,
+      "lng": 0
     },
-    "true_location": true
+    "true_location": true,
+    "location_string": "New Brunswick, Canada"
   },
 
   "post2": {
@@ -19,10 +20,11 @@
     "body": "Ferrari, Colour: Red and Black",
     "img_url": "https://1.bp.blogspot.com/-mdHOPnpaiQ8/XQuqcdFKwwI/AAAAAAAAILk/1RFvb_KNo3slL6wXtlvvYtPrl5Kij1doQCLcBGAs/s1600/Ferrari%2BConcept%2BCars%2Bwallpapers.jpg",
     "location": {
-      "latitude": 0,
-      "longitude": 0
+      "lat": 0,
+      "lng": 0
     },
-    "true_location": true
+    "true_location": true,
+    "location_string": "New Brunswick, Canada"
   },
 
   "post3": {
@@ -32,10 +34,11 @@
     "body": "Mountains covered with snow",
     "img_url": "http://astro.primozcigler.net/media/gallery/images/img_6527.jpg",
     "location": {
-      "latitude": 0,
-      "longitude": 0
+      "lat": 0,
+      "lng": 0
     },
-    "true_location": true
+    "true_location": true,
+    "location_string": "New Brunswick, Canada"
   },
 
   "post4": {
@@ -45,9 +48,10 @@
     "body": "Ferrari, Colour: Red and Gray",
     "img_url": "https://1.bp.blogspot.com/-mdHOPnpaiQ8/XQuqcdFKwwI/AAAAAAAAILk/1RFvb_KNo3slL6wXtlvvYtPrl5Kij1doQCLcBGAs/s1600/Ferrari%2BConcept%2BCars%2Bwallpapers.jpg",
     "location": {
-      "latitude": 0,
-      "longitude": 0
+      "lat": 0,
+      "lng": 0
     },
-    "true_location": true
+    "true_location": true,
+    "location_string": "New Brunswick, Canada"
   }
 }

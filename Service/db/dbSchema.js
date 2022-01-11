@@ -18,11 +18,12 @@ const userPostSchema = new Schema({
   img_url: { type: String },
   date_created: { type: Date, default: Date.now, immutable: true },
   location: {
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true }
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true }
   },
+  location_string: { type: String, required: true },
   true_location: { type: Boolean, required: true },
-  access_key: { type: String, required: true }
+  access_key: { type: String, required: true, unique: true }
 });
 const UserPost = mongoose.model('UserPost', userPostSchema, 'UserPost');
 

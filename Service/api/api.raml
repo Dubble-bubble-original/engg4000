@@ -43,10 +43,12 @@ types:
       location:
         type: object
         properties:
-          latitude:
+          lat:
             type: number
-          longitude:
+          lng:
             type: number
+      location_string:
+        type: string
       true_location:
         type: boolean
       access_key:
@@ -117,9 +119,9 @@ types:
               {
                 "message": "An Unknown Error Occurred"
               }
-  /{id}:
+  /{ak}:
     get: 
-      description: "Returns the post with the matching id"
+      description: "Returns the post with the matching access key"
       responses:
         200:
           body:
@@ -163,7 +165,7 @@ types:
                 {
                   "message": "An Unknown Error Occurred"
                 }
-  /{ak}:
+  /{id}:
     delete:
     description: "Deletes a user post."
     responses:
@@ -173,6 +175,13 @@ types:
             example: |
               {
                 "message": "User Post Deleted Successfully"
+              }
+      400:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Invalid User Post ID"
               }
       404:
         body:

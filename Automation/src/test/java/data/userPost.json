@@ -5,8 +5,9 @@
     "body": "Went hiking in a beautiful trail in Cape Breton with the family.",
     "img_url": "https://catalogue.novascotia.com/ManagedMedia/27778.jpg",
     "location": {
-        "latitude": 0,
-        "longitude": 0
+        "lat": 0,
+        "lng": 0
     },
+    "location_string": "New Brunswick, Canada",
     "true_location": true
 }
