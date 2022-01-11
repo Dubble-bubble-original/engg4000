@@ -5,9 +5,10 @@
     "title": "Gorgeous Trail!",
     "body": "Went hiking in a beautiful trail in Cape Breton with the family.",
     "location": {
-      "latitude": 0,
-      "longitude": 0
+      "lat": 0,
+      "lng": 0
     },
+    "location_string": "New Brunswick, Canada",
     "true_location": true
   },
   "user": {

@@ -369,6 +369,50 @@ types:
                 "message": "An Unknown Error Occurred"
               }
 
+/deletepost:
+  /{id}:
+    delete:
+      description: "Deletes the user post, the tries to delete the user and the images"
+      responses:
+        201:
+          body:
+            application/json:
+              example: |
+              {
+                status: { "message": Post Deleted Successfully" }
+                post: user post
+              }
+              example: |
+              {
+                status:
+                {
+                  user: "No User Found" || "User Not Found"
+                  avatar: "Avatar Image Not Found"
+                  postImg: "Post Image Not Found"
+                }
+              }
+        400:
+          body:
+            application/json:
+              example: |
+              {
+                message: "Invalid Post ID Provided"
+              }
+        404:
+          body:
+            application/json:
+              example: |
+              {
+                message: "User Post Not Found"
+              }
+        500:
+          body:
+            application/json:
+              example:
+              {
+                message: "An Unknown Error Occurred"
+              }
+              
 /image:
   post:
     description: "Creates a image in an S3 bucket and returns the object key."
