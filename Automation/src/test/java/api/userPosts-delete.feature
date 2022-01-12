@@ -2,12 +2,9 @@ Feature: Delete user post endpoint tests
 
   Background:
     * url baseUrl
-    * def baseImageURl = 'https://senior-design-img-bucket.s3.amazonaws.com/'
     * def auth = callonce read('classpath:utils/authentication.feature')
-    * def post = callonce read('classpath:utils/createPost.feature')
+    * def baseImageURl = 'https://senior-design-img-bucket.s3.amazonaws.com/'
     * def auth_token = auth.response.token
-    * def postID = post.response.post._id
-    * def authorID = post.response.post.author._id
 
   Scenario: Try to delete a user post with no auth token
     # Call delete user post endpoint with no auth token header
@@ -61,13 +58,13 @@ Feature: Delete user post endpoint tests
   # TESTS FOR (EXPOSED) DELETE POST ENDPOINT
 
   Scenario: Try to delete post with no auth token provided
-    Given path 'deletepost/' + postID
+    Given path 'deletepost/123'
     When method delete
     Then status 401
     And match response.message == 'No Authentication Token Provided'
 
   Scenario: Try to delete post with an invalid auth token
-    Given path 'deletepost/' + postID
+    Given path 'deletepost/123'
     And header token = 'Invalid_Token'
     When method delete
     Then status 401
@@ -159,11 +156,49 @@ Feature: Delete user post endpoint tests
     And match response.status.avatar == 'Avatar Image Not Found'
     And match response.status.postImg == 'Post Image Not Found'
 
-  Scenario: Try to fully delete the post
-    Given path 'deletepost/' + postID
+  Scenario: Try to delete a full user post
+    # Creating a avatar image
+    Given path 'image'
+    And header token = auth_token
+    And multipart file image = { read: '../data/img_avatar.png', filename: 'image', contentType: 'image/png' }
+    When method post
+    Then status 201
+    * def avatar_ID = response.id
+
+    # Create a post image
+    Given path 'image'
+    And header token = auth_token
+    And multipart file image = { read: '../data/post_image.jpeg', filename: 'image', contentType: 'image/jpeg' }
+    When method post
+    Then status 201
+    * def postImage_ID = response.id
+
+    # Creating a temporary user
+    Given path 'user'
+    And header token = auth_token
+    * def userData = read('../data/user.json')
+    * set userData.avatar_url = baseImageURl + avatar_ID
+    And request userData
+    When method post
+    Then status 201
+    * def author_id = response.user._id
+
+    # Creating a temporary post
+    Given path 'userpost'
+    And header token = auth_token
+    * def postData = read('../data/userPost.json')
+    * set postData.author = author_id
+    * set postData.img_url = baseImageURl + postImage_ID
+    And request postData
+    When method post
+    Then status 201
+    * def post_id = response.post._id
+
+    # Successfully Delete the created post
+    Given path 'deletepost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.status.message == 'Post Deleted Successfully'
-    And match response.post._id == postID
-    And match response.post.author._id == authorID
+    And match response.post._id == post_id
+    And match response.post.author._id == author_id
