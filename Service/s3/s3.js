@@ -56,17 +56,6 @@ exports.downloadFile = (fileKey) => {
   return s3.getObject(downloadParams).createReadStream();
 };
 
-// Get a file URL from S3
-exports.getFileUrl = (fileKey) => {
-  const getParams = {
-    Key: fileKey,
-    Bucket: bucketName,
-    Expires: 300 // Expires in 5 minutes
-  };
-
-  return s3.getSignedUrl('getObject', getParams);
-};
-
 // Delete a file from S3
 exports.deleteFile = async (fileKey) => {
   const deleteParams = {
