@@ -102,7 +102,7 @@ Feature: Delete user post endpoint tests
     Given path 'deletepost/' + post_id
     And header token = auth_token
     When method delete
-    Then status 201
+    Then status 200
     And match response.status.user == 'No User Provided'
     And match response.post._id == post_id
 
@@ -128,7 +128,7 @@ Feature: Delete user post endpoint tests
     Given path 'deletepost/' + post_id
     And header token = auth_token
     When method delete
-    Then status 201
+    Then status 200
     And match response.status.message == 'Post Deleted Successfully'
     And match response.post._id == post_id
     And match response.post.author._id == author_id
@@ -155,7 +155,7 @@ Feature: Delete user post endpoint tests
     Given path 'deletepost/' + post_id
     And header token = auth_token
     When method delete
-    Then status 201
+    Then status 200
     And match response.status.avatar == 'Avatar Image Not Found'
     And match response.status.postImg == 'Post Image Not Found'
 
@@ -163,7 +163,7 @@ Feature: Delete user post endpoint tests
     Given path 'deletepost/' + postID
     And header token = auth_token
     When method delete
-    Then status 201
+    Then status 200
     And match response.status.message == 'Post Deleted Successfully'
     And match response.post._id == postID
     And match response.post.author._id == authorID

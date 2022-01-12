@@ -374,23 +374,26 @@ types:
     delete:
       description: "Deletes the user post, the tries to delete the user and the images"
       responses:
-        201:
+        200:
           body:
             application/json:
               example: |
               {
-                status: { "message": Post Deleted Successfully" }
-                post: user post
+                status:
+                { 
+                  message: "Post Deleted Successfully"
+                }
+                post: UserPost
               }
               example: |
               {
                 status:
                 {
-                  user: "No User Found" || "User Not Found"
+                  user: "No User Provided" || "User Not Found"
                   avatar: "Avatar Image Not Found"
                   postImg: "Post Image Not Found"
                 }
-                post: user post
+                post: UserPost
               }
         400:
           body:

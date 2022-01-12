@@ -381,9 +381,9 @@ exports.uploadImage = async (req, res) => {
 
   const { file } = req;
 
-  UTILS.createImage(file)
+  UTILS.createS3Image(file)
     .then((result) => {
-      if (!result) {
+      if (result === UTILS.Result.Error) {
         return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
       }
 
@@ -451,12 +451,10 @@ exports.deleteImage = async (req, res) => {
     });
 };
 
-exports.deletePost = async (req, res) => {
+exports.deleteFullUserPost = async (req, res) => {
   const userPostID = req.params.id;
-  let status = {};
+  const status = {};
   let fullyDeleted = true;
-  let postImageID = null;
-  let avatarID = null;
 
   if (!ObjectId.isValid(userPostID)) {
     logger.info('Invalid Post ID');
@@ -464,51 +462,41 @@ exports.deletePost = async (req, res) => {
   }
 
   // Deleting User Post
-  const post = await UTILS.deletePost(userPostID);
-  if (post === undefined) {
+  const post = await UTILS.deleteDBPost(userPostID);
+  if (post === UTILS.Result.NotFound) {
     return res.status(404).send({ message: 'User Post Not Found' });
   }
-  if (!post) {
+  if (post === UTILS.Result.Error) {
     return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
   // Check to see if a user exists
   if (!post.author) {
     fullyDeleted = false;
-    status = {
-      user: 'No User Provided'
-    };
+    status.user = 'No User Provided';
   }
   else {
     // Delete user
-    const user = await UTILS.deleteUser(post.author._id);
-    if (!user) {
-      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-    }
-    if (user === undefined) {
+    const user = await UTILS.deleteDBUser(post.author._id);
+    if (user === UTILS.Result.NotFound) {
       fullyDeleted = false;
-      status = {
-        user: 'User Not Found'
-      };
+      status.user = 'User Not Found';
     }
 
-    // Delete avarat img if provided
+    // Delete avatar image if provided
     if (post.author.avatar_url) {
       // Get avatar image id
-      avatarID = post.author.avatar_url?.substring(post.author.avatar_url?.lastIndexOf('/') + 1);
+      const avatarID = UTILS.getImageID(post.author.avatar_url);
       // Checking if Avatar Image Exists
       const avatarExists = await checkFile(avatarID);
 
       // Delete avatar image if it exists
-      let avaratImg = {};
+      let avatarImg = {};
       if (avatarExists) {
-        avaratImg = UTILS.deleteImage(avatarID);
+        avatarImg = UTILS.deleteS3Image(avatarID);
       }
-      if (!avaratImg || !avatarExists) {
-        status = {
-          ...status,
-          avatar: 'Avatar Image Not Found'
-        };
+      if (avatarImg === UTILS.Result.Error || !avatarExists) {
+        status.avatar = 'Avatar Image Not Found';
         fullyDeleted = false;
       }
     }
@@ -517,32 +505,27 @@ exports.deletePost = async (req, res) => {
   // Delete post image if provided
   if (post.img_url) {
     // Get post image id
-    postImageID = post.img_url?.substring(post.img_url?.lastIndexOf('/') + 1);
+    const postImageID = UTILS.getImageID(post.img_url);
     // Checking if Post Image Exists
     const postImageExists = await checkFile(postImageID);
 
     // Deleting post image if it exists
     let postImg = {};
     if (postImageExists) {
-      postImg = UTILS.deleteImage(postImageID);
+      postImg = UTILS.deleteS3Image(postImageID);
     }
-    if (!postImg || !postImageExists) {
-      status = {
-        ...status,
-        postImg: 'Post Image Not Found'
-      };
+    if (postImg === UTILS.Result.Error || !postImageExists) {
+      status.postImg = 'Post Image Not Found';
       fullyDeleted = false;
     }
   }
 
   // If the post is fully deleted update status
   if (fullyDeleted) {
-    status = {
-      message: 'Post Deleted Successfully'
-    };
+    status.message = 'Post Deleted Successfully';
   }
   // Return the deleted post with the author
-  return res.status(201).send({ status, post });
+  return res.status(200).send({ status, post });
 };
 
 exports.uploadPostImages = async (req, res) => {
@@ -560,8 +543,8 @@ exports.uploadPostImages = async (req, res) => {
   // Uploading avatar
   if (req.files.avatar) {
     const avatar = req.files.avatar[0];
-    const avatarResult = await UTILS.createImage(avatar);
-    if (!avatarResult) {
+    const avatarResult = await UTILS.createS3Image(avatar);
+    if (avatarResult === UTILS.Result.Error) {
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     }
     response.avatarId = avatarResult.key;
@@ -570,8 +553,8 @@ exports.uploadPostImages = async (req, res) => {
   // Uploading post picture
   if (req.files.picture) {
     const picture = req.files.picture[0];
-    const pictureResult = await UTILS.createImage(picture);
-    if (!pictureResult) {
+    const pictureResult = await UTILS.createS3Image(picture);
+    if (pictureResult === UTILS.Result.Error) {
       // Delete avatar
       if (response.avatarId) {
         // Delete avatar
@@ -589,7 +572,7 @@ exports.uploadPostImages = async (req, res) => {
   return res.status(201).send(response);
 };
 
-exports.createPost = async (req, res) => {
+exports.createFullUserPost = async (req, res) => {
   // No request body provided
   if (!req.body || !Object.keys(req.body).length) {
     logger.info('No Request Body Provided');

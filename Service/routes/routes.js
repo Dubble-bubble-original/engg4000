@@ -131,13 +131,13 @@ ROUTER.post(
 ROUTER.post(
   '/post',
   USE(API.verifyAuthToken),
-  USE(API.createPost)
+  USE(API.createFullUserPost)
 );
 
 ROUTER.delete(
   '/deletepost/:id',
   USE(API.verifyAuthToken),
-  USE(API.deletePost)
+  USE(API.deleteFullUserPost)
 );
 
 module.exports = ROUTER;

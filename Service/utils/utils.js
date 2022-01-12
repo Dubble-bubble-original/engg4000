@@ -7,6 +7,10 @@ const { UserPost, User } = require('../db/dbSchema');
 // S3
 const { uploadFile, deleteFile } = require('../s3/s3');
 
+// Return Responses
+const Result = { Success: 1, NotFound: 2, Error: 3 };
+Object.freeze(Result);
+
 exports.removeStaleTokens = (token) => {
   // Clear the stale token
   if (auth_tokens.has(token)) {
@@ -24,7 +28,8 @@ exports.isAuthTokenStale = (currentTime, timeStamp) => (
   Math.floor((currentTime - timeStamp) / 1000) / 60 >= 30
 );
 
-exports.createImage = async (file) => (
+// Create S3 Image
+exports.createS3Image = async (file) => (
   // Upload file to S3 bucket
   uploadFile(file)
     .then((result) => {
@@ -35,51 +40,56 @@ exports.createImage = async (file) => (
     })
     .catch((err) => {
       logger.error(err.message);
-      return null;
+      return Result.Error;
     })
 );
 
-exports.deleteImage = async (image) => (
+// Delete S3 Image
+exports.deleteS3Image = async (image) => (
   // Delete image
   deleteFile(image)
-    .then(() => {
-      logger.info('Image Deleted Successfully');
-      return 'Image Deleted';
-    })
+    .then(() => Result.Success)
     .catch((err) => {
       logger.error(err.message);
-      return null;
+      return Result.Error;
     })
 );
 
-exports.deleteUser = async (userID) => (
+// Delete User
+exports.deleteDBUser = async (userID) => (
   User.findByIdAndDelete(userID)
     .then((doc) => {
       if (!doc) {
         logger.info('User Not Found');
-        return undefined;
+        return Result.NotFound;
       }
       return doc;
     })
     .catch((err) => {
       logger.error(err.message);
-      return null;
+      return Result.Error;
     })
 );
 
-exports.deletePost = async (postID) => (
+// Delete Post
+exports.deleteDBPost = async (postID) => (
   UserPost.findByIdAndDelete(postID)
     .populate('author')
     .exec()
     .then((doc) => {
       if (!doc) {
         logger.info('User Post Not Found');
-        return undefined;
+        return Result.NotFound;
       }
       return doc;
     })
     .catch((err) => {
       logger.error(err.message);
-      return null;
+      return Result.Error;
     })
 );
+
+// Get Image ID from Image URL
+exports.getImageID = (imgURL) => imgURL.substring(imgURL.lastIndexOf('/') + 1);
+
+exports.Result = Result;
