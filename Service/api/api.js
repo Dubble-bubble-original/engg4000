@@ -49,11 +49,6 @@ exports.verifyAuthToken = (req, res, next) => {
   return next();
 };
 
-exports.version = (req, res) => {
-  const { VERSION } = process.env;
-  return res.send(`Service v${VERSION}`);
-};
-
 exports.createUserPost = (req, res) => {
   // No request body provided
   if (!req.body || !Object.keys(req.body).length) {
