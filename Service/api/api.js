@@ -10,7 +10,7 @@ const { UserPost, User } = require('../db/dbSchema');
 
 // S3
 const {
-  checkFile, downloadFile, getFileUrl, deleteFile
+  checkFile, downloadFile, deleteFile
 } = require('../s3/s3');
 
 // Constants
@@ -405,27 +405,6 @@ exports.getImage = async (req, res) => {
     logger.error(err.message);
     return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
-};
-
-exports.getImageUrl = async (req, res) => {
-  const fileKey = req.params.id;
-
-  const fileExists = await checkFile(fileKey);
-
-  if (!fileExists) {
-    logger.error('Image Does Not Exist');
-    return res.status(404).send({ message: 'Image Does Not Exist' });
-  }
-
-  const result = getFileUrl(fileKey);
-
-  if (!result) {
-    logger.error('Failed to Get Image URL');
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
-  }
-
-  const response = { url: result };
-  return res.status(200).send(response);
 };
 
 exports.deleteImage = async (req, res) => {

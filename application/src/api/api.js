@@ -93,20 +93,6 @@ export const getImage = async (id) => {
   });
 }
 
-// Get an image URL
-export const getImageUrl = async (id) => {
-  return await requestWithToken(async() => {
-    const response = await axios({
-      method: 'GET',
-      url: serviceUrl + '/imageurl/' + id,
-      headers: {
-        'token': authToken
-      }
-    });
-    return response.data;
-  });
-}
-
 // Delete an image
 export const deleteImage = async (id) => {
   return await requestWithToken(async() => {

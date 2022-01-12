@@ -411,22 +411,3 @@ types:
                 {
                   "message": "An Unknown Error Occurred"
                 }
-
-/imageurl/{id}:
-    get: 
-      description: "Returns the image url with the matching id."
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "url": "https://google.com"
-                }
-        500:
-          body:
-            application/json:
-              example: |
-                {
-                  "message": "An Unknown Error Occurred"
-                }
