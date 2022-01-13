@@ -175,7 +175,6 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    And print response
     * def post_id = response.post._id
     * def author_id = response.post.author._id
 
