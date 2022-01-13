@@ -18,5 +18,12 @@ function fn() {
     // customize
   }
 
+  // Create a global user and post
+  var result = karate.callSingle('classpath:./utils/global_user_post.feature', config);
+  // Set Post ID
+  config.postID = result.response.post._id;
+  // Set Author ID
+  config.authorID = result.response.author._id;
+
   return config;
 }
