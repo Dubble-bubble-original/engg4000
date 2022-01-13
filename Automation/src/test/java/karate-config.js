@@ -12,6 +12,7 @@ function fn() {
 
   if (env == 'dev') {
     config.baseUrl = 'http://localhost:9000';
+    config.frontendUrl = 'http://localhost:3000';
   } else if (env == 'ci') {
     // customize
   } else if (env == 'prod') {

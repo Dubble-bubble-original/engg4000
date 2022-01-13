@@ -37,19 +37,19 @@ function WelcomePage(props) {
   return (
     <div className="container text-center">
       <img className="large-logo mt-5 mb-4" src={logo} alt="Logo" />
-      <div className="terms-conditions h5 mb-5" data-testid="terms-conditions">
+      <div className="terms-conditions h5 mb-5" id="terms-conditions" testid="terms-conditions">
         By entering this website, you are ageering to our {termsAndConditions}.
       </div>
       <div className="i-agree h5 mb-3">
         <Form.Check
-          data-testid="agree-checkbox"
           id="agree-checkbox"
+          testid="agree-checkbox"
           type="checkbox"
           label="I have read and accept the terms and conditions"
           onChange={checkBoxHandler}
         />
       </div>
-      <Button data-testid="enter-btn" id="enter-btn" className="mb-4" disabled={!agree} onClick={enterButtonHandler}>
+      <Button id="enter-btn" testid="enter-btn" className="mb-4" disabled={!agree} onClick={enterButtonHandler}>
         Enter Site
       </Button>
 
