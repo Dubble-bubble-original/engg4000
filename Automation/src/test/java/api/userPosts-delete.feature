@@ -91,7 +91,6 @@ Feature: Delete user post endpoint tests
     * def postData = read('../data/userPost.json')
     * set postData.author = 123123123123
     And request postData
-    And print postData
     When method post
     Then status 201
     * def post_id = response.post._id
@@ -157,42 +156,28 @@ Feature: Delete user post endpoint tests
     And match response.status.postImg == 'Post Image Not Found'
 
   Scenario: Try to delete a full user post
-    # Creating a avatar image
-    Given path 'image'
+    # Creating avatar and post image
+    Given path 'postimages'
     And header token = auth_token
-    And multipart file image = { read: '../data/img_avatar.png', filename: 'image', contentType: 'image/png' }
+    And multipart file avatar = { read: '../data/img_avatar.png', filename: 'avatar_image', contentType: 'multipart/form-data' }
+    And multipart file picture = { read: '../data/post_image.jpeg', filename: 'post_image', contentType: 'multipart/form-data' }
     When method post
     Then status 201
-    * def avatar_ID = response.id
+    * def avatarId = response.avatarId
+    * def pictureId = response.pictureId
 
-    # Create a post image
-    Given path 'image'
+    # Creating a temporary post with a user
+    Given path 'post'
     And header token = auth_token
-    And multipart file image = { read: '../data/post_image.jpeg', filename: 'image', contentType: 'image/jpeg' }
-    When method post
-    Then status 201
-    * def postImage_ID = response.id
-
-    # Creating a temporary user
-    Given path 'user'
-    And header token = auth_token
-    * def userData = read('../data/user.json')
-    * set userData.avatar_url = baseImageURl + avatar_ID
-    And request userData
-    When method post
-    Then status 201
-    * def author_id = response.user._id
-
-    # Creating a temporary post
-    Given path 'userpost'
-    And header token = auth_token
-    * def postData = read('../data/userPost.json')
-    * set postData.author = author_id
-    * set postData.img_url = baseImageURl + postImage_ID
+    * def postData = read('../data/user_userPost.json')
+    * set postData.avatarId = avatarId
+    * set postData.pictureId = pictureId
     And request postData
     When method post
     Then status 201
+    And print response
     * def post_id = response.post._id
+    * def author_id = response.post.author._id
 
     # Successfully Delete the created post
     Given path 'deletepost/' + post_id
