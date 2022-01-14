@@ -56,7 +56,7 @@ jobs:
           application_name: SeniorDesignProd
           environment_name: Seniordesignprod-env
           version_label: "prod-app-${{ steps.format-time.outputs.replaced }}"
-          region: us-east-2
+          region: us-east-1
           deployment_package: deploy.zip
       
       - name: Slack Notification
