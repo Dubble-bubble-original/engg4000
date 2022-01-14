@@ -2,7 +2,7 @@
     "AWSEBDockerrunVersion": 2,
     "Authentication": {
         "bucket": "senior-design-img-bucket",
-        "key": "dockercfg"
+        "key": "docker"
     },
     "containerDefinitions": [
         {
