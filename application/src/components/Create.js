@@ -1,6 +1,7 @@
 // React
 import { useState, useRef, useEffect } from 'react';
-import { Container, Row, Col, Form, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Alert, Button, InputGroup } from 'react-bootstrap';
+import { When } from 'react-if';
 import PropTypes from 'prop-types'
 
 // Resources
@@ -9,6 +10,7 @@ import PlaceholderAvatar from '../resources/images/placeholder-avatar.png';
 import AvatarUploadButton from './upload/AvatarUploadButton';
 import ImageUploadButton from './upload/ImageUploadButton';
 import TagButtonGroup from './TagButtonGroup';
+import Post from './post/Post';
 
 function Number(props) {
   return (
@@ -47,6 +49,7 @@ function Create() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [tags, setTags] = useState([]);
+  const [tagFilter, setTagFilter] = useState('');
   const [invalidTagsMsg, setInvalidTagsMsg] = useState();
   const [picture, setPicture] = useState(null);
   const pictureFileInputRef = useRef(null);
@@ -59,10 +62,26 @@ function Create() {
     else setInvalidTagsMsg('');
   }, [tags]);
 
+  // Check if all required fields are filled and valid
+  const isPostValid = () => {
+    if (position === null) return false;
+    if (name.trim() === '') return false;
+    if (title.trim() === '') return false;
+    if (body.trim() === '') return false;
+    if (invalidTagsMsg) return false;
+    return true;
+  }
+
+  const getPictureURL = () => {
+    return picture ? URL.createObjectURL(picture) : null;
+  }
+
   const handleSubmit = (event) => {
     // Prevent default form submission
     event.preventDefault();
     event.stopPropagation();
+
+    // Todo: Do other stuff
   }
 
   return (
@@ -79,6 +98,13 @@ function Create() {
           <div style={{width:'100%', height:'350px'}}>
             <LocationPickerMap onPositionChange={setPosition} />
           </div>
+          <Alert 
+              variant="danger" 
+              className="mb-0 mt-3" 
+              hidden={position !== null}
+            >
+              You must select a location.
+            </Alert>
         </Section>
 
         <Section num="2" title="Avatar">
@@ -151,8 +177,16 @@ function Create() {
         <Section num="4" title="Tags">
           <div>Select up to 5 tags that relate to your post.</div>
           <br/>
+          <InputGroup className="mb-3" style={{maxWidth:250}}>
+            <InputGroup.Text>Filter:</InputGroup.Text>
+            <Form.Control
+              type="text"
+              value={tagFilter}
+              onChange={(e)=> {setTagFilter(e.target.value)}}
+            />
+          </InputGroup>
           <Form.Group>
-            <TagButtonGroup tags={tags} setTags={setTags} />
+            <TagButtonGroup tags={tags} setTags={setTags} filter={tagFilter} />
             <Alert 
               variant="danger" 
               className="mb-0 mt-3" 
@@ -177,17 +211,44 @@ function Create() {
               </ImageUploadButton>
             </Col>
             <Col hidden={!picture} className="img-preview">
-              <img src={picture ? URL.createObjectURL(picture) : null}/>
+              <img src={getPictureURL()}/>
             </Col>
           </Row>
         </Container>
 
         <Section num="6" title="Preview">
+          <div>See how your post will look before you publish!</div>
+          <Alert 
+            variant="danger" 
+            className="mb-0 mt-3" 
+            hidden={isPostValid()}
+          >
+            Some required fields are missing values.
+          </Alert>
         </Section>
 
-        {/* <Post /> */}
+        <When condition={isPostValid()}>
+          <Post
+            postData={{
+              author: {
+                name: name,
+                avatar_url: avatarImg
+              },
+              body: body,
+              tags: tags,
+              title: title,
+              img_url: getPictureURL(),
+              date_created: new Date(),
+              location: position,
+              location_string: 'WIP'
+            }}
+          />
+        </When>
 
         <Section num="7" title="Publish">
+          <div>By publishing this post you are agreeing to our (todo) terms and conditions.</div>
+          (Checkbox) I have read and accept the terms and conditions
+          <Button>Publish</Button>
         </Section>
 
       </Form>

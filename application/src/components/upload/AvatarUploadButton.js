@@ -111,7 +111,7 @@ function AvatarUploadButton(props) {
 
 AvatarUploadButton.propTypes = {
   setAvatarImg: PropTypes.func.isRequired,
-  defaultImg: PropTypes.object
+  defaultImg: PropTypes.string
 }
 
 export default AvatarUploadButton;

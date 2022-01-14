@@ -47,8 +47,8 @@ function Post({postData}) {
               <div className="text-muted text-center">{postData.location_string}</div>
             </FCol>
           </FRow>
-          <div>
-            <img src={postData.img_URL} />
+          <div hidden={!postData.img_url}>
+            <img src={postData.img_url} />
           </div>
         </FCol>
       </FRow>
@@ -65,8 +65,11 @@ Post.propTypes = {
     body: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string),
     title: PropTypes.string,
-    img_URL: PropTypes.string,
-    date_created: PropTypes.string,
+    img_url: PropTypes.string,
+    date_created: PropTypes.oneOfType([
+      PropTypes.string, 
+      PropTypes.Date
+    ]),
     location: PropTypes.shape({
       lat: PropTypes.number,
       lng: PropTypes.number,

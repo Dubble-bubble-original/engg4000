@@ -56,6 +56,9 @@ const tagList = [
 ];
 
 function TagButtonGroup(props) {
+  // Use regular expression to do case-insensitive matching for the filter
+  const regexFilter = new RegExp(props.filter, 'i');
+
   return (
     <ToggleButtonGroup
         className="tag-container justify-content-center"
@@ -64,17 +67,19 @@ function TagButtonGroup(props) {
         onChange={(val)=>{props.setTags(val)}}
     >
       {
-        tagList.map(tag => {
-            return <ToggleButton
-            variant="outline-primary"
-            className="tag"
-            value={tag}
-            key={tag}
-            id={'tgb-btn-'+tag}
+        tagList
+          .filter(tag => props.filter ? regexFilter.test(tag) : true)
+          .map(tag => 
+            <ToggleButton
+              variant="outline-primary"
+              className="tag"
+              value={tag}
+              key={tag}
+              id={'tgb-btn-'+tag}
             >
-            {tag}
-            </ToggleButton>;
-        })
+              {tag}
+            </ToggleButton>
+          )
       }
     </ToggleButtonGroup>
   );
@@ -83,6 +88,7 @@ function TagButtonGroup(props) {
 TagButtonGroup.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.string),
   setTags: PropTypes.func.isRequired,
+  filter: PropTypes.string,
 }
 
 export default TagButtonGroup;
