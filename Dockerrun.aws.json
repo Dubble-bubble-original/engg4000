@@ -1,7 +1,7 @@
 {
     "AWSEBDockerrunVersion": 2,
     "Authentication": {
-        "bucket": "elasticbeanstalk-us-east-2-108191730989",
+        "bucket": "senior-design-img-bucket",
         "key": "dockercfg"
     },
     "containerDefinitions": [
