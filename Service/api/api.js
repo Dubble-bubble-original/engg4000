@@ -431,7 +431,7 @@ exports.deleteFullUserPost = async (req, res) => {
   let fullyDeleted = true;
 
   if (!ObjectId.isValid(userPostID)) {
-    logger.info('Invalid Post ID');
+    logger.info('Invalid Post ID Provided');
     return res.status(400).send({ message: 'Invalid Post ID Provided' });
   }
 
