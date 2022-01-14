@@ -31,7 +31,7 @@ function WelcomePage(props) {
     <div className="container">
       <img className="logo" src={logo} alt="Logo" />
       <div className="terms-conditions" data-testid="terms-conditions">
-           <p>Grizzly {termsAndConditions}</p>
+           <p>Task {termsAndConditions}</p>
       </div>
       <div className="i-agree">
         <Form.Check
