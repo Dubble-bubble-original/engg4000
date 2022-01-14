@@ -1,5 +1,5 @@
 {
-    "AWSEBDockerrunVersion": 2,
+    "AWSEBDockerrunVersion": 1,
     "Authentication": {
         "bucket": "senior-design-img-bucket",
         "key": "dockercfg"
