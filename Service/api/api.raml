@@ -80,22 +80,6 @@ types:
                 "timestamp": "1635366449733"
               }
 
-/version:
-  get:
-    description: "Returns the version of the APP."
-    responses:
-      200:
-        body:
-          type: string
-          example: "Service v0.0.0"
-      401:
-        body:
-          application/json:
-            example: |
-              {
-                "message": "No Authentication Token Provided"
-              }
-
 /userpost:
   post:
     description: "Creates a new user post document and returns it."
@@ -419,25 +403,6 @@ types:
               example: |
                 {
                   "message": "Image Deleted Successfully"
-                }
-        500:
-          body:
-            application/json:
-              example: |
-                {
-                  "message": "An Unknown Error Occurred"
-                }
-
-/imageurl/{id}:
-    get: 
-      description: "Returns the image url with the matching id."
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "url": "https://google.com"
                 }
         500:
           body:

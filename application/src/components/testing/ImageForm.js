@@ -4,7 +4,7 @@
 import { useState } from 'react';
 
 // API
-import { postImage, getImage, getImageUrl, deleteImage, postImages, post } from '../../api/api';
+import { postImage, getImage, deleteImage, postImages, post } from '../../api/api';
 
 function ImageForm() {
     const [file, setFile] = useState();
@@ -62,8 +62,6 @@ function ImageForm() {
             </form>
             <br />
             <button onClick={() => deleteImage(image)}>Delete Image</button>
-            <br />
-            <button onClick={() => getImageUrl(image)}>Get Image Url</button>
             <br />
             <button onClick={() => getImage(image)}>Get Image</button>
 
