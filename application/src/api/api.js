@@ -27,20 +27,6 @@ export const getAuthToken = async () => {
   }
 }
 
-// Get Version
-export const getVersion = async () => {
-  return await requestWithToken(async() => {
-    const response = await axios({
-        method: 'GET',
-        url: serviceUrl + '/version',
-        headers: {
-            'token': authToken
-        }
-    });
-    return response.data;
-  });
-}
-
 // Get post by access key
 export const getPostByAccessKey = async (accessKey) => {
   return await requestWithToken(async() => {
@@ -99,20 +85,6 @@ export const getImage = async (id) => {
     const response = await axios({
       method: 'GET',
       url: serviceUrl + '/image/' + id,
-      headers: {
-        'token': authToken
-      }
-    });
-    return response.data;
-  });
-}
-
-// Get an image URL
-export const getImageUrl = async (id) => {
-  return await requestWithToken(async() => {
-    const response = await axios({
-      method: 'GET',
-      url: serviceUrl + '/imageurl/' + id,
       headers: {
         'token': authToken
       }

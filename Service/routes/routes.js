@@ -24,12 +24,6 @@ ROUTER.post(
   USE(API.createAuthToken)
 );
 
-ROUTER.get(
-  '/version',
-  USE(API.verifyAuthToken),
-  USE(API.version)
-);
-
 // User post endpoints
 
 if (ENV.NODE_ENV === 'dev') {
