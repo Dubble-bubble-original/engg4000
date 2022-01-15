@@ -9,7 +9,7 @@ import PrivacyPolicy from './privacyPolicy/PrivacyPolicy';
 function TermsModal(props) {
 
   return (
-    <Modal id="terms-conditions" testid="terms-conditions" size='xl' scrollable show={props.show} onHide={() => props.setShow(false)}>
+    <Modal testid="terms-conditions" size='xl' scrollable show={props.show} onHide={() => props.setShow(false)}>
       <Modal.Header closeButton>
       </Modal.Header>
       <Modal.Body>

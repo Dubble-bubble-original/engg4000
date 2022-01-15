@@ -4,9 +4,9 @@ import { Container } from 'react-bootstrap';
 function Search() {
 
   return (
-    <Container className="outer-container" id="search-page" testid="search-page">
+    <Container className="outer-container" testid="search-page">
       {/* Temporary content (change me) */}
-      <div className="h4 mb-0">Select tags to search</div>
+      <div testid="search-title" className="h4 mb-0">Select tags to search</div>
     </Container>
   )
 }

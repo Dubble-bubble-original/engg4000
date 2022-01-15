@@ -13,7 +13,7 @@ function PrivacyPolicy() {
 					<div className=" firstFooter">
 						<span style={{lineHeight: '18.0pt'}} className="pageNumbers">Page <span className="currentPageNum"></span> of <span className="totalPageNum"></span></span>
 					</div>
-					<p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'center'}} className="documentTitle"><span style={{fontStyle: 'normal', fontWeight: 'bold'}}>Nota.social Privacy Policy</span></p>
+					<p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'center'}} className="documentTitle"><span testid="privacy-policy" style={{fontStyle: 'normal', fontWeight: 'bold'}}>Nota.social Privacy Policy</span></p>
 					<p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'center'}}>Type of website: News or Media<br/>Effective date: 1st day of November, 2021</p>
 					<p style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', textAlign: 'left'}}><span style={{fontStyle: 'normal', fontWeight: 'bold', textDecoration: 'underline'}}>Purpose</span><br/>The purpose of this privacy policy (this &quot;Privacy Policy&quot;) is to inform users of our Site of the following: </p>
 					<ol start="1" style={{lineHeight: '18.0pt', fontSize: '12.0pt', color: '#000000', listStyle: 'decimal'}}>

@@ -45,7 +45,7 @@ function Home() {
   // Render is loading page until get recent posts
   if(isLoading) {
     return (
-      <div className="home-page" id="home-page" testid="home-page">
+      <div className="home-page" testid="home-page">
         Loading...
       </div>
     )
@@ -54,7 +54,7 @@ function Home() {
   return (
     <>
       <Container className="home-page outer-container" id="home-page" testid="home-page">
-        <div className="h4 mb-0">Recent posts</div>
+        <div testid="home-title" className="h4 mb-0">Recent posts</div>
       </Container>
       <Post postData={postData}/>
     </>

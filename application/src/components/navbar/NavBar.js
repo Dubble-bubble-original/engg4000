@@ -18,14 +18,14 @@ function NavLinks(props) {
   return (
     <IconContext.Provider value={{color:'#EC4038'}}>
       <Nav className="me-auto">
-          <Nav.Link id="nav-home-btn" testid="nav-home-btn" onClick={() => clickHandler(props.setContent('home'))} className={props.content === 'home' ? 'active' : ''}>Home <MdHome/></Nav.Link>
-          <Nav.Link id="nav-search-btn" testid="nav-search-btn" onClick={() => clickHandler(props.setContent('search'))} className={props.content === 'search' ? 'active' : ''}>Search <MdSearch/></Nav.Link>
-          <Nav.Link id="nav-create-btn" testid="nav-create-btn" onClick={() => clickHandler(props.setContent('create'))} className={props.content === 'create' ? 'active' : ''}>Create <MdAddLocation/></Nav.Link>
+          <Nav.Link testid="nav-home-btn" onClick={() => clickHandler(props.setContent('home'))} className={props.content === 'home' ? 'active' : ''}>Home <MdHome/></Nav.Link>
+          <Nav.Link testid="nav-search-btn" onClick={() => clickHandler(props.setContent('search'))} className={props.content === 'search' ? 'active' : ''}>Search <MdSearch/></Nav.Link>
+          <Nav.Link testid="nav-create-btn" onClick={() => clickHandler(props.setContent('create'))} className={props.content === 'create' ? 'active' : ''}>Create <MdAddLocation/></Nav.Link>
       </Nav>
       <Nav className="justify-content-end">
         <NavDropdown align="end" title={<MdMoreHoriz/>} id="basic-nav-dropdown" testid="nav-dropdown">
-          <NavDropdown.Item id="nav-terms-conditions-btn" testid="nav-terms-conditions-btn" onClick={() => clickHandler(props.setShowTerms(true))}>Terms and Conditions</NavDropdown.Item>
-          <NavDropdown.Item id="nav-delete-btn" testid="nav-delete-btn" onClick={() => clickHandler(props.setContent('delete'))}>Delete a post</NavDropdown.Item>
+          <NavDropdown.Item testid="nav-terms-conditions-btn" onClick={() => clickHandler(props.setShowTerms(true))}>Terms and Conditions</NavDropdown.Item>
+          <NavDropdown.Item testid="nav-delete-btn" onClick={() => clickHandler(props.setContent('delete'))}>Delete a post</NavDropdown.Item>
         </NavDropdown>
       </Nav>
     </IconContext.Provider>
