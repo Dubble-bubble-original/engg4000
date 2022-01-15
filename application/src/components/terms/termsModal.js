@@ -9,7 +9,7 @@ import PrivacyPolicy from './privacyPolicy/PrivacyPolicy';
 function TermsModal(props) {
 
   return (
-    <Modal testid="terms-conditions" size='xl' scrollable show={props.show} onHide={() => props.setShow(false)}>
+    <Modal data-testid="terms-conditions" size='xl' scrollable show={props.show} onHide={() => props.setShow(false)}>
       <Modal.Header closeButton>
       </Modal.Header>
       <Modal.Body>
@@ -23,7 +23,7 @@ function TermsModal(props) {
       </Tabs>
       </Modal.Body>
       <Modal.Footer>
-          <Button id="close-btn" testid="close-btn" onClick={() => props.setShow(false)}>
+          <Button id="close-btn" data-testid="close-btn" onClick={() => props.setShow(false)}>
             Close
           </Button>
       </Modal.Footer>
