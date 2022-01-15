@@ -7,9 +7,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint *.js",
-    "dev": "nodemon app.js",
-    "start": "node app.js"
+    "lint": "eslint \"**/*.js\" --max-warnings=0",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -23,19 +22,25 @@
   },
   "homepage": "https://github.com/nathanielcaron/engg4000#readme",
   "dependencies": {
+    "aws-sdk": "^2.1029.0",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.2",
     "express": "^4.17.1",
-    "jest": "^27.2.2",
     "mongoose": "^6.0.7",
+    "multer": "^1.4.3",
     "nodemon": "^2.0.12",
+    "pm2": "^5.1.2",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
   "engines": {
     "node": "^14.17.0",
     "npm": "^7.20.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "jest": "^27.2.2"
   }
 }

@@ -9,6 +9,10 @@ env:
   DB_NAME: ${{ secrets.DB_NAME }}
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASS: ${{ secrets.DB_PASS }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 # Run CI on pull request for the main branches
 on:
@@ -44,9 +48,12 @@ jobs:
 
       # Setup Node
       - name: Setup Node.js v14
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
 
       # Run single commands using the runner's shell
       - name: Install dependencies
@@ -66,9 +73,12 @@ jobs:
       
       # Setup Node
       - name: Setup Node.js v14
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
+          cache-dependency-path: Service/package-lock.json
 
       # Setup JDK
       - name: Set up JDK 8
@@ -81,7 +91,7 @@ jobs:
       - name: Start Service
         run: |
           cd Service
-          npm install --no-optional -f
+          npm install --no-optional --force
           npm run dev &
 
       # Run Karate API Tests

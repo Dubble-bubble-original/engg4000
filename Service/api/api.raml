@@ -1,5 +1,9 @@
 #%RAML 1.0
 ---
+
+# Validation:
+# https://raml-org.github.io/playground/custom_validation.html
+
 title: Nota API
 baseUri: http://localhost:9000
 version: v1
@@ -17,28 +21,393 @@ types:
       timestamp:
         required: true
         type: number
+  UserPost:
+    type: object
+    properties:
+      _id:
+        type: number
+      author:
+        type: string
+      body:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      title:
+        type: string
+      img_url:
+        type: string
+      date_created:
+        type: number
+      location:
+        type: object
+        properties:
+          lat:
+            type: number
+          lng:
+            type: number
+      location_string:
+        type: string
+      true_location:
+        type: boolean
+      access_key:
+        type: string
+  User:
+    type: object
+    properties:
+      _id:
+        type: number
+      name:
+        type: string
+      avatar_url:
+        type: string
+      email:
+        type: string
+      access_key:
+        type: string
 
 /auth:
   post:
-    description: Creates an authorization token to be used for authorizing API calls.
+    description: "Creates an authorization token to be used for authorizing API calls."
     responses:
       200:
         body:
           application/json:
-            type: Token
-            example: {
-              'token': '6bf73119-ff54-40d6-bbd5-a2590b9eb66f',
-              'timestamp': 1635366449733
-            }
-/version:
-  get:
-    description: Returns the version of the APP.
+            example: |
+              {
+                "token": "6bf73119-ff54-40d6-bbd5-a2590b9eb66f",
+                "timestamp": "1635366449733"
+              }
+
+/userpost:
+  post:
+    description: "Creates a new user post document and returns it."
+    responses:
+      201:
+        body:
+          application/json:
+            type: UserPost
+      400:
+        description: "A required field in the request is missing or is invalid."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Invalid Request Body Format"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+  /{ak}:
+    get: 
+      description: "Returns the post with the matching access key"
+      responses:
+        200:
+          body:
+            application/json:
+              type: UserPost
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Post Not Found"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+    patch:
+      description: "Update a userpost with data provided in an update field in req.body"
+      body:
+        application/json:
+          example: { "update" : { "title": "exampleUpdate", "body": "exampleUpdate"}}
+      responses:
+        200:
+          body:
+            application/json:            
+              type: UserPost
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Post Not Found"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+  /{id}:
+    delete:
+    description: "Deletes a user post."
     responses:
       200:
         body:
-          type: string
-          example: 'Service v0.0.0'
-      401:
+          application/json:
+            example: |
+              {
+                "message": "User Post Deleted Successfully"
+              }
+      400:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Invalid User Post ID"
+              }
+      404:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "User Post Not Found"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/userPosts:
+  post:
+    description: Returns an array of Userposts which matches the filters provided in req.body.
+    body:
+      application/json:
+        example: { "title" : "Post Title", "tags" : ["Tag1", "Tag2"] }, "page": "1" }
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items:
+              type: userPost
+      500:
         body:
           type: string
-          example: 'No Authentication Token Provided'
+      400:
+        body:
+          type: string
+
+/recentposts:
+  post:
+    description: Returns an array of recently added user posts.
+    body:
+      application/json:
+        example: { "date": "2021-11-07T13:57:49.280+00:00" }
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items:
+              type: UserPost
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/user:
+  post:
+    description: "Creates a new user document and returns it."
+    responses:
+      201:
+        body:
+          application/json:
+            type: User
+      400:
+        description: "A required field in the request is missing or is invalid."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Invalid Request Body Format"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+  /{id}:
+    get: 
+      description: "Returns the user with the matching id"
+      responses:
+        200:
+          body:
+            application/json:
+              type: User
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Not Found"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+    delete:
+      description: "Deletes a user."
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Deleted Successfully"
+                }
+        400:
+          description: "A required field in the request is missing or is invalid."
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Invalid Request Body Format"
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Not Found"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+
+/postimages:
+  post:
+    description: "Uploads an avatar and post picture on an S3 bucket. It returns the ids of both files."
+    responses:
+      201:
+        body:
+          application/json:
+            example: |
+              {
+                "avatarId": "a2590b9eb66f",
+                "pictureId": "a2590a8da55e"
+              }
+      400:
+        description: "Missing image files in the request body."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Missing Images"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/post:
+  post:
+    description: "Creates a new user, user post. It returns the user and user post."
+    responses:
+      201:
+        body:
+          application/json:
+            type: UserPost
+      400:
+        description: "Missing or invalid user data, user post data, or image ids in the request body."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Missing User"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/image:
+  post:
+    description: "Creates a image in an S3 bucket and returns the object key."
+    responses:
+      201:
+        body:
+          application/json:
+            example: |
+              {
+                "id": "a2590b9eb66f"
+              }
+      400:
+        description: "No image file was provided in the request body."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "No Image Provided"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+  /{id}:
+    get: 
+      description: "Returns the image with the matching id."
+      responses:
+        200:
+          body:
+            type: data
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+    delete:
+      description: "Delete an image."
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Image Deleted Successfully"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }

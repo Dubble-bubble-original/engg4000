@@ -1,0 +1,15 @@
+{
+    "avatarId": "elmo.gif",
+    "pictureId": "elmo.gif",
+    "post": {
+        "tags": ["nature", "hiking", "fall"],
+        "title": "Gorgeous Trail!",
+        "body": "Went hiking in a beautiful trail in Cape Breton with the family.",
+        "location": {
+            "lat": 0,
+            "lng": 0
+        },
+        "true_location": true,
+        "location_string": "New Brunswick, Canada"
+    }
+}

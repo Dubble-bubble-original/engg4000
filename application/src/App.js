@@ -1,26 +1,30 @@
+/* eslint-disable no-unreachable */
 import './App.css';
 import { useState } from 'react';
 import WelcomePage from './components/WelcomePage';
-import HomePage from './components/HomePage';
+import MainPage from './components/MainPage';
 import { If, Then, Else } from 'react-if';
+import { LoadScript } from '@react-google-maps/api';
 
 const App = () => {
   // The state that determines what page we are on
-  const [page, setPage] = useState('welcome_page');
+  const [page, setPage] = useState('welcomePage');
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <If condition={page === 'welcome_page'}>
-          <Then>
-            <WelcomePage data={setPage}/>
-          </Then>
-        <Else>
-          <HomePage />
-        </Else>
-        </If>
-      </header>
-    </div>
+    <If condition={page === 'welcomePage'}>
+      <Then>
+        <div className="App" id="welcome-page" >
+          <WelcomePage setPage={setPage} />
+        </div>
+      </Then>
+      <Else>
+        <div className="App" id="main-page">
+          <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+            <MainPage />
+          </LoadScript>
+        </div>
+      </Else>
+    </If>
   );
 }
 

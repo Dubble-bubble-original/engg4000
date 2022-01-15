@@ -1,0 +1,304 @@
+@page{
+    margin:60px 35px 35px;
+}
+@page:first {
+    margin-top:35px;
+}
+.template_test{
+    font-size: 10pt;
+}
+.template_test .pageBreak{
+    page-break-before:always;
+}
+.template_test .blankLine {display:block; border-bottom:solid 1px black;}
+.template_test .keepTogether{
+    page-break-inside:avoid;
+}
+.template_test h1{
+    font-size:22pt;
+    text-align:center;
+    padding:15px 0;
+    margin:15px 0;
+    border-bottom:solid black 2px;
+    font-weight:900;
+}
+.template_test h2{
+    text-align:center;
+    font-size:14pt;
+    text-transform:uppercase;
+    font-weight:700;
+    overflow:hidden;
+    margin:20px 0;
+}
+.template_test h2:before, .template_test h2:after {
+    background-color: black;
+    content: "";
+    display: inline-block;
+    height: 1px;
+    position: relative;
+    vertical-align: middle;
+    width: 50%;
+}
+.ua-mobile .template_test h2:before, .ua-mobile .template_test h2:after {
+    height:2px;
+}
+.template_test h2:before {
+    right: 10px;
+    margin-left: -50%;
+}
+.template_test h2:after {
+    left: 10px;
+    margin-right: -50%;
+}
+.template_test .contactInfo{
+    text-align:center;
+    margin:15px 0;
+}
+.template_test .contactInfo span:before {
+    content:' | ';
+    padding:0 5px;
+}
+.template_test .contactInfo span:first-child:before {
+    content:'';
+    padding:0;
+}
+.template_test p{
+    margin:20px 0;
+}
+.template_test .infoHeading{
+    margin:20px 0 10px;
+    position:relative;
+}
+.template_test .infoHeading .mainTitle, .template_test .infoHeading .mainInfo{
+    font-weight:900;
+    font-size:12pt;
+    display:block;
+    max-width:50%;
+}
+.template_test .infoHeading .subTitle, .template_test .infoHeading .subInfo{
+    font-weight:700;
+    font-size:11pt;
+    display:block;
+    max-width:50%;
+}
+.template_test .infoHeading .mainInfo{
+    position:absolute;
+    top:0;
+    right:0;
+}
+.template_test .infoHeading .subInfo{
+    position:absolute;
+    bottom:0;
+    right:0;
+}
+.template_test .infoHeading.education .subInfo{
+    font-weight:normal;
+    font-style:italic;
+    position:static;
+    display:block;
+    font-size:10pt;
+    max-width:100%;
+}
+.template_test .infoHeading.award .subInfo, .template_test .infoHeading.volunteer .subInfo{
+    font-weight:normal;
+    position:static;
+    display:block;
+    font-size:10pt;
+    max-width:100%;
+}
+.template_test ul{
+    margin:0;
+    list-style-type:none;
+}
+.template_test ul li:before {
+    content: '\2022';
+    position:absolute;
+    left:20px;
+}
+.template_test li{
+    margin:10px 0;
+    padding-left:33px;
+    position:relative;
+    box-sizing:border-box;
+}
+.template_test .columns{
+    font-size:0;
+}
+.template_test .columns li{
+    display:inline-block;
+    width:50%;
+    font-size:10pt;
+    margin: 5px 0;
+    vertical-align:top;
+}
+.ua-android.ua-webkit .template_test .columns {
+    font-size:10pt;
+}
+.ua-android.ua-webkit .template_test .columns li{
+    width:49%;
+}
+.template_test .workSample{
+    margin-left:20px;
+}
+body, html {
+    background: #FFF;
+}
+noscript,#navigation,#banner,#footer,#intro,#outtro,.ImportantInfoDialog,
+.headerSimplePreview, .sectionMenuTop, .selLicense, .previewHead,
+iframe, iframe *, .noMobile, .woahbar, .contractFootControls, .previewFormatWarning {
+    display:none;
+}
+#upsell, #popupContainer, #popupMask, .contentBreak, .contentBreakEnd {
+    display:none !important;
+}
+#popupContainer, #popupMask {
+    visibility: hidden;
+}
+#wrapper,#content {
+    background:none;
+    position:relative;
+    display:block;
+    width:auto;
+}
+#outputPage {
+    display:block;
+    padding:3px;
+    background:#FFF;
+    color:#000;
+    position:relative;
+    mso-style-parent:"";
+    margin:0;
+    margin-bottom:0.0001pt;
+    mso-pagination:widow-orphan;
+    tab-stops:-.5in;
+    font-size:12pt;
+    line-height: 18pt;
+}
+#outputPage {
+    width:100%;
+    background:none;
+}
+#outputPage table{border-collapse:collapse}
+#outputPage ol { list-style:decimal;}
+#outputPage ol ol { list-style:lower-alpha;}
+#outputPage ol ol ol { list-style:lower-roman;}
+#outputPage ol ol ol ol { list-style:decimal; list-style-position: inherit; }
+#outputPage br.pageBreak{page-break-before:always}
+
+@media screen {
+    #outputPage br.pageBreak{display:none}	
+} 
+#outputPage .outputVersion2 p,#outputPage .outputVersion2 ol,#outputPage .outputVersion2 ul,#outputPage .outputVersion2 table{margin-bottom:0}
+#outputPage .outputVersion2 ol,#outputPage .outputVersion2 ul{margin-left:0;padding-left:0}
+#outputPage .outputVersion2 li > div{display:table;*display:inline;*margin-left:-17px}
+#outputPage .format-doc .outputVersion2 li,
+#outputPage .format-rtf .outputVersion2 li,
+#outputPage .format-docx .outputVersion2 li,
+#outputPage .format-pdf .outputVersion2 li {margin-left:18pt}
+#outputPage .outputVersion2{padding-top:43pt}
+.LDCopyright {
+    font-size:67%;
+}
+.LDCellCenter {
+    text-align:center;
+}
+.LDCellPadLeft {
+    padding-left:100px;
+}
+.LDCellRight {
+    text-align:right;
+}
+.LDResRentalBox {
+    width:100%;
+}
+.LDQuitclaimHead {
+    height:3in;
+}
+.LDWarrantyHead {
+    height:3in;
+}
+.LDQuitclaimHeadCA {
+    height:1in;
+}
+.LDWarrantyHeadCA {
+    height:1in;
+}
+.LDWarrantyHeadMO {
+    height:2in;
+}
+.LDQuitclaimHeadMO {
+    height:2in;
+}
+.SubHeadStyle {
+    font-weight:bold;
+    text-decoration:underline;
+}
+.SectionTitle{
+    font-weight:bold;
+    text-decoration:underline;
+    margin:1em 0;
+}
+.invoiceBorder {
+    border:1px solid #000;
+}
+.invoiceGreyBG {
+    background-color:#ccc;
+}
+.LDBold {
+    font-weight:bold;
+}
+.LDBackgroundOL {
+    list-style-type:upper-alpha;
+}
+#bottomTabs, #topTabs, #introContent, #loadingIndicator, #questionpage, #documentControls, #questionpage { display:none }
+#productContent, #documentContent { width:100%;border:0;margin:0 }
+#outputPage li{
+    margin-bottom:1em;
+}
+#outputPage li li{
+    margin-bottom:1em;
+}
+
+#outputPage li ol {
+    margin-top: 1em;
+}
+#outputPage li ol li {
+    margin-bottom: 1em;
+}
+#outputPage li.lh,#outputPage li.lhl {
+    margin-bottom: 0;
+    list-style: none;
+}
+.FirstMajorListHeading { 
+    font-weight:bold;
+    margin-bottom:1.6em;
+}
+.FirstListHeading {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size:12pt;
+    margin:1.4em 0 0.2em 2em; /* 2em should be set to left margin of lists */
+}
+.ListHeading {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+div.header,
+div.firstHeader,
+div.footer,
+div.firstFooter{ display: none;}
+
+.blankLine {
+    display: block;
+    border-bottom: solid 1px #000;
+}
+
+            
+@media only screen and (max-device-width: 1024px) {
+    body { 
+        -webkit-text-size-adjust:100%;
+        -moz-text-size-adjust:100%;
+        -ms-text-size-adjust:100%; 
+    }
+}

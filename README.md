@@ -59,6 +59,16 @@ To run the Express service locally, use the following commands inside of the Ser
 `npm install`\
 `npm run dev`
 
+To run the service using pm2, use the following commands inside of the Service directory:\
+`npm install`\
+`pm2 start app.js`
+
+To kill the process run by pm2, use the following command inside of the Service directory:\
+`pm2 stop app.js`
+
+pm2 must be installed globally in order to use the above commands:\
+`npm install pm2 -g`
+
 ## Frontend
 
 To run the React app locally in development mode, use the following command inside of the application directory:\

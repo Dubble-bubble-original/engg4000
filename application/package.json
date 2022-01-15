@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
+    "@react-google-maps/api": "^2.5.0",
+    "axios": "^0.24.0",
     "bootstrap": "^5.1.1",
+    "date-fns": "^2.28.0",
+    "dotenv": "^10.0.0",
     "react": "^17.0.2",
-    "react-bootstrap": "^2.0.0-rc.0",
+    "react-bootstrap": "^2.1.0",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
     "react-if": "^4.1.1",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.2",
@@ -19,7 +22,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint \"src/**/*.js\" --max-warnings=0"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +48,8 @@
   },
   "devDependencies": {
     "@testing-library/dom": "^8.7.2",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.3.0",
     "eslint": "^7.32.0",
     "eslint-plugin-jest": "^24.4.2",
