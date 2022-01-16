@@ -1,9 +1,9 @@
-FROM node:14.18.3-alpine AS alpine
+FROM node:12.13.0-alpine AS alpine
 
 WORKDIR /app
 
 COPY package.json .
-RUN npm install --no-optional -f
+RUN npm install
 COPY . .
 
 EXPOSE 3001
