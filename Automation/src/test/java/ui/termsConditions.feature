@@ -30,7 +30,7 @@ Feature: Terms and Conditions component automated tests
     # Close terms and conditions modal using X button
     When click('a[data-testid=terms-conditions-link]')
     Then waitFor('div[data-testid=terms-conditions]')
-    When click('button[class=btn-close]')
+    When click('div[data-testid=terms-conditions] button[class=btn-close]')
     Then retry(3, 1000).exists('div[data-testid=terms-conditions]') == false
 
   Scenario: Open terms and conditions after entering the site
@@ -66,5 +66,5 @@ Feature: Terms and Conditions component automated tests
     When click('a[id=basic-nav-dropdown]')
     And click('a[data-testid=nav-terms-conditions-btn]')
     Then waitFor('div[data-testid=terms-conditions]')
-    When click('button[class=btn-close]')
+    When click('div[data-testid=terms-conditions] button[class=btn-close]')
     Then retry(3, 1000).exists('div[data-testid=terms-conditions]') == false
