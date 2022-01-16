@@ -53,7 +53,7 @@ function Home() {
 
   return (
     <>
-      <Container className="home-page outer-container" id="home-page" data-testid="home-page">
+      <Container className="home-page outer-container" data-testid="home-page">
         <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
       </Container>
       <Post postData={postData}/>

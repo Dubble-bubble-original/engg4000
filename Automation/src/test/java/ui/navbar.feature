@@ -7,9 +7,7 @@ Feature: Navbar component automated tests
   Scenario: Enter the site and navigate to every page
     # Enter website
     Given driver frontendUrl
-    Then match enabled('button[data-testid=enter-btn]') == false
     When click('input[data-testid=agree-checkbox]')
-    Then match enabled('button[data-testid=enter-btn]') == true
     And click('button[data-testid=enter-btn]')
     Then waitFor('nav[data-testid=navbar]')
 

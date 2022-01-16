@@ -23,12 +23,20 @@ Feature: Terms and Conditions component automated tests
     Then waitFor('span[data-testid=privacy-policy]')
     And match text('span[data-testid=privacy-policy]') == 'Nota.social Privacy Policy'
 
+    # Close terms and conditions modal using close button
+    When click('button[data-testid=close-btn]')
+    Then retry(3, 1000).exists('div[data-testid=terms-conditions]') == false
+
+    # Close terms and conditions modal using X button
+    When click('a[data-testid=terms-conditions-link]')
+    Then waitFor('div[data-testid=terms-conditions]')
+    When click('button[class=btn-close]')
+    Then retry(3, 1000).exists('div[data-testid=terms-conditions]') == false
+
   Scenario: Open terms and conditions after entering the site
     # Enter website
     Given driver frontendUrl
-    Then match enabled('button[data-testid=enter-btn]') == false
     When click('input[data-testid=agree-checkbox]')
-    Then match enabled('button[data-testid=enter-btn]') == true
     And click('button[data-testid=enter-btn]')
     Then waitFor('nav[data-testid=navbar]')
 
@@ -49,3 +57,14 @@ Feature: Terms and Conditions component automated tests
     When click('button[id=tabs-tab-privacypolicy]')
     Then waitFor('span[data-testid=privacy-policy]')
     And match text('span[data-testid=privacy-policy]') == 'Nota.social Privacy Policy'
+
+    # Close terms and conditions modal using close button
+    When click('button[data-testid=close-btn]')
+    Then retry(3, 1000).exists('div[data-testid=terms-conditions]') == false
+
+    # Close terms and conditions modal using X button
+    When click('a[id=basic-nav-dropdown]')
+    And click('a[data-testid=nav-terms-conditions-btn]')
+    Then waitFor('div[data-testid=terms-conditions]')
+    When click('button[class=btn-close]')
+    Then retry(3, 1000).exists('div[data-testid=terms-conditions]') == false

@@ -37,7 +37,7 @@ function WelcomePage(props) {
   return (
     <div className="container text-center">
       <img className="large-logo mt-5 mb-4" src={logo} alt="Logo" />
-      <div className="terms-conditions h5 mb-5" data-testid="terms-conditions">
+      <div className="terms-conditions h5 mb-5" data-testid="terms-conditions-form">
         By entering this website, you are ageering to our {termsAndConditions}.
       </div>
       <div className="i-agree h5 mb-3">
