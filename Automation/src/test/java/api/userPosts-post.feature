@@ -58,7 +58,6 @@ Feature: User post endpoints tests
     Then status 200
     And match response.access_key == post_access_key
     And match response._id == post_id
-
     # TODO: update this with DBO-55
     # And match response.author._id == '618981693b4ab71971e9f73e'
     # And match response.author.name == 'Goblin'
@@ -70,7 +69,6 @@ Feature: User post endpoints tests
     When method patch
     Then status 200
     And match response.title == 'new title'
-
     # TODO: update this with DBO-55
     # And match response.author._id == '618981693b4ab71971e9f73e'
     # And match response.author.name == 'Goblin'
