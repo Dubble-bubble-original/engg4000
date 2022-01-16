@@ -3,7 +3,7 @@ FROM node:14.18.3-alpine AS alpine
 WORKDIR /app
 
 COPY package.json .
-RUN npm install
+RUN npm install --no-optional -f
 COPY . .
 
 EXPOSE 3001
