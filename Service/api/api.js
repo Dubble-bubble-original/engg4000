@@ -209,7 +209,6 @@ exports.getUserPosts = (req, res) => {
       ...searchFilters,
       {
         $project: {
-          _id: 0,
           title: 1,
           body: 1,
           tags: 1,
@@ -217,6 +216,7 @@ exports.getUserPosts = (req, res) => {
           img_url: 1,
           date_created: 1,
           location: 1,
+          location_string: 1,
           maxTagMatch: {
             $size: {
               $setIntersection: ['$tags', providedTags]
@@ -231,7 +231,6 @@ exports.getUserPosts = (req, res) => {
     // When only one tag is provided sort by date_created
     searchFilters = [
       ...searchFilters,
-      { $project: { _id: 0 } },
       { $sort: { date_created: -1, _id: 1 } }
     ];
   }
@@ -242,19 +241,24 @@ exports.getUserPosts = (req, res) => {
     return res.status(400).send({ message: 'Invalid search filters provided' });
   }
 
-  // Add Authors to the searach filters
+  // Add Authors to the search filters and hide all id's
   searchFilters = [
     ...searchFilters,
     {
       $lookup: {
         from: User.collection.name,
-        pipeline: [
-          { $project: { _id: 0 } }
-        ],
+        localField: 'author',
+        foreignField: '_id',
         as: 'author'
       }
     },
-    { $unwind: '$author' }
+    { $unwind: '$author' },
+    {
+      $project: {
+        _id: false,
+        'author._id': false
+      }
+    }
   ];
 
   // Get current page number
@@ -271,17 +275,21 @@ exports.getUserPosts = (req, res) => {
 
 exports.getRecentPosts = (req, res) => {
   let searchFilters = [
-    { $project: { _id: 0 } },
     {
       $lookup: {
         from: User.collection.name,
-        pipeline: [
-          { $project: { _id: 0 } }
-        ],
+        localField: 'author',
+        foreignField: '_id',
         as: 'author'
       }
     },
     { $unwind: '$author' },
+    {
+      $project: {
+        _id: false,
+        'author._id': false
+      }
+    },
     { $sort: { date_created: -1, _id: 1 } }
   ];
 
