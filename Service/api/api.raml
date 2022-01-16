@@ -26,7 +26,7 @@ types:
     properties:
       _id:
         type: number
-      author_ID:
+      author:
         type: string
       body:
         type: string
@@ -36,7 +36,7 @@ types:
           type: string
       title:
         type: string
-      img_URL:
+      img_url:
         type: string
       date_created:
         type: number
@@ -78,22 +78,6 @@ types:
               {
                 "token": "6bf73119-ff54-40d6-bbd5-a2590b9eb66f",
                 "timestamp": "1635366449733"
-              }
-
-/version:
-  get:
-    description: "Returns the version of the APP."
-    responses:
-      200:
-        body:
-          type: string
-          example: "Service v0.0.0"
-      401:
-        body:
-          application/json:
-            example: |
-              {
-                "message": "No Authentication Token Provided"
               }
 
 /userpost:
@@ -317,6 +301,106 @@ types:
                   "message": "An Unknown Error Occurred"
                 }
 
+/postimages:
+  post:
+    description: "Uploads an avatar and post picture on an S3 bucket. It returns the ids of both files."
+    responses:
+      201:
+        body:
+          application/json:
+            example: |
+              {
+                "avatarId": "a2590b9eb66f",
+                "pictureId": "a2590a8da55e"
+              }
+      400:
+        description: "Missing image files in the request body."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Missing Images"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/post:
+  post:
+    description: "Creates a new user, user post. It returns the user and user post."
+    responses:
+      201:
+        body:
+          application/json:
+            type: UserPost
+      400:
+        description: "Missing or invalid user data, user post data, or image ids in the request body."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Missing User"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/deletepost:
+  /{id}:
+    delete:
+      description: "Deletes the user post, then tries to delete the user and the images"
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+              {
+                status:
+                { 
+                  message: "Post Deleted Successfully"
+                }
+                post: UserPost
+              }
+              example: |
+              {
+                status:
+                {
+                  user: "No User Provided" || "User Not Found"
+                  avatar: "Avatar Image Not Found"
+                  postImg: "Post Image Not Found"
+                }
+                post: UserPost
+              }
+        400:
+          body:
+            application/json:
+              example: |
+              {
+                message: "Invalid Post ID Provided"
+              }
+        404:
+          body:
+            application/json:
+              example: |
+              {
+                message: "User Post Not Found"
+              }
+        500:
+          body:
+            application/json:
+              example:
+              {
+                message: "An Unknown Error Occurred"
+              }
+              
 /image:
   post:
     description: "Creates a image in an S3 bucket and returns the object key."
@@ -343,6 +427,7 @@ types:
               {
                 "message": "An Unknown Error Occurred"
               }
+
   /{id}:
     get: 
       description: "Returns the image with the matching id."
@@ -366,25 +451,6 @@ types:
               example: |
                 {
                   "message": "Image Deleted Successfully"
-                }
-        500:
-          body:
-            application/json:
-              example: |
-                {
-                  "message": "An Unknown Error Occurred"
-                }
-
-/imageurl/{id}:
-    get: 
-      description: "Returns the image url with the matching id."
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "url": "https://google.com"
                 }
         500:
           body:

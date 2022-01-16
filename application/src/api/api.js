@@ -19,26 +19,12 @@ export const getAuthToken = async () => {
   try {
     const response = await axios({
       method: 'POST',
-      url: serviceUrl+'/auth'
+      url: serviceUrl + '/auth'
     })
     authToken = response.data.token;
   } catch(error) {
     logger.warn(error);
   }
-}
-
-// Get Version
-export const getVersion = async () => {
-  return await requestWithToken(async() => {
-    const response = await axios({
-        method: 'GET',
-        url: serviceUrl + '/version',
-        headers: {
-            'token': authToken
-        }
-    });
-    return response.data;
-  });
 }
 
 // Get post by access key
@@ -57,7 +43,7 @@ export const getPostByAccessKey = async (accessKey) => {
 
 // Delete post
 export const deletePostByID = async (_id) => {
-  // TODO: Call the exposed delete post endpoint
+  // TODO: Call the exposed delete post endpoint (DBO-57)
   // return await requestWithToken(async() => {
   //   const response = await axios({
   //       method: 'DELETE',
@@ -107,20 +93,6 @@ export const getImage = async (id) => {
   });
 }
 
-// Get an image URL
-export const getImageUrl = async (id) => {
-  return await requestWithToken(async() => {
-    const response = await axios({
-      method: 'GET',
-      url: serviceUrl + '/imageurl/' + id,
-      headers: {
-        'token': authToken
-      }
-    });
-    return response.data;
-  });
-}
-
 // Delete an image
 export const deleteImage = async (id) => {
   return await requestWithToken(async() => {
@@ -132,6 +104,47 @@ export const deleteImage = async (id) => {
       }
     });
     return response.data
+  });
+}
+
+// Upload images required for user and user post
+export const postImages = async (avatar, picture) => {
+  return await requestWithToken(async() => {
+    const formData = new FormData();
+    formData.append('avatar', avatar);
+    formData.append('picture', picture);
+
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/postimages',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Create a user and user post
+export const post = async (avatarId, pictureId, user, userPost) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/post',
+      data: {
+        avatarId,
+        pictureId,
+        user,
+        post: userPost
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'token': authToken
+      }
+    });
+    return response.data;
   });
 }
 

@@ -1,6 +1,10 @@
 const EXPRESS = require('express');
 const ROUTER = EXPRESS.Router();
 
+// Get environment
+require('dotenv').config();
+const ENV = process.env;
+
 // Multer setup (used to upload files to the server)
 const multer = require('multer');
 const upload = multer({
@@ -20,31 +24,27 @@ ROUTER.post(
   USE(API.createAuthToken)
 );
 
-ROUTER.get(
-  '/version',
-  USE(API.verifyAuthToken),
-  USE(API.version)
-);
-
 // User post endpoints
 
-ROUTER.post(
-  '/userpost',
-  USE(API.verifyAuthToken),
-  USE(API.createUserPost)
-);
+if (ENV.NODE_ENV === 'dev') {
+  ROUTER.post(
+    '/userpost',
+    USE(API.verifyAuthToken),
+    USE(API.createUserPost)
+  );
 
-ROUTER.patch(
-  '/userpost/:id',
-  USE(API.verifyAuthToken),
-  USE(API.updateUserPost)
-);
+  ROUTER.patch(
+    '/userpost/:id',
+    USE(API.verifyAuthToken),
+    USE(API.updateUserPost)
+  );
 
-ROUTER.delete(
-  '/userpost/:id',
-  USE(API.verifyAuthToken),
-  USE(API.deleteUserPost)
-);
+  ROUTER.delete(
+    '/userpost/:id',
+    USE(API.verifyAuthToken),
+    USE(API.deleteUserPost)
+  );
+}
 
 ROUTER.get(
   '/userpost/:ak',
@@ -60,23 +60,25 @@ ROUTER.post(
 
 // User endpoints
 
-ROUTER.post(
-  '/user',
-  USE(API.verifyAuthToken),
-  USE(API.createUser)
-);
+if (ENV.NODE_ENV === 'dev') {
+  ROUTER.post(
+    '/user',
+    USE(API.verifyAuthToken),
+    USE(API.createUser)
+  );
 
-ROUTER.delete(
-  '/user/:id',
-  USE(API.verifyAuthToken),
-  USE(API.deleteUser)
-);
+  ROUTER.delete(
+    '/user/:id',
+    USE(API.verifyAuthToken),
+    USE(API.deleteUser)
+  );
 
-ROUTER.get(
-  '/user/:id',
-  USE(API.verifyAuthToken),
-  USE(API.getUser)
-);
+  ROUTER.get(
+    '/user/:id',
+    USE(API.verifyAuthToken),
+    USE(API.getUser)
+  );
+}
 
 ROUTER.post(
   '/recentposts',
@@ -86,29 +88,50 @@ ROUTER.post(
 
 // Image endpoints
 
+if (ENV.NODE_ENV === 'dev') {
+  ROUTER.post(
+    '/image',
+    USE(API.verifyAuthToken),
+    USE(upload.single('image')),
+    USE(API.uploadImage)
+  );
+
+  ROUTER.get(
+    '/image/:id',
+    USE(API.verifyAuthToken),
+    USE(API.getImage)
+  );
+
+  ROUTER.get(
+    '/imageurl/:id',
+    USE(API.verifyAuthToken),
+    USE(API.getImageUrl)
+  );
+
+  ROUTER.delete(
+    '/image/:id',
+    USE(API.verifyAuthToken),
+    USE(API.deleteImage)
+  );
+}
+
 ROUTER.post(
-  '/image',
+  '/postimages',
   USE(API.verifyAuthToken),
-  USE(upload.single('image')),
-  USE(API.createImage)
+  USE(upload.fields([{ name: 'avatar' }, { name: 'picture' }])),
+  USE(API.uploadPostImages)
 );
 
-ROUTER.get(
-  '/image/:id',
+ROUTER.post(
+  '/post',
   USE(API.verifyAuthToken),
-  USE(API.getImage)
-);
-
-ROUTER.get(
-  '/imageurl/:id',
-  USE(API.verifyAuthToken),
-  USE(API.getImageUrl)
+  USE(API.createFullUserPost)
 );
 
 ROUTER.delete(
-  '/image/:id',
+  '/deletepost/:id',
   USE(API.verifyAuthToken),
-  USE(API.deleteImage)
+  USE(API.deleteFullUserPost)
 );
 
 module.exports = ROUTER;

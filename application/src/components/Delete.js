@@ -67,7 +67,7 @@ function Delete() {
           <div className="h4">Delete a post</div>
           <div>To delete a post you must enter the access code that was given to you when you created the post.</div>
           <br/>
-          <Form.Group>
+          <Form.Group controlId="formBasicEmail">
             <Form.Label>Access code</Form.Label>
             <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
               <Col style={{maxWidth: '400px'}} className="flex-grow-1">
@@ -110,9 +110,7 @@ function Delete() {
                 <Row>
                   <Col>
                     <Alert variant="danger" className="mb-0 mt-3" dismissible onClose={() => setSearchResult('found')}>
-                      <Alert.Heading className="mb-0">
-                        Post could not be deleted. Please try again later.
-                      </Alert.Heading>
+                      Post could not be deleted. Please try again later.
                     </Alert>
                   </Col>
                 </Row>
@@ -136,9 +134,7 @@ function Delete() {
         <Case condition={searchResult === 'deleted'}>
           <Container className="outer-container">
             <Alert variant="success" className="mb-0" dismissible onClose={() => setSearchResult(null)}>
-              <Alert.Heading className="mb-0">
-                Post deleted successfully.
-              </Alert.Heading>
+              Post deleted successfully.
             </Alert>
           </Container>
         </Case>
@@ -148,18 +144,15 @@ function Delete() {
 
       <ConfirmationModal
         title="Confirmation"
-        body={
-          <div>
-            Do you really want to delete this post?<br/>
-            This cannot be undone.
-          </div>
-        }
         acceptString="Delete"
         cancelString="Cancel"
         acceptCallback={deletePost}
         show={showConfirmationModal}
         setShow={setShowConfirmationModal}
-      />
+      >
+        Do you really want to delete this post?<br/>
+        This cannot be undone.
+      </ConfirmationModal>
     </>
   )
 }

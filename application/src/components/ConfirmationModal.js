@@ -35,7 +35,7 @@ function ConfirmationModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {props.body}
+        {props.children}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={cancel}>{props.cancelString}</Button>
@@ -54,7 +54,7 @@ ConfirmationModal.defaultProps = {
 
 ConfirmationModal.propTypes = {
   title: PropTypes.string,
-  body: PropTypes.object,
+  children: PropTypes.node,
   acceptString: PropTypes.string,
   acceptCallback: PropTypes.func,
   cancelString: PropTypes.string,
