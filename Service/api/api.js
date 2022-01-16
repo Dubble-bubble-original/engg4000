@@ -83,7 +83,6 @@ exports.createUserPost = (req, res) => {
 
     return res.status(201).json({
       post: {
-        _id: newUserPost._id,
         author: newUserPost.author,
         body: newUserPost.body,
         tags: newUserPost.tags,
@@ -115,7 +114,11 @@ exports.updateUserPost = (req, res) => {
 
   const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
-    .populate('author')
+    .select('-_id')
+    .populate({
+      path: 'author',
+      select: '-_id'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
@@ -156,7 +159,10 @@ exports.getUserPost = (req, res) => {
   const acessKey = req.params.ak;
 
   UserPost.findOne({ access_key: acessKey })
-    .populate('author')
+    .populate({
+      path: 'author',
+      select: '-_id'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
@@ -203,6 +209,7 @@ exports.getUserPosts = (req, res) => {
       ...searchFilters,
       {
         $project: {
+          _id: 0,
           title: 1,
           body: 1,
           tags: 1,
@@ -224,6 +231,7 @@ exports.getUserPosts = (req, res) => {
     // When only one tag is provided sort by date_created
     searchFilters = [
       ...searchFilters,
+      { $project: { _id: 0 } },
       { $sort: { date_created: -1, _id: 1 } }
     ];
   }
@@ -240,8 +248,9 @@ exports.getUserPosts = (req, res) => {
     {
       $lookup: {
         from: User.collection.name,
-        localField: 'author',
-        foreignField: '_id',
+        pipeline: [
+          { $project: { _id: 0 } }
+        ],
         as: 'author'
       }
     },
@@ -251,7 +260,8 @@ exports.getUserPosts = (req, res) => {
   // Get current page number
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
 
-  UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
+  UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT)
+    .limit(POST_LIMIT)
     .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err.message);
@@ -261,11 +271,13 @@ exports.getUserPosts = (req, res) => {
 
 exports.getRecentPosts = (req, res) => {
   let searchFilters = [
+    { $project: { _id: 0 } },
     {
       $lookup: {
         from: User.collection.name,
-        localField: 'author',
-        foreignField: '_id',
+        pipeline: [
+          { $project: { _id: 0 } }
+        ],
         as: 'author'
       }
     },
@@ -313,7 +325,6 @@ exports.createUser = (req, res) => {
 
     return res.status(201).json({
       user: {
-        _id: newUser._id,
         name: newUser.name,
         avatar_url: newUser.avatar_url,
         email: newUser.email
@@ -355,6 +366,7 @@ exports.getUser = (req, res) => {
   }
 
   User.findById(userId)
+    .select('-_id')
     .then((doc) => {
       if (!doc) {
         logger.info('User Not Found');
