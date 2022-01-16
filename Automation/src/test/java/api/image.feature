@@ -43,7 +43,7 @@ Feature: image endpoints tests
     # Post the new image
     Given path 'image'
     And header token = auth_token
-    And multipart file image = { read: '../data/image-default.png', filename: 'karate_test.png', contentType: 'multipart/form-data'}
+    And multipart file image = { read: '../data/img_avatar.png', filename: 'karate_test.png', contentType: 'multipart/form-data'}
     When method post
     Then status 201
     * def img_id = response.id
@@ -70,7 +70,7 @@ Feature: image endpoints tests
     # Get the new image (Compare the image and response as byte arrays)
     Given path 'image/' + img_id
     And header token = auth_token
-    And bytes img_data = read('../data/image-default.png')
+    And bytes img_data = read('../data/img_avatar.png')
     When method get
     Then status 200
     And match responseBytes == img_data
