@@ -1,5 +1,6 @@
 // React
-import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+import { useState } from 'react';
+import { ToggleButtonGroup, ToggleButton, InputGroup, FormControl } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 const tagList = [
@@ -56,32 +57,43 @@ const tagList = [
 ];
 
 function TagButtonGroup(props) {
-  // Use regular expression to do case-insensitive matching for the filter
-  const regexFilter = new RegExp(props.filter, 'i');
+  // State variables
+  const [tagFilter, setTagFilter] = useState('');
 
   return (
-    <ToggleButtonGroup
-        className="tag-container justify-content-center"
-        type="checkbox"
-        value={props.tags}
-        onChange={(val)=>{props.setTags(val)}}
-    >
-      {
-        tagList
-          .filter(tag => props.filter ? regexFilter.test(tag) : true)
-          .map(tag => 
-            <ToggleButton
-              variant="outline-primary"
-              className="tag"
-              value={tag}
-              key={tag}
-              id={'tgb-btn-'+tag}
-            >
-              {tag}
-            </ToggleButton>
-          )
-      }
-    </ToggleButtonGroup>
+    <>
+      <InputGroup className="mb-3" style={{maxWidth:250}}>
+        <InputGroup.Text>Filter:</InputGroup.Text>
+        <FormControl
+          type="text"
+          value={tagFilter}
+          onChange={(e)=> {setTagFilter(e.target.value)}}
+        />
+      </InputGroup>
+      <ToggleButtonGroup
+          className="tag-container justify-content-center"
+          type="checkbox"
+          value={props.tags}
+          onChange={(val)=>{props.setTags(val)}}
+      >
+        {
+          tagList
+            // Use regular expression to do case-insensitive matching for the filter
+            .filter(tag => tagFilter ? (new RegExp(tagFilter, 'i')).test(tag) : true)
+            .map(tag =>
+              <ToggleButton
+                variant="outline-primary"
+                className="tag"
+                value={tag}
+                key={tag}
+                id={'tgb-btn-'+tag}
+              >
+                {tag}
+              </ToggleButton>
+            )
+        }
+      </ToggleButtonGroup>
+    </>
   );
 }
 

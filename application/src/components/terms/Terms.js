@@ -1,5 +1,5 @@
 // React
-import { Button, Modal, Tabs, Tab } from 'react-bootstrap';
+import { Button, Modal, Tabs, Tab, FormCheck } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Components
@@ -30,10 +30,44 @@ function TermsModal(props) {
     </Modal>
   );
 }
-
 TermsModal.propTypes = {
   show: PropTypes.bool,
   setShow: PropTypes.func
 }
 
-export default TermsModal;
+function TermsLink(props) {
+  return (
+    <a
+      className="clickable"
+      onClick={() => props.setShowTerms(true)}
+    >
+      terms and conditions
+    </a>
+  );
+}
+TermsLink.propTypes = {
+  setShowTerms: PropTypes.func
+}
+
+function TermsCheckbox(props) {
+  return (
+    <FormCheck
+      data-testid="agree-checkbox"
+      id="agree-checkbox"
+      type="checkbox"
+      label="I have read and accept the terms and conditions"
+      checked={props.agree}
+      onChange={e => props.setAgree(e.target.checked)}
+    />
+  );
+}
+TermsCheckbox.propTypes = {
+  agree: PropTypes.bool,
+  setAgree: PropTypes.func
+}
+
+export {
+  TermsModal,
+  TermsLink,
+  TermsCheckbox
+};

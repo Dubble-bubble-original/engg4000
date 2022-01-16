@@ -137,7 +137,7 @@ function Delete() {
           <Container className="outer-container">
             <Alert variant="success" className="mb-0" dismissible onClose={() => setSearchResult(null)}>
               <Alert.Heading className="mb-0">
-                Post deleted successfully
+                Post deleted successfully.
               </Alert.Heading>
             </Alert>
           </Container>
