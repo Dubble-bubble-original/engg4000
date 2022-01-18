@@ -11,11 +11,15 @@ services:
       dockerfile: Dockerfile
       context: ./application
     container_name: client
+    env_file:
+      - ./.env
   backend:
     build:
       dockerfile: Dockerfile
       context: ./Service
     container_name: backend
+    env_file:
+      - ./.env
   mongo:
     image: "mongo"
     container_name: "mongo-db"
