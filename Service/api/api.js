@@ -183,10 +183,10 @@ exports.getUserPosts = (req, res) => {
 
   // Check if the filters have tags
   if (req.body.tags?.length > 0) {
+    providedTags = req.body.tags.map((tag) => tag.toLowerCase());
     searchFilters = [
-      { $match: { tags: { $in: req.body.tags } } }
+      { $match: { tags: { $in: providedTags } } }
     ];
-    providedTags = req.body.tags;
   }
 
   // Check if filters have Title
