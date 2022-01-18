@@ -6,10 +6,7 @@ Feature: Recent Posts endpoint tests
     * def auth_token = auth.response.token
     * def Collections = Java.type('java.util.Collections')
     # Load post data
-    * def post1_data = read('../data/filter_userPosts_data.json').post1
-    * def post2_data = read('../data/filter_userPosts_data.json').post2
-    * def post3_data = read('../data/filter_userPosts_data.json').post3
-    * def post4_data = read('../data/filter_userPosts_data.json').post4
+    * def post = read('../data/filter_userPosts_data.json')
 
   # Test Cases for POST recentposts endpoint
 
@@ -28,8 +25,8 @@ Feature: Recent Posts endpoint tests
 
   Scenario: Calling recentposts endpoint with no starting date
     # Create two temp post
-    * def post1 = call read('classpath:utils/global_user_post.feature') { data: '#(post1_data)' }
-    * def post2 = call read('classpath:utils/global_user_post.feature') { data: '#(post2_data)' }
+    * def post1 = call read('classpath:utils/createPost.feature') { data: '#(post.post1)' }
+    * def post2 = call read('classpath:utils/createPost.feature') { data: '#(post.post2)' }
 
     # Calling recentPosts endpoint (with two new added posts)
     Given path 'recentposts'
@@ -47,8 +44,8 @@ Feature: Recent Posts endpoint tests
     * def totalPosts = response.length
 
     # Creating 2 more Temporary User Posts
-    * def post3 = call read('classpath:utils/global_user_post.feature') { data: '#(post3_data)' }
-    * def post4 = call read('classpath:utils/global_user_post.feature') { data: '#(post4_data)' }
+    * def post3 = call read('classpath:utils/createPost.feature') { data: '#(post.post3)' }
+    * def post4 = call read('classpath:utils/createPost.feature') { data: '#(post.post4)' }
 
     # Calling recentPosts endpoint (with two more posts added)
     Given path 'recentposts'
@@ -65,16 +62,16 @@ Feature: Recent Posts endpoint tests
     And match response[*].author.name contains post3.response.post.author.name
     And match response[*].author.name contains post4.response.post.author.name
 
-    # CALL THE CLEANUP FEATURE TO DELETE POSTS
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post1.response.post._id)' }
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post2.response.post._id)' }
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post3.response.post._id)' }
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post4.response.post._id)' }
+    # CALL THE CLEANUP FEATURE
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post1.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post2.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post3.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post4.response.post.access_key)' }
 
   Scenario: Calling recentposts endpoint with starting date
     # Create two temp post
-    * def post1 = call read('classpath:utils/global_user_post.feature') { data: '#(post1_data)' }
-    * def post2 = call read('classpath:utils/global_user_post.feature') { data: '#(post2_data)' }
+    * def post1 = call read('classpath:utils/createPost.feature') { data: '#(post.post1)' }
+    * def post2 = call read('classpath:utils/createPost.feature') { data: '#(post.post2)' }
 
     # Calling recentPosts endpoint with a starting date
 
@@ -95,6 +92,6 @@ Feature: Recent Posts endpoint tests
     And match response[*] !contains post2.response.post
     And match response[*].author.name contains post1.response.post.author.name
 
-    # CALL THE CLEANUP FEATURE TO DELETE POSTS
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post1.response.post._id)' }
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post2.response.post._id)' }
+    # CALL THE CLEANUP FEATURE
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post1.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post2.response.post.access_key)' }

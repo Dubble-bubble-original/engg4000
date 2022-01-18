@@ -97,16 +97,13 @@ Feature: User post endpoints tests
 
   Scenario: Calling userposts endpoint
     # Load post data
-    * def post1_data = read('../data/filter_userPosts_data.json').post1
-    * def post2_data = read('../data/filter_userPosts_data.json').post2
-    * def post3_data = read('../data/filter_userPosts_data.json').post3
-    * def post4_data = read('../data/filter_userPosts_data.json').post4
+    * def post = read('../data/filter_userPosts_data.json')
 
     # Creating Temporary User Posts
-    * def post1 = call read('classpath:utils/global_user_post.feature') { data: '#(post1_data)' }
-    * def post2 = call read('classpath:utils/global_user_post.feature') { data: '#(post2_data)' }
-    * def post3 = call read('classpath:utils/global_user_post.feature') { data: '#(post3_data)' }
-    * def post4 = call read('classpath:utils/global_user_post.feature') { data: '#(post4_data)' }
+    * def post1 = call read('classpath:utils/createPost.feature') { data: '#(post.post1)' }
+    * def post2 = call read('classpath:utils/createPost.feature') { data: '#(post.post2)' }
+    * def post3 = call read('classpath:utils/createPost.feature') { data: '#(post.post3)' }
+    * def post4 = call read('classpath:utils/createPost.feature') { data: '#(post.post4)' }
 
     # Call userPosts with no filters
     Given path 'userposts'
@@ -189,11 +186,11 @@ Feature: User post endpoints tests
     Then status 400
     And match response.message == 'Invalid search filters provided'
 
-    # CALL THE CLEANUP FEATURE TO DELETE POSTS
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post1.response.post._id)' }
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post2.response.post._id)' }
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post3.response.post._id)' }
-    * call read('classpath:utils/cleanup.feature') { post_id: '#(post4.response.post._id)' }
+    # CALL THE CLEANUP FEATURE
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post1.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post2.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post3.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post4.response.post.access_key)' }
 
   # Exposed Create user posts
 
