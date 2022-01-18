@@ -42,7 +42,7 @@ function Home() {
     fetchData();
   }, []);
 
-  // Render is loading page until version gets its value
+  // Render is loading page until get recent posts
   if(isLoading) {
     return (
       <div className="home-page" data-testid="home-page">
@@ -54,7 +54,7 @@ function Home() {
   return (
     <>
       <Container className="home-page outer-container" data-testid="home-page">
-        <div className="h4 mb-0">Recent posts</div>
+        <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
       </Container>
       <Post postData={postData}/>
     </>
