@@ -114,7 +114,7 @@ exports.updateUserPost = (req, res) => {
 
   const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
-    .select('-_id')
+    .select('-_id -access_key')
     .populate({
       path: 'author',
       select: '-_id'
@@ -160,8 +160,7 @@ exports.getUserPost = (req, res) => {
 
   UserPost.findOne({ access_key: acessKey })
     .populate({
-      path: 'author',
-      select: '-_id'
+      path: 'author'
     })
     .exec()
     .then((doc) => {
@@ -256,6 +255,7 @@ exports.getUserPosts = (req, res) => {
     {
       $project: {
         _id: false,
+        access_key: false,
         'author._id': false
       }
     }
@@ -287,6 +287,7 @@ exports.getRecentPosts = (req, res) => {
     {
       $project: {
         _id: false,
+        access_key: false,
         'author._id': false
       }
     },
@@ -642,8 +643,11 @@ exports.createFullUserPost = async (req, res) => {
 
       return res.status(201).json({
         post: {
-          _id: newUserPost._id,
-          author: newUser,
+          author: {
+            name: newUser.name,
+            avatar_url: newUser.avatar_url,
+            email: newUser.email
+          },
           body: newUserPost.body,
           tags: newUserPost.tags,
           title: newUserPost.title,
