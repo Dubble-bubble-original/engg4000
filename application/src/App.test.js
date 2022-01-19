@@ -21,7 +21,7 @@ describe('Welcome Page', () => {
   });
 
   test('renders terms and conditions', () => {
-    const terms_conditions = screen.getByTestId('terms-conditions');
+    const terms_conditions = screen.getByTestId('terms-conditions-form');
     expect(terms_conditions).toBeInTheDocument();
   });
 
