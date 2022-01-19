@@ -7,31 +7,20 @@ Feature: Get user post endpoints tests
     * def userpostJSON = read('../data/pagination_post.json')
 	
 	Scenario: Test Pagination of recentPosts/
-    # Create User
-    Given path 'user'
-    And header token = auth_token
-    And request {name: "pagination test", avatar_url:"www.pagination.test", email:"pagination@pagination.test"}
-    When method post
-    Then status 201
-    * def user_id = response.user._id
-    * userpostJSON.author = user_id
-
-    # Create 2 Temporary User Posts
-    Given path 'userpost'
+    # Create 2 Userpost
+    Given path 'post'
     And header token = auth_token
     And request userpostJSON
     When method post
     Then status 201
-    * def post1_access_key = response.post.access_key
-    * def post1_id = response.post._id
+    * def post_id1 = response.post._id
 
-    Given path 'userpost'
+    Given path 'post'
     And header token = auth_token
     And request userpostJSON
     When method post
     Then status 201
-    * def post2_access_key = response.post.access_key
-    * def post2_id = response.post._id
+    * def post_id2 = response.post._id
 
     # Test for post_limit of 1
     Given path 'recentposts'
@@ -50,48 +39,31 @@ Feature: Get user post endpoints tests
     And assert response.length == 2
 
     # Delete posts
-    Given path 'userpost/' + post1_id
+    Given path 'deletepost/' + post_id1
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'userpost/' + post2_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-
-    # Delete User
-    Given path 'user/' + user_id
+    Given path 'deletepost/' + post_id2
     And header token = auth_token
     When method delete
     Then status 200
 
     Scenario: Test Pagination of userPosts/
-    # Create User
-    Given path 'user'
-    And header token = auth_token
-    And request {name: "pagination test", avatar_url:"www.pagination.test", email:"pagination@pagination.test"}
-    When method post
-    Then status 201
-    * def user_id = response.user._id
-    * userpostJSON.author = user_id
-
-    # Create 2 Temporary User Posts
-    Given path 'userpost'
+    # Create 2 Userpost
+    Given path 'post'
     And header token = auth_token
     And request userpostJSON
     When method post
     Then status 201
-    * def post1_access_key = response.post.access_key
-    * def post1_id = response.post._id
+    * def post_id1 = response.post._id
 
-    Given path 'userpost'
+    Given path 'post'
     And header token = auth_token
     And request userpostJSON
     When method post
     Then status 201
-    * def post2_access_key = response.post.access_key
-    * def post2_id = response.post._id
+    * def post_id2 = response.post._id
 
     # Test for post_limit of 1
     Given path 'userposts'
@@ -110,18 +82,12 @@ Feature: Get user post endpoints tests
     And assert response.length == 2
 
     # Delete posts
-    Given path 'userpost/' + post1_id
+    Given path 'deletepost/' + post_id1
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'userpost/' + post2_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-
-    # Delete User
-    Given path 'user/' + user_id
+    Given path 'deletepost/' + post_id2
     And header token = auth_token
     When method delete
     Then status 200
