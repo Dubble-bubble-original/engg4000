@@ -42,13 +42,23 @@ Feature: User post endpoints tests
   # Create, get, update, delete user post
 
   Scenario: Create, get, update, and delete a userPost
+    # Call create user endpoint
+    Given path 'user'
+    And header token = auth_token
+    And request read('../data/user.json')
+    When method post
+    Then status 201
+    * def author_id = response.user._id
+    * def author_name = response.user.name
+
     # Call create user post endpoint
     Given path 'userpost'
     And header token = auth_token
-    And request read('../data/userPost.json')
+    * def postData = read('../data/userPost.json')
+    * set postData.author = author_id
+    And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
     * def post_access_key = response.post.access_key
 
     # Call get user post endpoint
@@ -57,10 +67,9 @@ Feature: User post endpoints tests
     When method get
     Then status 200
     And match response.access_key == post_access_key
-    And match response._id == post_id
-    # TODO: update this with DBO-55
-    # And match response.author._id == '618981693b4ab71971e9f73e'
-    # And match response.author.name == 'Goblin'
+     And match response.author._id == author_id
+     And match response.author.name == author_name
+    * def post_id = response._id
 
     # Call update user post endpoint
     Given path 'userpost/' + post_id
@@ -69,9 +78,7 @@ Feature: User post endpoints tests
     When method patch
     Then status 200
     And match response.title == 'new title'
-    # TODO: update this with DBO-55
-    # And match response.author._id == '618981693b4ab71971e9f73e'
-    # And match response.author.name == 'Goblin'
+     And match response.author.name == author_name
 
     # Call delete user post endpoint
     Given path 'userpost/' + post_id
