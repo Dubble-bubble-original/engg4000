@@ -334,6 +334,7 @@ exports.createUser = (req, res) => {
 
     return res.status(201).json({
       user: {
+        _id: newUser._id,
         name: newUser.name,
         avatar_url: newUser.avatar_url,
         email: newUser.email

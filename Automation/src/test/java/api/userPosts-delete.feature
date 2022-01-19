@@ -32,14 +32,18 @@ Feature: Delete user post endpoint tests
     Then status 404
     And match response.message == 'User Post Not Found'
 
-  Scenario: Try to delete a user post with invalid id
-    # Call create user post endpoint with empty body
+  Scenario: Try to delete a user post
+    # Call create user post endpoint
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/userPost.json')
     When method post
     Then status 201
-    * def post_id = response.post._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
 
     # Call delete user post endpoint with invalid access key
     Given path 'userpost/12345'
@@ -93,7 +97,11 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
 
     Given path 'deletepost/' + post_id
     And header token = auth_token
@@ -119,7 +127,11 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
 
     Given path 'deletepost/' + post_id
     And header token = auth_token
@@ -146,7 +158,11 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
 
     Given path 'deletepost/' + post_id
     And header token = auth_token
@@ -175,8 +191,12 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
-    * def author_id = response.post.author._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
+    * def author_id = post.response.author._id
 
     # Successfully Delete the created post
     Given path 'deletepost/' + post_id
