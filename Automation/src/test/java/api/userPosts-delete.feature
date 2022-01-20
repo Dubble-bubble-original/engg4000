@@ -108,37 +108,22 @@ Feature: Delete user post endpoint tests
     When method delete
     Then status 200
     And match response.status.user == 'No User Provided'
-    And match response.post._id == post_id
 
   Scenario: Try to delete a post with no avatar and post image
-    # Creating a temporary user
-    Given path 'user'
-    And header token = auth_token
-    And request read('../data/user_userPost_missingImages.json').user
-    When method post
-    Then status 201
-    * def author_id = response.user._id
-
-    # Creating a temporary post
-    Given path 'userpost'
-    And header token = auth_token
-    * def postData = read('../data/user_userPost_missingImages.json').post
-    * set postData.author = author_id
-    And request postData
-    When method post
-    Then status 201
-    * def access_key = response.post.access_key
+    # Create a post with invalid avatar and post image
+    * def data = read('../data/user_userPost_missingImages.json')
+    * def postData = call read('classpath:utils/createPost.feature') { data: '#(data)' }
 
     # Call getPost.feature to get post id
-    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(postData.response.post.access_key)' }
     * def post_id = post.response._id
+    * def author_id = post.response.author._id
 
     Given path 'deletepost/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.status.message == 'Post Deleted Successfully'
-    And match response.post._id == post_id
     And match response.post.author._id == author_id
 
   Scenario: Try to delete a post with an invalid avatar and post image
@@ -204,5 +189,3 @@ Feature: Delete user post endpoint tests
     When method delete
     Then status 200
     And match response.status.message == 'Post Deleted Successfully'
-    And match response.post._id == post_id
-    And match response.post.author._id == author_id

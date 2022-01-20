@@ -19,4 +19,3 @@ Feature: Delete Post
     And header token = auth_token
     When method delete
     Then status 200
-    And match response.status.message == 'Post Deleted Successfully'
