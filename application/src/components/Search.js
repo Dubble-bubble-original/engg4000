@@ -1,7 +1,34 @@
 // React
+import { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 
+// Components
+import LoadingSpinner from './LoadingSpinner';
+
 function Search() {
+
+  // State variables
+  const [isLoading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+
+    // Todo: Get recent posts
+
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Render is loading page until get recent posts
+  if(isLoading) {
+    return (
+      <Container className="outer-container" data-testid="home-page">
+        <LoadingSpinner message="Loading..." size="10rem"/>
+      </Container>
+    )
+  }
 
   return (
     <Container className="outer-container" data-testid="search-page">

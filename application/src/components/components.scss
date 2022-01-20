@@ -4,6 +4,10 @@
     font-family: Tahoma, sans-serif;
 }
 
+html {
+    background-color: #CACACA;
+}
+
 /* Tags */
 
 
@@ -54,6 +58,11 @@
     flex-direction: column;
     flex-wrap: nowrap;
     gap: 10px;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 10px;
 }
 
 div.outer-container { /* The div is added so it takes precedence over bootstrap's CSS */

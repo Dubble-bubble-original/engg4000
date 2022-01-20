@@ -2,8 +2,11 @@
 import { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 
-// Resources
+// Components
 import Post from './post/Post';
+import LoadingSpinner from './LoadingSpinner';
+
+// Resources
 import Avatar from '../resources/images/avatar.jpg';
 import PostImage from '../resources/images/postImage.jpg';
 
@@ -45,9 +48,9 @@ function Home() {
   // Render is loading page until get recent posts
   if(isLoading) {
     return (
-      <div className="home-page" data-testid="home-page">
-        Loading...
-      </div>
+      <Container className="home-page outer-container" data-testid="home-page">
+        <LoadingSpinner message="Loading..." size="10rem"/>
+      </Container>
     )
   }
 
