@@ -16,7 +16,7 @@ const postData = {
   body: 'The body of the message will be shown here. The font might need to be reduced so it contracts better with the title. If it goes on too long we can add elipses. This sentence is just here so that it can long enough to need something.',
   tags: ['Nature', 'Hiking', 'Mountain', 'Tag'],
   title: 'Title Goes Here',
-  img_URL: PostImage,
+  img_url: PostImage,
   date_created: '2021-11-20T17:31:03.914+00:00',
   location: {
     lat: 45.963589,
