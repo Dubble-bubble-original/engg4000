@@ -24,7 +24,7 @@ jobs:
         run: |
           docker tag engg4000_backend:latest ${{ secrets.DOCKER_USERNAME }}/engg4000-backend:latest
           docker tag engg4000_client:latest ${{ secrets.DOCKER_USERNAME }}/engg4000-client:latest
-          docker tag engg4000_nginx:latest ${{ secrets.DOCKER_USERNAME }}engg4000-nginx:latest
+          docker tag engg4000_nginx:latest ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx:latest
 
       - name: Push Images to Docker Hub
         run: | 
