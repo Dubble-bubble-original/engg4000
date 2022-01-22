@@ -42,13 +42,23 @@ Feature: User post endpoints tests
   # Create, get, update, delete user post
 
   Scenario: Create, get, update, and delete a userPost
+    # Call create user endpoint
+    Given path 'user'
+    And header token = auth_token
+    And request read('../data/user.json')
+    When method post
+    Then status 201
+    * def author_id = response.user._id
+    * def author_name = response.user.name
+
     # Call create user post endpoint
     Given path 'userpost'
     And header token = auth_token
-    And request read('../data/userPost.json')
+    * def postData = read('../data/userPost.json')
+    * set postData.author = author_id
+    And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
     * def post_access_key = response.post.access_key
 
     # Call get user post endpoint
@@ -57,10 +67,9 @@ Feature: User post endpoints tests
     When method get
     Then status 200
     And match response.access_key == post_access_key
-    And match response._id == post_id
-    # TODO: update this with DBO-55
-    # And match response.author._id == '618981693b4ab71971e9f73e'
-    # And match response.author.name == 'Goblin'
+     And match response.author._id == author_id
+     And match response.author.name == author_name
+    * def post_id = response._id
 
     # Call update user post endpoint
     Given path 'userpost/' + post_id
@@ -69,9 +78,7 @@ Feature: User post endpoints tests
     When method patch
     Then status 200
     And match response.title == 'new title'
-    # TODO: update this with DBO-55
-    # And match response.author._id == '618981693b4ab71971e9f73e'
-    # And match response.author.name == 'Goblin'
+     And match response.author.name == author_name
 
     # Call delete user post endpoint
     Given path 'userpost/' + post_id
@@ -96,38 +103,16 @@ Feature: User post endpoints tests
     And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Calling userposts endpoint
+    # Load post data
+    * def post = read('../data/filter_userPosts_data.json')
+
     # Creating Temporary User Posts
-
-    Given path 'userpost'
-    And header token = auth_token
-    And request read('../data/filter_userPosts_data.json').post1
-    When method post
-    Then status 201
-    * def post1_id = response.post._id
-
-    Given path 'userpost'
-    And header token = auth_token
-    And request read('../data/filter_userPosts_data.json').post2
-    When method post
-    Then status 201
-    * def post2_id = response.post._id
-
-    Given path 'userpost'
-    And header token = auth_token
-    And request read('../data/filter_userPosts_data.json').post3
-    When method post
-    Then status 201
-    * def post3_id = response.post._id
-
-    Given path 'userpost'
-    And header token = auth_token
-    And request read('../data/filter_userPosts_data.json').post4
-    When method post
-    Then status 201
-    * def post4_id = response.post._id
+    * def post1 = call read('classpath:utils/createPost.feature') { data: '#(post.post1)' }
+    * def post2 = call read('classpath:utils/createPost.feature') { data: '#(post.post2)' }
+    * def post3 = call read('classpath:utils/createPost.feature') { data: '#(post.post3)' }
+    * def post4 = call read('classpath:utils/createPost.feature') { data: '#(post.post4)' }
 
     # Call userPosts with no filters
-
     Given path 'userposts'
     And header token = auth_token
     When method post
@@ -135,18 +120,16 @@ Feature: User post endpoints tests
     And match response.message == 'No Request Body Provided'
 
     # Call userPosts endpoint with title as filter
-
     Given path 'userposts'
     And header token = auth_token
     And request { title: "Ferrari" }
     When method post
     Then status 200
     And match each response contains { title: "Ferrari" }
-    And match response[*].author._id contains '6189828380b43f0744d0a035'
-    And match response[*].author.name contains 'Ghoul'
+    And match response[*].author.name contains post2.response.post.author.name
+    And match response[*].author.name contains post4.response.post.author.name
 
     # Call userPosts endpoint with an unused title as filter
-
     Given path 'userposts'
     And header token = auth_token
     And request { title: "Unused Title" }
@@ -155,7 +138,6 @@ Feature: User post endpoints tests
     And match response == '#[0]'
 
     # Call usePosts endpoint with empty tag as filter
-
     Given path 'userposts'
     And header token = auth_token
     And request { tags: [] }
@@ -164,18 +146,16 @@ Feature: User post endpoints tests
     And match response.message == 'Invalid search filters provided'
 
     # Call userPosts endpoint with a valid tag as filter
-
     Given path 'userposts'
     And header token = auth_token
     And request { tags: ["Test Tag 1"] }
     When method post
     Then status 200
     And match response[*].tags[*] contains "Test Tag 1"
-    And match response[*].author._id contains '6189828380b43f0744d0a035'
-    And match response[*].author.name contains 'Ghoul'
+    And match response[*].author.name contains post1.response.post.author.name
+    And match response[*].author.name contains post3.response.post.author.name
 
     # Call userPosts endpoint with a unused tag as filter
-
     Given path 'userposts'
     And header token = auth_token
     And request { tags: ["Unused Tag"] }
@@ -184,7 +164,6 @@ Feature: User post endpoints tests
     And match response == '#[0]'
 
     # Call userPosts endpoint with multiple tags as filter
-
     Given path 'userposts'
     And header token = auth_token
     And request { tags: ["Two Seater", "Ferrari"] }
@@ -192,11 +171,11 @@ Feature: User post endpoints tests
     Then status 200
     And match response[*].tags[*] contains "Ferrari"
     And match response[*].tags[*] contains "Two Seater"
-    And match response[*].author._id contains '6189828380b43f0744d0a035'
-    And match response[*].author.name contains 'Ghoul'
+    And match response[*].author.name contains post1.response.post.author.name
+    And match response[*].author.name contains post2.response.post.author.name
+    And match response[*].author.name contains post4.response.post.author.name
 
     # Call userposts endpoint with tags and title as search filters
-
     Given path 'userposts'
     And header token = auth_token
     And request { tags: ["Red-Gray"], title: "Ferrari" }
@@ -204,11 +183,9 @@ Feature: User post endpoints tests
     Then status 200
     And match response[*].tags[*] contains "Red-Gray"
     And match each response contains { title: "Ferrari" }
-    And match response[*].author._id contains '6189828380b43f0744d0a035'
-    And match response[*].author.name contains 'Ghoul'
+    And match response[*].author.name contains post4.response.post.author.name
 
     # Call userposts endpoint with an invalid filter
-
     Given path 'userposts'
     And header token = auth_token
     And request { authorID: "1234" }
@@ -216,31 +193,11 @@ Feature: User post endpoints tests
     Then status 400
     And match response.message == 'Invalid search filters provided'
 
-    # Delete Added Posts
-
-    Given path 'userpost/' + post1_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Post Deleted Successfully'
-
-    Given path 'userpost/' + post2_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Post Deleted Successfully'
-
-    Given path 'userpost/' + post3_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Post Deleted Successfully'
-
-    Given path 'userpost/' + post4_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Post Deleted Successfully'
+    # CALL THE CLEANUP FEATURE
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post1.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post2.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post3.response.post.access_key)' }
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(post4.response.post.access_key)' }
 
   # Exposed Create user posts
 
