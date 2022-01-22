@@ -24,7 +24,13 @@
             "image": "cartermaclennan/engg4000:client",
             "hostname": "client",
             "essential": false,
-            "memory": 300
+            "memory": 300,
+            "environment": [
+                {
+                  "name": "REACT_APP_SERVICE_URL",
+                  "value": "backend"
+                }
+            ]
         },
         {
             "name": "backend",
