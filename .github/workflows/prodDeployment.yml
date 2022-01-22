@@ -22,15 +22,15 @@ jobs:
         
       - name: Tag Images 
         run: |
-          docker tag engg4000_backend:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:backend
-          docker tag engg4000_client:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:client
-          docker tag engg4000_nginx:latest ${{ secrets.DOCKER_USERNAME }}/engg4000:nginx
+          docker tag engg4000_backend:latest ${{ secrets.DOCKER_USERNAME }}/engg4000-backend:latest
+          docker tag engg4000_client:latest ${{ secrets.DOCKER_USERNAME }}/engg4000-client:latest
+          docker tag engg4000_nginx:latest ${{ secrets.DOCKER_USERNAME }}engg4000-nginx:latest
 
       - name: Push Images to Docker Hub
         run: | 
-          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:backend 
-          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:client 
-          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000:nginx 
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000-backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000-client:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx:latest
 
       - name: Get Timestamp
         uses: gerred/actions/current-time@master

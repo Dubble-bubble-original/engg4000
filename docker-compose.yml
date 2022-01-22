@@ -11,8 +11,6 @@ services:
       dockerfile: Dockerfile
       context: ./application
     container_name: client
-    environment:
-      - REACT_APP_SERVICE_URL=backend
   backend:
     build:
       dockerfile: Dockerfile
