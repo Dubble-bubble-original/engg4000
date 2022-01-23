@@ -61,6 +61,12 @@
     width: 30%; /* Take 30% of post width, leaving 70% for body */
 }
 
+.image-button {
+    background-color: clear;
+    padding: 0px;
+    border: none;
+}
+
 /* For screens that are 768px or less */
 @media (max-width: 768px) {
     .avatar {

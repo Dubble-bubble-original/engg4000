@@ -1,5 +1,5 @@
 // React
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
 
@@ -25,7 +25,9 @@ function Post({postData}) {
     <Container className="outer-container">
       <FRow>
         <FCol>
-          <img className="avatar" src={postData.author.avatar_url} />
+          <button className="image-button avatar clickable hover-outline">
+            <img className="avatar" src={postData.author.avatar_url} />
+          </button>
           <div className="user-name text-center">{postData.author.name}</div>
         </FCol>
 
@@ -48,7 +50,9 @@ function Post({postData}) {
             </FCol>
           </FRow>
           <div>
-            <img src={postData.img_URL} />
+            <button className="image-button">
+              <img className="clickable hover-outline" src={postData.img_URL} />
+            </button>
           </div>
         </FCol>
       </FRow>
