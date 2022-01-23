@@ -12,9 +12,7 @@ const ENV = process.env;
 const MAX_RETRY_LIMIT = 2;
 
 // Get the service url from the environment file
-const serviceUrl = ENV.REACT_APP_SERVICE_URL;
-console.log('carter-log');
-console.log(ENV.REACT_APP_SERVICE_URL);
+const serviceUrl = ENV.REACT_APP_SERVICE_URL || '';
 // Get Auth token
 export const getAuthToken = async () => {
   try {
