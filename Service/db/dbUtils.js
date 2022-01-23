@@ -8,6 +8,8 @@ module.exports.connectTest = async (name) => {
 };
 
 module.exports.connectDatabase = async () => {
+  console.log("carter-log");
+  console.log(`mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`);
   const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
   await mongoose.connect(connectionString);
 };
