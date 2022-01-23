@@ -182,7 +182,7 @@ exports.getUserPosts = (req, res) => {
   let providedTags = [];
 
   // Check if the filters have tags
-  if (req.body.tags?.length > 0) {
+  if (req.body.tags.length > 0) {
     searchFilters = [
       { $match: { tags: { $in: req.body.tags } } }
     ];
