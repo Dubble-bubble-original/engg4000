@@ -16,7 +16,7 @@ jobs:
         
       - name: Build Images
         run: |
-          docker build  --build-arg SERVICE_URL=${{ secrets.SERVICE_URL }} --build-arg API_KEY=${{ secrets.API_KEY }} -t ${{ secrets.DOCKER_USERNAME }}/engg4000-client ./application
+          docker build --build-arg API_KEY=${{ secrets.API_KEY }} -t ${{ secrets.DOCKER_USERNAME }}/engg4000-client ./application
           docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-backend ./Service
           docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx ./nginx
       
