@@ -18,7 +18,7 @@ export const getAuthToken = async () => {
   try {
     const response = await axios({
       method: 'POST',
-      url: serviceUrl + '/auth'
+      url: '/backend/auth'
     })
     authToken = response.data.token;
   } catch(error) {
