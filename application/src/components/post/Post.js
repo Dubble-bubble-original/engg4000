@@ -2,7 +2,6 @@
 import { Container, Button, Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { Switch, Case } from 'react-if';
 import { useState } from 'react';
 
 // Stylesheet
@@ -11,13 +10,6 @@ import './post.css';
 // Resources
 import StaticMap from '../maps/StaticMap';
 import { FRow, FCol } from '../FlexContainers';
-
-const imgStyle = {
-  width:'100%', 
-  height: '100%', 
-  objectFit:'contain', 
-  backgroundColor:'lightgray'
-};
 
 function Post({postData}) {
 
@@ -71,27 +63,21 @@ function Post({postData}) {
         </FRow>
       </Container>
 
-      <Switch>
-        <Case condition={postImageModal === true}>
-          <Modal size='xl' scrollable show={postImageModal} onHide={() => setPostImageModal(false)}>
-            <Modal.Header closeButton>Post Image</Modal.Header>
-            <Modal.Body style={{width:'100%'}}>
-            {/* <Modal.Body style={{width:'100%', height:window.innerHeight}}> */}
-              <img style={imgStyle} src={postData.img_URL} />
-            </Modal.Body>
-          </Modal>
-        </Case>
+      <Modal size='xl' scrollable show={postImageModal} onHide={() => setPostImageModal(false)}>
+        <Modal.Header closeButton>Post Image</Modal.Header>
+        {/* <Modal.Body style={{width:'100%'}}> */}
+        <Modal.Body style={{width:'100%', height:window.innerHeight}}>
+          <img className="modal-image" src={postData.img_URL} />
+        </Modal.Body>
+      </Modal>
 
-        <Case condition={avatarImageModal === true}>
-          <Modal size='xl' scrollable show={avatarImageModal} onHide={() => setAvatarImageModal(false)}>
-            <Modal.Header closeButton>Avatar Image</Modal.Header>
-            <Modal.Body style={{width:'100%'}}>
-            {/* <Modal.Body style={{width:'100%', height:window.innerHeight}}> */}
-              <img style={imgStyle} className="avatar" src={postData.author.avatar_url} />
-            </Modal.Body>
-          </Modal>
-        </Case>
-      </Switch>
+      <Modal size='xl' scrollable show={avatarImageModal} onHide={() => setAvatarImageModal(false)}>
+        <Modal.Header closeButton>Avatar Image</Modal.Header>
+        {/* <Modal.Body style={{width:'100%'}}> */}
+        <Modal.Body style={{width:'100%', height:window.innerHeight}}>
+          <img className="modal-image" src={postData.author.avatar_url} />
+        </Modal.Body>
+      </Modal>
     </>
   )
 }
