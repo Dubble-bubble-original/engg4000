@@ -252,7 +252,7 @@ exports.getUserPosts = (req, res) => {
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
 
   // Get # of posts per page
-  const postLimit = req.body.post_limit ? req.body.post_limit : POST_LIMIT_DEFAULT;
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
 
   UserPost.aggregate(searchFilters).skip(pageNumber * postLimit).limit(postLimit)
     .then((docs) => res.status(200).send(docs))
@@ -284,7 +284,7 @@ exports.getRecentPosts = (req, res) => {
   }
 
   // Get # of posts per page
-  const postLimit = req.body.post_limit ? req.body.post_limit : POST_LIMIT_DEFAULT;
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
 
   UserPost.aggregate(searchFilters).limit(postLimit)
     .then((combinedDocs) => res.status(200).send(combinedDocs))
