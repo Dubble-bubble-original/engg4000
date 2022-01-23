@@ -16,10 +16,7 @@ const serviceUrl = ENV.REACT_APP_SERVICE_URL || '';
 // Get Auth token
 export const getAuthToken = async () => {
   try {
-    const response = await axios({
-      method: 'POST',
-      url: '/backend/auth'
-    })
+    const response = await axios.post("/backend/auth");
     authToken = response.data.token;
   } catch(error) {
     logger.warn(error);
