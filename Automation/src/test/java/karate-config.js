@@ -11,7 +11,7 @@ function fn() {
   }
 
   if (env == 'dev') {
-    config.baseUrl = 'http://localhost:9000';
+    config.baseUrl = 'http://localhost:3001';
   } else if (env == 'ci') {
     // customize
   } else if (env == 'prod') {
