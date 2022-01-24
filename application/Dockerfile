@@ -1,4 +1,4 @@
-FROM node:14.17-alpine as build
+FROM node:14.17.0-alpine as build
 
 # Build args
 ARG SERVICE_URL
