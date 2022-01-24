@@ -36,12 +36,11 @@ global.logger = WINSTON.createLogger({
     new WINSTON.transports.File({ filename: 'logs/combined.log' })
   ]
 });
-if (ENV.NODE_ENV === 'dev') {
-  logger.add(new WINSTON.transports.Console({
-    format: WINSTON.format.simple()
-  }));
-  logger.info('Service logger initialized');
-}
+
+logger.add(new WINSTON.transports.Console({
+  format: WINSTON.format.simple()
+}));
+logger.info('Service logger initialized');
 
 // Global error handler
 APP.use(function(err, req, res, next) {
