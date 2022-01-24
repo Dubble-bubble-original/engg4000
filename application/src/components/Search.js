@@ -14,7 +14,7 @@ function Search() {
 
     // Todo: Get recent posts
 
-    setLoading(false);
+    setLoading(true);
   }
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function Search() {
   if(isLoading) {
     return (
       <Container className="outer-container" data-testid="home-page">
-        <LoadingSpinner message="Loading..." size="10rem"/>
+        <LoadingSpinner message="Looking for matching posts..." size="10rem"/>
       </Container>
     )
   }

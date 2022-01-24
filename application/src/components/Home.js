@@ -1,6 +1,7 @@
 // React
 import { useState, useEffect } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Button, Fade } from 'react-bootstrap';
+import { If, Then } from 'react-if';
 
 // Components
 import Post from './post/Post';
@@ -38,28 +39,42 @@ function Home() {
 
     // Todo: Get recent posts
 
-    setLoading(false);
+    // setLoading(true);
   }
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  // Render is loading page until get recent posts
-  if(isLoading) {
-    return (
-      <Container className="home-page outer-container" data-testid="home-page">
-        <LoadingSpinner message="Loading..." size="10rem"/>
-      </Container>
-    )
+  const buttonHandler = () => {
+    setLoading(!isLoading);
   }
 
   return (
     <>
-      <Container className="home-page outer-container" data-testid="home-page">
-        <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
-      </Container>
-      <Post postData={postData}/>
+    <Button
+        onClick={buttonHandler}
+        aria-controls="fade-in"
+        aria-expanded={isLoading}
+      >
+        Set isLoading
+      </Button>
+      <If condition={isLoading}>
+        <Then>
+        <Container className="home-page outer-container" data-testid="home-page">
+          <LoadingSpinner message="Looking for recent posts..." size="10rem"/>
+        </Container>
+        </Then>
+      </If>
+      <Fade in={!isLoading}>
+        <div id="fade-in">
+          <Container className="home-page outer-container" data-testid="home-page">
+            <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
+          </Container>
+          <Post postData={postData}/>
+        </div>
+      </Fade>
+      
     </>
   )
 }
