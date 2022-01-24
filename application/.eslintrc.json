@@ -22,6 +22,10 @@
         "jest"
     ],
     "rules": {
+        "react/prop-types": "error",
+        "no-var": "error",
+        "quotes": ["error", "single"],
+        "no-unused-vars": "warn"
     },
 
     // Basic Settings taken from https://github.com/yannickcr/eslint-plugin-react#configuration

@@ -16,6 +16,15 @@
         "func-names": [ "off", "always" ],
         "space-before-function-paren": [ "off" ],
         "no-undef": [ "off" ],
-        "linebreak-style": [ "off" ]
+        "linebreak-style": [ "off" ],
+        "no-underscore-dangle": [ "off" ],
+        "no-plusplus": ["error", {
+            "allowForLoopAfterthoughts": true
+        }],
+        "consistent-return": [ "off" ]
+    },
+    "parserOptions": {
+        // Required for certain syntax usages
+        "ecmaVersion": 2020
     }
 }

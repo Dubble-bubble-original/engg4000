@@ -1,18 +1,23 @@
 function fn() {
-  var env = karate.env; // get system property 'karate.env'
+  var env = karate.env;
   karate.log('karate.env system property was:', env);
   if (!env) {
     env = 'dev';
   }
+
+  // config has all global variables for tests
   var config = {
-    env: env,
-    myVarName: 'someValue'
+    env: env
   }
+
   if (env == 'dev') {
+    config.baseUrl = 'http://localhost:9000';
+    config.frontendUrl = 'http://localhost:3000';
+  } else if (env == 'ci') {
     // customize
-    // e.g. config.foo = 'bar';
-  } else if (env == 'e2e') {
+  } else if (env == 'prod') {
     // customize
   }
+
   return config;
 }

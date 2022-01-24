@@ -1,0 +1,72 @@
+#navbar {
+    /* Navbar rounded corners & margin */
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 1.25rem;
+
+    /* Logo */
+    .navbar-brand img {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Separator line */
+    .basic-navbar-nav {
+        border-left: 3px solid black;
+        width: 100%;
+    }
+}
+
+#nav-link-container {
+    /* Page links */
+    .nav-link {
+        border-radius: 20px;
+        margin-left: 10px;
+        width: 115px;
+        text-align: center;
+    }
+
+    /* Reduce rounded corner for dropdown menu */
+    .dropdown-menu {
+        border-radius: 0.25rem;
+    }
+}
+
+/* Link hover outline */
+@import '../components.scss'; // Needed since .hover-outline is defined in components.scss
+#nav-link-container .nav-link, 
+#navbar button.navbar-toggler {
+    @extend .hover-outline;
+}
+
+/* Elipsis dropdown override */
+#basic-nav-dropdown {
+    &.nav-link {
+        width: fit-content;
+        padding: 0 1rem;
+        height: 40.18px;
+    }
+    svg {
+        width: 2rem;
+        height: 100%;
+    }
+    &::after {
+        display: none;
+    }
+}
+
+/* Hamburger menu - remove border */
+#navbar button.navbar-toggler {
+    border-color: transparent;
+}
+
+/* Hide navbar elements when hamburger menu is shown (i.e., on small screens) */
+@media (max-width: 576px) {
+    #navbar .basic-navbar-nav {
+        display: none;
+    }
+}
+
+/* Remove margin for links in the popup menu */
+#offcanvasNavbar .nav-link {
+    margin-left: 0px;
+}

@@ -1,16 +1,33 @@
+const WINSTON = require('winston');
+const mongoose = require('mongoose');
+const cors = require('cors');
 const EXPRESS = require('express');
 const APP = EXPRESS();
-const mongoose = require('mongoose');
+const printServiceBanner = require('./banner/banner');
+
+// Print service banner
+printServiceBanner();
 
 // Get environment
 require('dotenv').config();
 const ENV = process.env;
 
+// API Middleware
+APP.use(EXPRESS.json());
+APP.use(EXPRESS.urlencoded({ extended: true }));
+
+// options for cross-origin resource sharing
+const corsOptions = {
+  origin: ENV.FRONTEND_URL
+};
+
+// Allow the app to use CORS with the defined routes in routes.js
+APP.use(cors(corsOptions), require('./routes/routes'));
+
 // Define all routes in routes.js
 APP.use('/', require('./routes/routes'));
 
 // Setup logger
-const WINSTON = require('winston');
 global.logger = WINSTON.createLogger({
   level: 'info',
   format: WINSTON.format.json(),
@@ -26,14 +43,24 @@ if (ENV.NODE_ENV === 'dev') {
   logger.info('Service logger initialized');
 }
 
+// Global error handler
+APP.use(function(err, req, res, next) {
+  logger.error('An Unknown Error Occurred');
+  logger.error(err.message);
+  res.status(500).send({ message: 'An Unknown Error Occurred' });
+  next();
+});
+
 // DB Connection
-const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
-mongoose.connect(connectionString);
-const db = mongoose.connection;
-db.on('error', function() {
+const db = require('./db/dbUtils');
+db.connectDatabase();
+const dbConnection = mongoose.connection;
+
+dbConnection.on('error', function() {
   logger.error('Mongodb connection error');
 });
-db.once('open', function() {
+
+dbConnection.once('open', function() {
   logger.info('Mongodb connection successful');
 });
 

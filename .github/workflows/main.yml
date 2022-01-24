@@ -6,9 +6,13 @@ name: Node.js CI
 # Get .env variables from our repository's secrets
 env:
   NODE_ENV: dev
+  DB_NAME: ${{ secrets.DB_NAME }}
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASS: ${{ secrets.DB_PASS }}
-  DB_NAME: ${{ secrets.DB_NAME }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 # Run CI on pull request for the main branches
 on:
@@ -19,10 +23,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  LintAndTest :
+  LintingAndUnitTests:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+
     strategy:
       # Continue even if a case fails
       fail-fast: false
@@ -30,7 +34,7 @@ jobs:
       matrix:
         directory: [application, Service]
         command: [lint, test]
-    
+
     defaults:
       # Set working directory where commands are run
       run:
@@ -39,16 +43,59 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      
-      # Setup node
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      # Setup Node
       - name: Setup Node.js v14
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-      
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
       # Run single commands using the runner's shell
       - name: Install dependencies
         run: npm install --no-optional -f
       - name: Run ${{ matrix.command }} command in ${{ matrix.directory }} directory
         run: npm run ${{ matrix.command }}
+
+  APITests:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      
+      # Setup Node
+      - name: Setup Node.js v14
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          # Cache the dependencies based on package-lock.json
+          cache: 'npm'
+          cache-dependency-path: Service/package-lock.json
+
+      # Setup JDK
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+
+      # Start service
+      - name: Start Service
+        run: |
+          cd Service
+          npm install --no-optional --force
+          npm run dev &
+
+      # Run Karate API Tests
+      - name: Run Karate API Tests
+        run: |
+          cd Automation
+          mvn test -Dtest=ServiceTests -Dkarate.env="dev"

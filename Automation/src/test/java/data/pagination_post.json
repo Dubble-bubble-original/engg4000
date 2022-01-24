@@ -1,0 +1,19 @@
+{
+    "post": {
+    "body": "Testing pagination with this post",
+    "tags": ["pagination"],
+    "title": "pagination test",
+    "img_url": "https://catalogue.novascotia.com/ManagedMedia/27778.jpg",
+    "location": {
+        "lat": 6,
+        "lng": 9
+    },
+    "location_string": "test location",
+    "true_location": true
+    },
+    "user": {
+        "name": "pagination test", 
+        "avatar_url":"www.pagination.test", 
+        "email":"pagination@pagination.test"
+    }
+}

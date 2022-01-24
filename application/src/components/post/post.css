@@ -1,0 +1,94 @@
+/* Tags */
+.post-body img {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+/* Classes */
+
+.avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.user-name {
+    /* Allow breaking names to fit in the avatar column */
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.post-description {
+    display: flex;
+    flex-direction: column;
+    width: 70%; /* Take 70% of post width, leaving 30% for map */
+}
+
+.title-section {
+    /* Make the title & date stay at opposite ends */
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 0 10px;
+}
+
+.post-title {
+    font-weight: bold;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.post-body {
+    /* Keep extra whitespace inside the description of the post (e.g., newlines) */
+    white-space: pre-wrap;
+}
+
+.tag-container {
+    /* Allow tags to wrap to a new line */
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tag-container button.tag {
+    padding: 0px 6px;
+}
+
+.post-location {
+    width: 30%; /* Take 30% of post width, leaving 70% for body */
+}
+
+/* For screens that are 768px or less */
+@media (max-width: 768px) {
+    .avatar {
+        /* Reduce avatar size on small screens */
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* For screens that are 576px or less */
+@media (max-width: 576px) {
+    div.outer-container {
+        /* Reduce padding around the overall post on smaller screens */
+        padding: 10px;
+    }
+
+    .avatar {
+        /* Reduce avatar size on smaller screens (even more) */
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* For screens that are 450px or less (For Phone Browsers)*/
+@media (max-width: 480px) {
+
+    /* Switch the map to be below post body on small screens (mobile) */
+    .post-content { flex-direction: column; }
+    .post-description { width: 100%; }
+    .post-location { width: 100%; }
+}

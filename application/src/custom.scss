@@ -1,0 +1,24 @@
+// Override default variables
+// (To see what variables we can override, look at the _variables.scss file at: node_modules/bootstrap/scss/_variables.scss)
+$primary: #EC4038;
+$line-height-base: 1.25;
+$grid-gutter-width: 1.25rem;
+
+// Contrast ratio was reduced so that white text would be used over the primary color
+$min-contrast-ratio: 3.9;
+
+// Make background of components pure white insead of a very light gray (e.g., navbar)
+$light: white;
+
+// Make hamburger menu use the primary color
+$navbar-light-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='#{$primary}' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>") !default;
+
+// Change popup menu width
+$offcanvas-horizontal-width: 220px;
+
+// Make all bootstrap element have very rounded corners by default
+$border-radius: 20px;
+$modal-content-border-radius: $border-radius;
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
