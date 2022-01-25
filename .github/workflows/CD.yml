@@ -1,9 +1,9 @@
-name: Deployment: Github --> DockerHub --> AWS
+name: Deployment from Github to AWS
 on:
   push:
     branches:  
-    - dev
-    - docker-overhaul
+    - 'dev'
+    - 'docker-overhaul'
 
 jobs:
   test:
