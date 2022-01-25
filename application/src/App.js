@@ -9,6 +9,8 @@ import { LoadScript } from '@react-google-maps/api';
 const App = () => {
   // The state that determines what page we are on
   const [page, setPage] = useState('welcomePage');
+  console.log('carter-log');
+  console.log(process.env.REACT_APP_MAPS_API_KEY);
 
   return (
     <If condition={page === 'welcomePage'}>
