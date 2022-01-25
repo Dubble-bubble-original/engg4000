@@ -1,4 +1,4 @@
-name: Deployment from Github to AWS
+name: CD Pipeline
 on:
   push:
     branches:  
