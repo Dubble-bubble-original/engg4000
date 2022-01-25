@@ -48,32 +48,32 @@ function Post({postData}) {
                   {tags}
                 </FRow>
               </FCol>
+            </FRow>
+            <FRow>
+              <FCol className="post-image">
+                <button className="image-button" onClick={() => setPostImageModal(true)}>
+                  <img className="clickable hover-outline" src={postData.img_URL} />
+                </button>
+              </FCol>
 
               <FCol className="post-location">
-                <StaticMap width={2000} height={200} position={postData.location}/>
+                <StaticMap width={2000} height={500} position={postData.location}/>
                 <div className="text-muted text-center">{postData.location_string}</div>
               </FCol>
             </FRow>
-            <div>
-              <button className="image-button" onClick={() => setPostImageModal(true)}>
-                <img className="clickable hover-outline" src={postData.img_URL} />
-              </button>
-            </div>
           </FCol>
         </FRow>
       </Container>
 
       <Modal size='xl' scrollable show={postImageModal} onHide={() => setPostImageModal(false)}>
-        <Modal.Header closeButton>Post Image</Modal.Header>
-        {/* <Modal.Body style={{width:'100%'}}> */}
+        <Modal.Header closeButton>{postData.title}</Modal.Header>
         <Modal.Body style={{width:'100%', height:window.innerHeight}}>
           <img className="modal-image" src={postData.img_URL} />
         </Modal.Body>
       </Modal>
 
       <Modal size='xl' scrollable show={avatarImageModal} onHide={() => setAvatarImageModal(false)}>
-        <Modal.Header closeButton>Avatar Image</Modal.Header>
-        {/* <Modal.Body style={{width:'100%'}}> */}
+        <Modal.Header closeButton>{postData.author.name}</Modal.Header>
         <Modal.Body style={{width:'100%', height:window.innerHeight}}>
           <img className="modal-image" src={postData.author.avatar_url} />
         </Modal.Body>
