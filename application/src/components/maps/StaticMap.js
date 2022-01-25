@@ -36,6 +36,9 @@ function StaticMap(props) {
   ];
   const URL = encodeURI(baseURL + parameters.join('&'));
   
+  console.log('carter-log');
+  console.log(process.env.REACT_APP_MAPS_API_KEY);
+
   return (
     <React.Fragment>
       <img style={imgStyle} src={URL} tabIndex="0" onClick={() => setShowModal(true)} className="clickable hover-outline" onError={handleImgError} />
