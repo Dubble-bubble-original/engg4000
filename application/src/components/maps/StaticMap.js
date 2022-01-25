@@ -35,9 +35,6 @@ function StaticMap(props) {
     'key='+process.env.REACT_APP_MAPS_API_KEY
   ];
   const URL = encodeURI(baseURL + parameters.join('&'));
-  
-  console.log('carter-log');
-  console.log(process.env.REACT_APP_MAPS_API_KEY);
 
   return (
     <React.Fragment>

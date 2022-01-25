@@ -14,16 +14,12 @@ import { getAuthToken } from '../api/api';
 import TermsModal from './terms/termsModal';
 
 function WelcomePage(props) {
-  console.log('carter-log');
-  console.log(process.env.REACT_APP_MAPS_API_KEY);
   // State variables
   const [agree, setAgree] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
 
   // Handler function for the welcome button
   const enterButtonHandler = async () => {
-    console.log('carter-log');
-    console.log(process.env.REACT_APP_MAPS_API_KEY);
     if (agree == true) {
       // Generate Auth Token
       await getAuthToken();
