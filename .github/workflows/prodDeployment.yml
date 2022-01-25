@@ -3,6 +3,7 @@ on:
   push:
     branches:  
     - dev
+    - docker-overhaul
     
 jobs:
   test:
@@ -19,7 +20,7 @@ jobs:
       - name: Build Images
         run: |
           docker build --build-arg API_KEY=${{ secrets.API_KEY }} --build-arg SERVICE_URL=${{ secrets.SERVICE_URL }} -t ${{ secrets.DOCKER_USERNAME }}/engg4000-client ./application
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-backend ./Service
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-api ./Service
           docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx ./nginx
       
       - name: List images
@@ -28,7 +29,7 @@ jobs:
       - name: Push Images to Docker Hub
         run: | 
           docker push ${{ secrets.DOCKER_USERNAME }}/engg4000-client
-          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000-backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/engg4000-api
           docker push ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx
 
       - name: Get Timestamp

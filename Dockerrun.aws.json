@@ -12,7 +12,7 @@
                     "containerPort": 80
                 }
             ],
-            "links": ["client","backend"],
+            "links": ["client","api"],
             "memory": 100
         },
         {
@@ -23,9 +23,9 @@
             "memory": 300
         },
         {
-            "name": "backend",
-            "image": "cartermaclennan/engg4000-backend",
-            "hostname": "backend",
+            "name": "api",
+            "image": "cartermaclennan/engg4000-api",
+            "hostname": "api",
             "essential": false,
             "memory": 300
         }
