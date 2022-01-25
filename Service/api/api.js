@@ -14,7 +14,7 @@ const {
 } = require('../s3/s3');
 
 // Constants
-const POST_LIMIT = 15;
+const POST_LIMIT_DEFAULT = 15;
 const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
@@ -183,13 +183,13 @@ exports.getUserPosts = (req, res) => {
 
   // Check if the filters have tags
   if (req.body.tags?.length > 0) {
+    providedTags = req.body.tags.map((tag) => tag.toLowerCase());
     searchFilters = [
-      { $match: { tags: { $in: req.body.tags } } }
+      { $match: { tags: { $in: providedTags } } }
     ];
-    providedTags = req.body.tags;
   }
 
-  // Check id filters have Title
+  // Check if filters have Title
   if (req.body.title) {
     searchFilters = [
       ...searchFilters,
@@ -251,7 +251,10 @@ exports.getUserPosts = (req, res) => {
   // Get current page number
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
 
-  UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+
+  UserPost.aggregate(searchFilters).skip(pageNumber * postLimit).limit(postLimit)
     .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err.message);
@@ -280,7 +283,10 @@ exports.getRecentPosts = (req, res) => {
     ];
   }
 
-  UserPost.aggregate(searchFilters).limit(POST_LIMIT)
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+
+  UserPost.aggregate(searchFilters).limit(postLimit)
     .then((combinedDocs) => res.status(200).send(combinedDocs))
     .catch((error) => {
       logger.error(error.message);
