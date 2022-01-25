@@ -151,7 +151,7 @@ Feature: User post endpoints tests
     And request { tags: ["Test Tag 1"] }
     When method post
     Then status 200
-    And match response[*].tags[*] contains "Test Tag 1"
+    And match response[*].tags[*] contains "test tag 1"
     And match response[*].author.name contains post1.response.post.author.name
     And match response[*].author.name contains post3.response.post.author.name
 
@@ -169,8 +169,9 @@ Feature: User post endpoints tests
     And request { tags: ["Two Seater", "Ferrari"] }
     When method post
     Then status 200
-    And match response[*].tags[*] contains "Ferrari"
-    And match response[*].tags[*] contains "Two Seater"
+
+    And match response[*].tags[*] contains "ferrari"
+    And match response[*].tags[*] contains "two seater"
     And match response[*].author.name contains post1.response.post.author.name
     And match response[*].author.name contains post2.response.post.author.name
     And match response[*].author.name contains post4.response.post.author.name
@@ -181,7 +182,7 @@ Feature: User post endpoints tests
     And request { tags: ["Red-Gray"], title: "Ferrari" }
     When method post
     Then status 200
-    And match response[*].tags[*] contains "Red-Gray"
+    And match response[*].tags[*] contains "red-gray"
     And match each response contains { title: "Ferrari" }
     And match response[*].author.name contains post4.response.post.author.name
 
