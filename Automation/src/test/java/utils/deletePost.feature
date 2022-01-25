@@ -15,7 +15,7 @@ Feature: Delete Post
     * def post_id = response._id
 
     # Call deletepost endpoint to delete the post
-    Given path 'deletepost/' + post_id
+    Given path 'post/' + post_id
     And header token = auth_token
     When method delete
     Then status 200

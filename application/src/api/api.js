@@ -46,7 +46,7 @@ export const deletePostByID = async (_id) => {
   return await requestWithToken(async() => {
     const response = await axios({
         method: 'DELETE',
-        url: serviceUrl + '/deletepost/' + _id,
+        url: serviceUrl + '/post/' + _id,
         headers: {
             'token': authToken
         }
