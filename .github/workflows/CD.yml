@@ -1,9 +1,9 @@
-name: Deployment: Github --> DockerHub --> AWS
+name: CD Pipeline
 on:
   push:
     branches:  
-    - dev
-    - docker-overhaul
+    - 'dev'
+    - 'docker-overhaul'
 
 jobs:
   test:
