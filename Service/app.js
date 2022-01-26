@@ -30,16 +30,19 @@ APP.use('/', require('./routes/routes'));
 // Setup logger
 global.logger = WINSTON.createLogger({
   level: 'info',
-  format: WINSTON.format.json(),
+  format: WINSTON.format.combine(
+    WINSTON.format.timestamp(),
+    WINSTON.format.prettyPrint()
+  ),
   transports: [
     new WINSTON.transports.File({ filename: 'logs/error.log', level: 'error' }),
     new WINSTON.transports.File({ filename: 'logs/combined.log' })
   ]
 });
 
-logger.add(new WINSTON.transports.Console({
-  format: WINSTON.format.simple()
-}));
+if (ENV.NODE_ENV === 'dev') {
+  logger.add(new WINSTON.transports.Console({}));
+}
 logger.info('Service logger initialized');
 
 // Global error handler

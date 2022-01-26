@@ -58,27 +58,27 @@ Feature: Delete user post endpoint tests
   # TESTS FOR (EXPOSED) DELETE POST ENDPOINT
 
   Scenario: Try to delete post with no auth token provided
-    Given path 'deletepost/123'
+    Given path 'post/123'
     When method delete
     Then status 401
     And match response.message == 'No Authentication Token Provided'
 
   Scenario: Try to delete post with an invalid auth token
-    Given path 'deletepost/123'
+    Given path 'post/123'
     And header token = 'Invalid_Token'
     When method delete
     Then status 401
     And match response.message == 'Invalid Authentication Token Provided'
 
   Scenario: Try to delete post with an invalid post id
-    Given path 'deletepost/123'
+    Given path 'post/123'
     And header token = auth_token
     When method delete
     Then status 400
     And match response.message == 'Invalid Post ID Provided'
 
   Scenario: Try to delete post with an unused post id
-    Given path 'deletepost/123123123123'
+    Given path 'post/123123123123'
     And header token = auth_token
     When method delete
     Then status 404
@@ -95,7 +95,7 @@ Feature: Delete user post endpoint tests
     Then status 201
     * def post_id = response.post._id
 
-    Given path 'deletepost/' + post_id
+    Given path 'post/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -121,7 +121,7 @@ Feature: Delete user post endpoint tests
     Then status 201
     * def post_id = response.post._id
 
-    Given path 'deletepost/' + post_id
+    Given path 'post/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -148,7 +148,7 @@ Feature: Delete user post endpoint tests
     Then status 201
     * def post_id = response.post._id
 
-    Given path 'deletepost/' + post_id
+    Given path 'post/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
@@ -179,7 +179,7 @@ Feature: Delete user post endpoint tests
     * def author_id = response.post.author._id
 
     # Successfully Delete the created post
-    Given path 'deletepost/' + post_id
+    Given path 'post/' + post_id
     And header token = auth_token
     When method delete
     Then status 200

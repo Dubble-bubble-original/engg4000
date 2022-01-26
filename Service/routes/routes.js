@@ -24,10 +24,18 @@ const USE = (fn) => (req, res, next) => {
 };
 
 // Limiters
+const authTokenLimiter = RATE_LIMIT({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 1, // Limit each IP to 100 create or delete requests per window
+  message: { message: 'Too Many Auth requests From This IP Address' },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 const createDeletePostLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 10, // Limit each IP to 10 create or delete requests per window
-  message: 'Too Many Posts Created From This IP Address',
+  message: { message: 'Too Many POST/DELETE requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -35,18 +43,18 @@ const createDeletePostLimiter = RATE_LIMIT({
 const getPostsLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 250, // Limit each IP to 250 get requests per window
-  message: 'Too Many Get Requests From This IP Address',
+  message: { message: 'Too Many GET requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
-ROUTER.post(
-  '/auth',
-  USE(API.createAuthToken)
-);
-
 // Development API
 if (ENV.NODE_ENV === 'dev') {
+  ROUTER.post(
+    '/auth',
+    USE(API.createAuthToken)
+  );
+
   // User post endpoints
   ROUTER.post(
     '/post',
@@ -150,6 +158,12 @@ if (ENV.NODE_ENV === 'dev') {
 }
 // Production API
 else if (ENV.NODE_ENV === 'prod') {
+  ROUTER.post(
+    '/auth',
+    authTokenLimiter,
+    USE(API.createAuthToken)
+  );
+
   // User post endpoints
   ROUTER.post(
     '/post',

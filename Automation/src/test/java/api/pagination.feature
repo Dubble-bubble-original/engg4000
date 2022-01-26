@@ -39,12 +39,12 @@ Feature: Get user post endpoints tests
     And assert response.length == 2
 
     # Delete posts
-    Given path 'deletepost/' + post_id1
+    Given path 'post/' + post_id1
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'deletepost/' + post_id2
+    Given path 'post/' + post_id2
     And header token = auth_token
     When method delete
     Then status 200
@@ -82,12 +82,12 @@ Feature: Get user post endpoints tests
     And assert response.length == 2
 
     # Delete posts
-    Given path 'deletepost/' + post_id1
+    Given path 'post/' + post_id1
     And header token = auth_token
     When method delete
     Then status 200
 
-    Given path 'deletepost/' + post_id2
+    Given path 'post/' + post_id2
     And header token = auth_token
     When method delete
     Then status 200
