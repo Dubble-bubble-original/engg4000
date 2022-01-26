@@ -2,9 +2,6 @@
 const EXPRESS = require('express');
 const ROUTER = EXPRESS.Router();
 
-// Express Rate limit
-const RATE_LIMIT = require('express-rate-limit');
-
 // Get environment
 require('dotenv').config();
 const ENV = process.env;
@@ -16,6 +13,9 @@ const upload = multer({
   dest: './uploads'
 });
 
+// Express Rate limit
+const RATE_LIMIT = require('express-rate-limit');
+
 const API = require('../api/api');
 
 // Wrapper function to use global error handler
@@ -23,27 +23,27 @@ const USE = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-ROUTER.post(
-  '/auth',
-  USE(API.createAuthToken)
-);
-
 // Limiters
-const createPostLimiter = RATE_LIMIT({
-  windowMs: 24 * 60 * 60 * 1000, // 24 hours
-  max: 5, // Limit each IP to 5 create post requests per window
+const createDeletePostLimiter = RATE_LIMIT({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 create or delete requests per window
   message: 'Too Many Posts Created From This IP Address',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
 const getPostsLimiter = RATE_LIMIT({
-  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  windowMs: 60 * 60 * 1000, // 1 hour
   max: 250, // Limit each IP to 250 get requests per window
   message: 'Too Many Get Requests From This IP Address',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
+
+ROUTER.post(
+  '/auth',
+  USE(API.createAuthToken)
+);
 
 // Development API
 if (ENV.NODE_ENV === 'dev') {
@@ -54,28 +54,28 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.createFullUserPost)
   );
 
-  ROUTER.delete(
-    '/deletepost/:id',
-    USE(API.verifyAuthToken),
-    USE(API.deleteFullUserPost)
-  );
-
   ROUTER.post(
     '/userpost',
     USE(API.verifyAuthToken),
     USE(API.createUserPost)
   );
 
-  ROUTER.patch(
-    '/userpost/:id',
+  ROUTER.delete(
+    '/post/:id',
     USE(API.verifyAuthToken),
-    USE(API.updateUserPost)
+    USE(API.deleteFullUserPost)
   );
 
   ROUTER.delete(
     '/userpost/:id',
     USE(API.verifyAuthToken),
     USE(API.deleteUserPost)
+  );
+
+  ROUTER.patch(
+    '/userpost/:id',
+    USE(API.verifyAuthToken),
+    USE(API.updateUserPost)
   );
 
   ROUTER.get(
@@ -130,6 +130,12 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.uploadImage)
   );
 
+  ROUTER.delete(
+    '/image/:id',
+    USE(API.verifyAuthToken),
+    USE(API.deleteImage)
+  );
+
   ROUTER.get(
     '/image/:id',
     USE(API.verifyAuthToken),
@@ -141,25 +147,20 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.verifyAuthToken),
     USE(API.getImageUrl)
   );
-
-  ROUTER.delete(
-    '/image/:id',
-    USE(API.verifyAuthToken),
-    USE(API.deleteImage)
-  );
 }
 // Production API
 else if (ENV.NODE_ENV === 'prod') {
   // User post endpoints
   ROUTER.post(
     '/post',
-    createPostLimiter,
+    createDeletePostLimiter,
     USE(API.verifyAuthToken),
     USE(API.createFullUserPost)
   );
 
   ROUTER.delete(
-    '/deletepost/:id',
+    '/post/:id',
+    createDeletePostLimiter,
     USE(API.verifyAuthToken),
     USE(API.deleteFullUserPost)
   );
@@ -188,7 +189,7 @@ else if (ENV.NODE_ENV === 'prod') {
   // Image endpoints
   ROUTER.post(
     '/postimages',
-    createPostLimiter,
+    createDeletePostLimiter,
     USE(API.verifyAuthToken),
     USE(upload.fields([{ name: 'avatar' }, { name: 'picture' }])),
     USE(API.uploadPostImages)
@@ -196,6 +197,7 @@ else if (ENV.NODE_ENV === 'prod') {
 
   ROUTER.delete(
     '/image/:id',
+    createDeletePostLimiter,
     USE(API.verifyAuthToken),
     USE(API.deleteImage)
   );
