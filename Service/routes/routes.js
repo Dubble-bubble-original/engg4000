@@ -26,7 +26,7 @@ const USE = (fn) => (req, res, next) => {
 // Limiters
 const authTokenLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 1, // Limit each IP to 100 create or delete requests per window
+  max: 100, // Limit each IP to 100 auth token requests per window
   message: { message: 'Too Many Auth requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
