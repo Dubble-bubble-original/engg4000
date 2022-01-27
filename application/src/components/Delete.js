@@ -4,7 +4,7 @@ import { Switch, Case, Default, If, Then } from 'react-if';
 import { Container, Form, Row, Col, Button, Alert } from 'react-bootstrap';
 
 // Resources
-import { MdOutlineCheckCircle, MdOutlineCancel } from 'react-icons/md';
+import { MdOutlineCheckCircle, MdErrorOutline } from 'react-icons/md';
 import Post from './post/Post.js';
 import ConfirmationModal from './ConfirmationModal.js'
 
@@ -36,10 +36,10 @@ function Delete() {
   }
 
   const searchPost = async () => {
-    let result = await getPostByAccessKey(accessKey);
+    const result = await getPostByAccessKey(accessKey);
 
     // Show feedback based on result
-    if (!result) {
+    if (!result || !result.author) {
       setSearchResult('not-found');
     }
     else {
@@ -49,7 +49,7 @@ function Delete() {
   }
 
   const deletePost = async () => {
-    let result = await deletePostByID(postData._id);
+    const result = await deletePostByID(postData._id);
 
     // Show feedback based on result
     if (!result) {
@@ -67,7 +67,7 @@ function Delete() {
           <div data-testid="delete-title" className="h4">Delete a post</div>
           <div>To delete a post you must enter the access code that was given to you when you created the post.</div>
           <br/>
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group>
             <Form.Label>Access code</Form.Label>
             <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
               <Col style={{maxWidth: '400px'}} className="flex-grow-1">
@@ -110,7 +110,7 @@ function Delete() {
                 <Row>
                   <Col>
                     <Alert variant="danger" className="mb-0 mt-3" dismissible onClose={() => setSearchResult('found')}>
-                      Post could not be deleted. Please try again later.
+                      <MdErrorOutline/> Post could not be deleted. Please try again later.
                     </Alert>
                   </Col>
                 </Row>
@@ -126,7 +126,7 @@ function Delete() {
 
         <Case condition={searchResult === 'not-found'}>
           <Container className="outer-container" id="post-not-found">
-            <div className="h4 red">Post not found <MdOutlineCancel/></div>
+            <div className="h4 red">Post not found <MdErrorOutline/></div>
             <div>The access key you entered does not match any existing post.</div>
           </Container>
         </Case>
@@ -134,7 +134,7 @@ function Delete() {
         <Case condition={searchResult === 'deleted'}>
           <Container className="outer-container">
             <Alert variant="success" className="mb-0" dismissible onClose={() => setSearchResult(null)}>
-              Post deleted successfully.
+              <MdOutlineCheckCircle/> Post deleted successfully.
             </Alert>
           </Container>
         </Case>

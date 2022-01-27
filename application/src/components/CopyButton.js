@@ -14,7 +14,8 @@ function CopyButton(props) {
     // Try to use clipboard API
     if ('clipboard' in navigator) {
       return await navigator.clipboard.writeText(text);
-    } else {
+    }
+    else {
       // Use this as last resort (deprecated)
       return document.execCommand('copy', true, text);
     }

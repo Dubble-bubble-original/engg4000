@@ -5,6 +5,7 @@ import { When, If, Then, Else } from 'react-if';
 import PropTypes from 'prop-types'
 
 // Resources
+import { MdErrorOutline, MdOutlineCheckCircle } from 'react-icons/md';
 import LocationPickerMap from './maps/LocationPickerMap';
 import PlaceholderAvatar from '../resources/images/placeholder-avatar.png';
 import AvatarUploadButton from './upload/AvatarUploadButton';
@@ -14,6 +15,9 @@ import Post from './post/Post';
 import ConfirmationModal from './ConfirmationModal';
 import CopyButton from './CopyButton';
 import { TermsLink, TermsCheckbox } from './terms/Terms';
+
+// API
+import { createFullPost, postImages, deleteImage } from '../api/api.js';
 
 function Number(props) {
   return (
@@ -47,7 +51,7 @@ function Optional() {
 function Create(props) {
   // State variables
   const [position, setPosition] = useState(null);
-  const [avatarImg, setAvatarImg] = useState(PlaceholderAvatar);
+  const [avatarImg, setAvatarImg] = useState(null);
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -59,6 +63,7 @@ function Create(props) {
   const [created, setCreated] = useState(false);
   const [accessKey, setAccessKey] = useState('');
   const [isCreateError, setIsCreateError] = useState(false);
+  const [email, setEmail] = useState('');
 
   // Other variables
   const pictureFileInputRef = useRef(null);
@@ -83,8 +88,8 @@ function Create(props) {
     return true;
   }
 
-  const getPictureURL = () => {
-    return picture ? URL.createObjectURL(picture) : null;
+  const getImageURL = (image) => {
+    return image ? URL.createObjectURL(image) : null;
   }
 
   const preventSubmit = (event) => {
@@ -99,8 +104,26 @@ function Create(props) {
     setIsCreateError(false);
   }
 
-  const createPost = () => {
-    // todo Call API
+  const createPost = async () => {
+    // Upload images (if any)
+    let imgResult = null;
+    if (avatarImg || picture) {
+      imgResult = await postImages(avatarImg, picture);
+
+      //! REMOVE ME
+      console.log(imgResult);
+
+      if (!imgResult) {
+        setIsCreateError(true);
+        return;
+      }
+    }
+    
+    // const result = await createFullPost();
+    // ! REMOVE ME
+    // ! REMOVE ME
+    // ! REMOVE ME
+    // ! REMOVE ME
     const result = true;
 
     // Show feedback
@@ -111,20 +134,28 @@ function Create(props) {
     }
     else {
       setIsCreateError(true);
+
+      // Delete images (if any)
+      if (imgResult?.avatarId) deleteImage(imgResult.avatarId);
+      if (imgResult?.pictureId) deleteImage(imgResult.pictureId);
     }
   }
 
+  const sendEmail = () => {
+    // Todo: implement email sending in the backend
+  }
+
   useEffect(() => {
-    // Scroll to the error when it appears
+    // Scroll to the error 0.5s after it appears
     if (isCreateError) {
-      errorFeedbackRef.current.scrollIntoView(true);
+      setTimeout(() => errorFeedbackRef.current.scrollIntoView(true), 500);
     }
   }, [isCreateError]);
 
   const resetPage = () => {
     // Reset all state variables to default values
     setPosition(null);
-    setAvatarImg(PlaceholderAvatar);
+    setAvatarImg(null);
     setName('');
     setTitle('');
     setBody('');
@@ -136,6 +167,7 @@ function Create(props) {
     setCreated(false);
     setAccessKey('');
     setIsCreateError(false);
+    setEmail('');
   }
 
   return (
@@ -159,7 +191,7 @@ function Create(props) {
                 className="mb-0 mt-3"
                 hidden={position !== null}
               >
-                You must select a location.
+                <MdErrorOutline/> You must select a location.
               </Alert>
             </Section>
 
@@ -186,12 +218,12 @@ function Create(props) {
                 <Col>
                   <Row>
                     <Col id="avatar-preview">
-                      <img  src={avatarImg}></img>
+                      <img src={getImageURL(avatarImg) ?? PlaceholderAvatar}></img>
                     </Col>
                     <Col>
                       <Form.Group>
                         <Form.Label>Avatar<Optional/></Form.Label><br/>
-                        <AvatarUploadButton setAvatarImg={setAvatarImg} defaultImg={PlaceholderAvatar}/>
+                        <AvatarUploadButton setAvatarImg={setAvatarImg}/>
                       </Form.Group>
                     </Col>
                   </Row>
@@ -246,7 +278,7 @@ function Create(props) {
                   className="mb-0 mt-3"
                   hidden={!invalidTagsMsg}
                 >
-                  {invalidTagsMsg}
+                  <MdErrorOutline/> {invalidTagsMsg}
                 </Alert>
               </Form.Group>
             </Section>
@@ -265,7 +297,7 @@ function Create(props) {
                   </ImageUploadButton>
                 </Col>
                 <Col hidden={!picture} className="img-preview">
-                  <img src={getPictureURL()}/>
+                  <img src={getImageURL(picture)}/>
                 </Col>
               </Row>
             </Container>
@@ -277,7 +309,7 @@ function Create(props) {
                 className="mb-0 mt-3"
                 hidden={isPostValid()}
               >
-                Some required fields are missing values.
+                <MdErrorOutline/> Some required fields are missing values.
               </Alert>
             </Section>
 
@@ -286,12 +318,12 @@ function Create(props) {
                 postData={{
                   author: {
                     name: name,
-                    avatar_url: avatarImg
+                    avatar_url: getImageURL(avatarImg),
                   },
                   body: body,
                   tags: tags,
                   title: title,
-                  img_url: getPictureURL(),
+                  img_url: getImageURL(picture),
                   date_created: new Date(),
                   location: position,
                   location_string: 'WIP'
@@ -320,13 +352,36 @@ function Create(props) {
         <Else>
           <Container className="outer-container">
             <Alert variant="success">
-              Post created successfully.
+              <MdOutlineCheckCircle/> Post created successfully.
             </Alert>
             <div><b>Access code:</b> {accessKey} <CopyButton value={accessKey}/></div>
             <Form.Text>
-              This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!
+              This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!<br/>
             </Form.Text>
             <br/>
+            <Form.Text>
+              You may enter your email below to send yourself a copy of the access code via email.<br/>
+            </Form.Text>
+            <br/>
+            <Form.Group>
+              <Form.Label>Email <Optional/></Form.Label>
+              <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
+                <Col style={{maxWidth: '400px'}} className="flex-grow-1">
+                  <Form.Control
+                    type="email"
+                    placeholder="my.email@org.com"
+                    value={email}
+                    onChange={(e)=> {setEmail(e.target.value)}}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please provide a valid email address.
+                  </Form.Control.Feedback>
+                </Col>
+                <Col xs="auto" sm="auto">
+                  <Button onClick={sendEmail}>Send Email</Button>
+                </Col>
+              </Row>
+            </Form.Group>
             <br/>
             <Button onClick={resetPage}>Create a New Post</Button>
           </Container>
@@ -336,24 +391,21 @@ function Create(props) {
       <When condition={isCreateError}>
         <Container className="outer-container" ref={errorFeedbackRef}>
           <Alert variant="danger" className="mb-0">
-            Post could not be created. Please try again later.
+            <MdErrorOutline/> Post could not be created. Please try again later.
           </Alert>
         </Container>
       </When>
       
       <ConfirmationModal
         title="Confirmation"
-        body={
-          <div>
-            Do you really want to publish this post?
-          </div>
-        }
         acceptString="Publish"
         cancelString="Cancel"
         acceptCallback={createPost}
         show={showConfirmationModal}
         setShow={setShowConfirmationModal}
-      />
+      >
+        Do you really want to publish this post?
+      </ConfirmationModal>
     </>
   )
 }

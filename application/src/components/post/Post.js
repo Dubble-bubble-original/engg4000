@@ -9,11 +9,12 @@ import './post.css';
 // Resources
 import StaticMap from '../maps/StaticMap';
 import { FRow, FCol } from '../FlexContainers';
+import PlaceholderAvatar from '../../resources/images/placeholder-avatar.png';
 
 function Post({postData}) {
 
   // Create Tags for rendering
-  const tags = postData.tags.map(tag => {
+  const tags = postData.tags.sort().map(tag => {
     return <Button variant="outline-primary" className="tag" key={tag}>{tag}</Button>;
   });
 
@@ -25,7 +26,7 @@ function Post({postData}) {
     <Container className="outer-container">
       <FRow>
         <FCol>
-          <img className="avatar" src={postData.author.avatar_url} />
+          <img className="avatar" src={postData.author.avatar_url ?? PlaceholderAvatar} />
           <div className="user-name text-center">{postData.author.name}</div>
         </FCol>
 

@@ -14,8 +14,9 @@ function AvatarUploadModal(props) {
 
   const saveImage = () => {
     props.closeModal();
-    const imageURL = avatarEditor.current.getImage().toDataURL();
-    props.setAvatarImg(imageURL);
+    avatarEditor.current.getImageScaledToCanvas().toBlob((blob) => {
+      props.setAvatarImg(blob);
+    });
   }
 
   const cancel = () => {
@@ -81,7 +82,7 @@ function AvatarUploadButton(props) {
   const handleImgChange = (img) => {
     setUploadedImg(img);
     if (img) setShowUploadModal(true);
-    else props.setAvatarImg(props.defaultImg);
+    else props.setAvatarImg(null);
   }
 
   const closeUploadModal = () => {
@@ -110,8 +111,7 @@ function AvatarUploadButton(props) {
 }
 
 AvatarUploadButton.propTypes = {
-  setAvatarImg: PropTypes.func.isRequired,
-  defaultImg: PropTypes.string
+  setAvatarImg: PropTypes.func.isRequired
 }
 
 export default AvatarUploadButton;
