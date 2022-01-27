@@ -108,6 +108,7 @@ Feature: Delete user post endpoint tests
     When method delete
     Then status 200
     And match response.status.user == 'No User Provided'
+    * match response.post._id == '#notpresent'
 
   Scenario: Try to delete a post with no avatar and post image
     # Create a post with invalid avatar and post image
@@ -125,6 +126,7 @@ Feature: Delete user post endpoint tests
     Then status 200
     And match response.status.message == 'Post Deleted Successfully'
     And match response.post.author._id == author_id
+    * match response.post._id == '#notpresent'
 
   Scenario: Try to delete a post with an invalid avatar and post image
     # Creating a temporary user
@@ -155,6 +157,7 @@ Feature: Delete user post endpoint tests
     Then status 200
     And match response.status.avatar == 'Avatar Image Not Found'
     And match response.status.postImg == 'Post Image Not Found'
+    * match response.post._id == '#notpresent'
 
   Scenario: Try to delete a full user post
     # Creating avatar and post image
@@ -189,3 +192,4 @@ Feature: Delete user post endpoint tests
     When method delete
     Then status 200
     And match response.status.message == 'Post Deleted Successfully'
+    * match response.post._id == '#notpresent'

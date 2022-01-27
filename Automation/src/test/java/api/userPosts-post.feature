@@ -332,6 +332,8 @@ Feature: User post endpoints tests
     Then status 201
     And match response.post !contains { img_url: '#notnull' }
     * def access_key = response.post.access_key
+    * match response.post._id == '#notpresent'
+    * match response.post.author._id == '#notpresent'
 
     # Delete the created post
     * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
@@ -345,6 +347,8 @@ Feature: User post endpoints tests
     Then status 201
     * match response.post.author !contains { avatar_url: '#notnull' }
     * def access_key = response.post.access_key
+    * match response.post._id == '#notpresent'
+    * match response.post.author._id == '#notpresent'
 
     # Delete the created post
     * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
@@ -356,6 +360,8 @@ Feature: User post endpoints tests
     And request read('../data/user_userPost.json')
     When method post
     Then status 201
+    * match response.post._id == '#notpresent'
+    * match response.post.author._id == '#notpresent'
     * def access_key = response.post.access_key
 
     # Delete the created post

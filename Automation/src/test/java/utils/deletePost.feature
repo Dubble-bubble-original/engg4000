@@ -19,3 +19,4 @@ Feature: Delete Post
     And header token = auth_token
     When method delete
     Then status 200
+    * match response.post._id == '#notpresent'

@@ -1,5 +1,5 @@
 @ignore
-Feature: Delete Post
+Feature: Get Post
 
   Background:
     * url baseUrl
