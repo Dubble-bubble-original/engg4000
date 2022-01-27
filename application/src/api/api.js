@@ -128,7 +128,7 @@ export const postImages = async (avatar, picture) => {
 }
 
 // Create a user and user post
-export const createFullPost = async (avatarId, pictureId, user, userPost) => {
+export const createFullPost = async (avatarId, pictureId, user, post) => {
   return await requestWithToken(async() => {
     const response = await axios({
       method: 'POST',
@@ -137,7 +137,7 @@ export const createFullPost = async (avatarId, pictureId, user, userPost) => {
         avatarId,
         pictureId,
         user,
-        post: userPost
+        post
       },
       headers: {
         'Content-Type': 'application/json',

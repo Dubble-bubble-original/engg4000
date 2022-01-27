@@ -51,6 +51,7 @@ function Optional() {
 function Create(props) {
   // State variables
   const [position, setPosition] = useState(null);
+  const [isTruePosition, setIsTruePosition] = useState(null);
   const [avatarImg, setAvatarImg] = useState(null);
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
@@ -88,6 +89,23 @@ function Create(props) {
     return true;
   }
 
+  const getPostData = () => {
+    return {
+      author: {
+        name: name,
+        avatar_url: getImageURL(avatarImg),
+      },
+      body: body,
+      tags: tags,
+      title: title,
+      img_url: getImageURL(picture),
+      date_created: new Date(),
+      location: position,
+      location_string: 'WIP',
+      true_location: isTruePosition
+    };
+  }
+
   const getImageURL = (image) => {
     return image ? URL.createObjectURL(image) : null;
   }
@@ -109,35 +127,33 @@ function Create(props) {
     let imgResult = null;
     if (avatarImg || picture) {
       imgResult = await postImages(avatarImg, picture);
-
-      //! REMOVE ME
-      console.log(imgResult);
-
       if (!imgResult) {
         setIsCreateError(true);
         return;
       }
     }
-    
-    // const result = await createFullPost();
-    // ! REMOVE ME
-    // ! REMOVE ME
-    // ! REMOVE ME
-    // ! REMOVE ME
-    const result = true;
+    const avatarId = imgResult?.avatarId;
+    const pictureId = imgResult?.pictureId;
+
+    // Get user & post data (separate)
+    const post = getPostData();
+    const user = post.author;
+    delete post.author;
+
+    // Create post
+    const result = await createFullPost(avatarId, pictureId, user, post);
 
     // Show feedback
     if (result) {
-      // todo: change this temp access-key
-      setAccessKey('f01466b4-478a-4f8f-ae8c-cae5fd40a6e5');
+      setAccessKey(result.post.access_key);
       setCreated(true);
     }
     else {
       setIsCreateError(true);
 
       // Delete images (if any)
-      if (imgResult?.avatarId) deleteImage(imgResult.avatarId);
-      if (imgResult?.pictureId) deleteImage(imgResult.pictureId);
+      if (avatarId) deleteImage(avatarId);
+      if (pictureId) deleteImage(pictureId);
     }
   }
 
@@ -184,7 +200,7 @@ function Create(props) {
               <div>Show us the location of your adventure!</div>
               <br/>
               <div style={{width:'100%', height:'350px'}}>
-                <LocationPickerMap onPositionChange={setPosition} />
+                <LocationPickerMap onPositionChange={setPosition} setIsTruePosition={setIsTruePosition} />
               </div>
               <Alert
                 variant="danger"
@@ -314,21 +330,7 @@ function Create(props) {
             </Section>
 
             <When condition={isPostValid()}>
-              <Post
-                postData={{
-                  author: {
-                    name: name,
-                    avatar_url: getImageURL(avatarImg),
-                  },
-                  body: body,
-                  tags: tags,
-                  title: title,
-                  img_url: getImageURL(picture),
-                  date_created: new Date(),
-                  location: position,
-                  location_string: 'WIP'
-                }}
-              />
+              <Post postData={getPostData()}/>
 
               <Section num="7" title="Publish">
                 <div>By publishing this post you are agreeing to our <TermsLink setShowTerms={props.setShowTerms}/>.</div>
@@ -363,25 +365,27 @@ function Create(props) {
               You may enter your email below to send yourself a copy of the access code via email.<br/>
             </Form.Text>
             <br/>
-            <Form.Group>
-              <Form.Label>Email <Optional/></Form.Label>
-              <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
-                <Col style={{maxWidth: '400px'}} className="flex-grow-1">
-                  <Form.Control
-                    type="email"
-                    placeholder="my.email@org.com"
-                    value={email}
-                    onChange={(e)=> {setEmail(e.target.value)}}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    Please provide a valid email address.
-                  </Form.Control.Feedback>
-                </Col>
-                <Col xs="auto" sm="auto">
-                  <Button onClick={sendEmail}>Send Email</Button>
-                </Col>
-              </Row>
-            </Form.Group>
+            <Form noValidate onSubmit={preventSubmit} validated={!!email}>
+              <Form.Group>
+                <Form.Label>Email <Optional/></Form.Label>
+                <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
+                  <Col style={{maxWidth: '400px'}} className="flex-grow-1">
+                    <Form.Control
+                      type="email"
+                      placeholder="my.email@org.com"
+                      value={email}
+                      onChange={(e)=> {setEmail(e.target.value)}}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Please provide a valid email address.
+                    </Form.Control.Feedback>
+                  </Col>
+                  <Col xs="auto" sm="auto">
+                    <Button onClick={sendEmail}>Send Email</Button>
+                  </Col>
+                </Row>
+              </Form.Group>
+            </Form>
             <br/>
             <Button onClick={resetPage}>Create a New Post</Button>
           </Container>

@@ -31,6 +31,7 @@ function LocationPickerMap(props) {
             lng: position.coords.longitude,
           };
           updatePosition(pos);
+          props.setIsTruePosition(true);
           map.panTo(pos);
         },
         () => {
@@ -84,6 +85,7 @@ function LocationPickerMap(props) {
       lng: e.latLng.lng(),
     };
     updatePosition(newPosition);
+    props.setIsTruePosition(false);
   }
 
   function updatePosition(newPosition) {
@@ -116,7 +118,8 @@ function LocationPickerMap(props) {
 }
 
 LocationPickerMap.propTypes = {
-  onPositionChange: PropTypes.func
+  onPositionChange: PropTypes.func,
+  setIsTruePosition: PropTypes.func
 }
 
 export default LocationPickerMap;
