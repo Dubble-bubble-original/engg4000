@@ -62,9 +62,9 @@ function Delete() {
 
   return (
     <>
-      <Container className="outer-container">
+      <Container className="outer-container" data-testid="delete-page">
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
-          <div className="h4">Delete a post</div>
+          <div data-testid="delete-title" className="h4">Delete a post</div>
           <div>To delete a post you must enter the access code that was given to you when you created the post.</div>
           <br/>
           <Form.Group controlId="formBasicEmail">

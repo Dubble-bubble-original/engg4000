@@ -29,8 +29,8 @@ Number.propTypes = {
 function Section(props) {
   return (
     <Container className="outer-container">
-        <div className="h4"><Number num={props.num}/> {props.title}</div>
-        {props.children}
+      <div className="h4"><Number num={props.num}/> {props.title}</div>
+      {props.children}
     </Container>
   );
 }
@@ -140,7 +140,7 @@ function Create(props) {
 
   return (
     <>
-      <Container className="outer-container">
+      <Container className="outer-container" data-testid="create-page">
         <div className="h4 mb-0">Follow these steps to create a new post</div>
       </Container>
 
