@@ -13,7 +13,7 @@ const userPostSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId, required: true, immutable: true, ref: 'User'
   },
   body: { type: String, required: true },
-  tags: [{ type: String, required: true }],
+  tags: [{ type: String, required: true, lowercase: true }],
   title: { type: String, required: true },
   img_url: { type: String },
   date_created: { type: Date, default: Date.now, immutable: true },

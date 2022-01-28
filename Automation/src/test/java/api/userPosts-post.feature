@@ -151,7 +151,7 @@ Feature: User post endpoints tests
     And request { tags: ["Test Tag 1"] }
     When method post
     Then status 200
-    And match response[*].tags[*] contains "Test Tag 1"
+    And match response[*].tags[*] contains "test tag 1"
     And match response[*].author.name contains post1.response.post.author.name
     And match response[*].author.name contains post3.response.post.author.name
 
@@ -169,8 +169,9 @@ Feature: User post endpoints tests
     And request { tags: ["Two Seater", "Ferrari"] }
     When method post
     Then status 200
-    And match response[*].tags[*] contains "Ferrari"
-    And match response[*].tags[*] contains "Two Seater"
+
+    And match response[*].tags[*] contains "ferrari"
+    And match response[*].tags[*] contains "two seater"
     And match response[*].author.name contains post1.response.post.author.name
     And match response[*].author.name contains post2.response.post.author.name
     And match response[*].author.name contains post4.response.post.author.name
@@ -181,7 +182,7 @@ Feature: User post endpoints tests
     And request { tags: ["Red-Gray"], title: "Ferrari" }
     When method post
     Then status 200
-    And match response[*].tags[*] contains "Red-Gray"
+    And match response[*].tags[*] contains "red-gray"
     And match each response contains { title: "Ferrari" }
     And match response[*].author.name contains post4.response.post.author.name
 
@@ -329,23 +330,13 @@ Feature: User post endpoints tests
     And request read('../data/user_userPost_missingPictureId.json')
     When method post
     Then status 201
-    * match response.post !contains { img_url: '#notnull' }
-    * def post_id = response.post._id
-    * def user_id = response.post.author._id
+    And match response.post !contains { img_url: '#notnull' }
+    * def access_key = response.post.access_key
+    * match response.post._id == '#notpresent'
+    * match response.post.author._id == '#notpresent'
 
-    # Call delete user post endpoint
-    Given path 'userpost/' + post_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Post Deleted Successfully'
-
-    # Call delete user endpoint
-    Given path 'user/' + user_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Deleted Successfully'
+    # Delete the created post
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
 
   Scenario: Try to create a user and user post with only a post picture
     # Call create user post endpoint
@@ -355,22 +346,12 @@ Feature: User post endpoints tests
     When method post
     Then status 201
     * match response.post.author !contains { avatar_url: '#notnull' }
-    * def post_id = response.post._id
-    * def user_id = response.post.author._id
+    * def access_key = response.post.access_key
+    * match response.post._id == '#notpresent'
+    * match response.post.author._id == '#notpresent'
 
-    # Call delete user post endpoint
-    Given path 'userpost/' + post_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Post Deleted Successfully'
-
-    # Call delete user endpoint
-    Given path 'user/' + user_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Deleted Successfully'
+    # Delete the created post
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
 
   Scenario: Try to create a user and user post with both an avatar and post picture
     # Call create user post endpoint
@@ -379,19 +360,9 @@ Feature: User post endpoints tests
     And request read('../data/user_userPost.json')
     When method post
     Then status 201
-    * def post_id = response.post._id
-    * def user_id = response.post.author._id
+    * match response.post._id == '#notpresent'
+    * match response.post.author._id == '#notpresent'
+    * def access_key = response.post.access_key
 
-    # Call delete user post endpoint
-    Given path 'userpost/' + post_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Post Deleted Successfully'
-
-    # Call delete user endpoint
-    Given path 'user/' + user_id
-    And header token = auth_token
-    When method delete
-    Then status 200
-    And match response.message == 'User Deleted Successfully'
+    # Delete the created post
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
