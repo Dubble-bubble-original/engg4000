@@ -32,7 +32,7 @@ function CopyButton(props) {
         }, 1500);
       })
       .catch((err) => {
-        logger.error(err);
+        logger.error('Could not copy to clipboard: '+err);
       });
   }
 
