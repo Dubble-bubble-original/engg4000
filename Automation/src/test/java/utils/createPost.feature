@@ -13,3 +13,5 @@ Feature: Create Post
     And request data
     When method post
     Then status 201
+    * match response.post._id == '#notpresent'
+    * match response.post.author._id == '#notpresent'
