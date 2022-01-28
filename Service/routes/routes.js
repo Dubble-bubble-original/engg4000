@@ -133,5 +133,9 @@ ROUTER.delete(
   USE(API.verifyAuthToken),
   USE(API.deleteFullUserPost)
 );
+ROUTER.post(
+  '/sendemail',
+  USE(API.sendEmail)
+);
 
 module.exports = ROUTER;

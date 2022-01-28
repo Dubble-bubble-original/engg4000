@@ -1,6 +1,9 @@
 // Packages
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
+const nodemailer = require('nodemailer');
+const aws = require('@aws-sdk/client-ses');
+const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 
 // Utils
 const UTILS = require('../utils/utils');
@@ -638,3 +641,36 @@ exports.createFullUserPost = async (req, res) => {
     });
   });
 };
+
+exports.sendEmail = async (req, res) => {
+  const ses = new aws.SES({
+    apiVersion: '2010-12-01',
+    region: 'us-east-1',
+    defaultProvider
+  });
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: ses
+  });
+
+  transporter.sendMail(
+    {
+      from: 'joao.vrpontes@gmail.com',
+      to: 'joao.vrpontes@gmail.com',
+      subject: 'Message',
+      text: 'I hope this message gets sent!'
+    },
+    (err, infolog) => {
+      logger.info(infolog.envelope);
+      logger.info(infolog.messageId);
+      return res.status(500).send({ message: err });
+    }
+  );
+
+  return res.status(200);
+};
+
+// RN it is sending emails to only verrified users like my email -> to my email
+// Figure out why it's producing errors in the logs
+// Figure out how to send emails to non verrified users
