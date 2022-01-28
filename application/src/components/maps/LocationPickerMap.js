@@ -60,7 +60,7 @@ function LocationPickerMap(props) {
   function customControl(controlDiv, map) {
     const controlUI = 
       <Button 
-        title="Click to use your current location"
+        title="Use your current location"
         className="button-shadow mt-2"
         onClick={() => getUserPosition(map)}
       >

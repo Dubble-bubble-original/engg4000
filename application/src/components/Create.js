@@ -158,7 +158,7 @@ function Create(props) {
   }
 
   const sendEmail = () => {
-    // Todo: implement email sending in the backend
+    // Todo: DBO-73 Call the send email endpoint from the create post component
   }
 
   useEffect(() => {
@@ -189,7 +189,7 @@ function Create(props) {
   return (
     <>
       <Container className="outer-container" data-testid="create-page">
-        <div className="h4 mb-0">Follow these steps to create a new post</div>
+        <div className="h4 mb-0">Follow the steps below to create a new post</div>
       </Container>
 
       <If condition={!created}>
@@ -212,7 +212,7 @@ function Create(props) {
             </Section>
 
             <Section num="2" title="Avatar">
-              <div>Tell everyone who you are!</div>
+              <div>Tell us more about you!</div>
               <br/>
               <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
                 <Col>
@@ -248,7 +248,7 @@ function Create(props) {
             </Section>
 
             <Section num="3" title="Content">
-              <div>What do you want to share?</div>
+              <div>What would you like to share?</div>
               <br/>
               <Row sm={1} md={2}>
                 <Form.Group>
