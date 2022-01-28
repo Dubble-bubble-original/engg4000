@@ -34,7 +34,7 @@ Feature: Tests for making sure _id's and access_key are not returned
     And request { update: { title: 'new title' } }
     When method patch
     Then status 200
-    * match each response..['access_key'] == '#notnull'
+    * match each response..['access_key'] == '#notpresent'
     * match each response..['_id'] == '#notpresent'
 
     # Delete created user post
@@ -54,7 +54,7 @@ Feature: Tests for making sure _id's and access_key are not returned
     And request { title: "Mclaren F1" }
     When method post
     Then status 200
-    * match each response..['access_key'] == '#notnull'
+    * match each response..['access_key'] == '#notpresent'
     * match each response..['_id'] == '#notpresent'
 
     # Delete created user post
@@ -67,7 +67,7 @@ Feature: Tests for making sure _id's and access_key are not returned
     And header token = auth_token
     When method post
     Then status 200
-    * match each response..['access_key'] == '#notnull'
+    * match each response..['access_key'] == '#notpresent'
     * match each response..['_id'] == '#notpresent'
 
   # Test for GET '/user' endpoint
