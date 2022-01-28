@@ -25,7 +25,7 @@
 .post-description {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 70%;
 }
 
 .title-section {
@@ -64,7 +64,7 @@
 }
 
 .post-location {
-    width: 100%;
+    width: 30%;
 }
 
 .modal-image {
@@ -74,8 +74,8 @@
     background-color: clear;
 }
 
-.post-image button.image-button {
-    width: 90%;
+.post-image {
+    width: 50%;
     align-self: center;
     background-color: white;
 }
@@ -110,4 +110,5 @@
     .post-content { flex-direction: column; }
     .post-description { width: 100%; }
     .post-location { width: 100%; }
+    .post-image { width: 80%; }
 }

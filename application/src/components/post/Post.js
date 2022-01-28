@@ -48,18 +48,18 @@ function Post({postData}) {
                   {tags}
                 </FRow>
               </FCol>
+
+              <FCol className="post-location">
+                <StaticMap width={2000} height={200} position={postData.location}/>
+                <div className="text-muted text-center">{postData.location_string}</div>
+              </FCol>
             </FRow>
-            <FRow>
-              <FCol className="post-image">
+            <FRow className="post-image">
+              <div>
                 <button className="image-button" onClick={() => setPostImageModal(true)}>
                   <img className="clickable hover-outline" src={postData.img_URL} />
                 </button>
-              </FCol>
-
-              <FCol className="post-location">
-                <StaticMap width={2000} height={500} position={postData.location}/>
-                <div className="text-muted text-center">{postData.location_string}</div>
-              </FCol>
+              </div>
             </FRow>
           </FCol>
         </FRow>
