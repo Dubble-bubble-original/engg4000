@@ -25,7 +25,7 @@
 .post-description {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 70%; /* Take 70% of post width, leaving 30% for map */
 }
 
 .title-section {
@@ -58,13 +58,13 @@
 }
 
 .image-button {
-    background-color: clear;
+    background-color: white;
     padding: 0px;
     border: none;
 }
 
 .post-location {
-    width: 30%;
+    width: 30%; /* Take 30% of post width, leaving 70% for body */
 }
 
 .modal-image {
@@ -77,7 +77,6 @@
 .post-image {
     width: 50%;
     align-self: center;
-    background-color: white;
 }
 
 /* For screens that are 768px or less */
