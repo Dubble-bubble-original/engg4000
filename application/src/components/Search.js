@@ -2,29 +2,15 @@
 import { useEffect, useState } from 'react';
 import { Container, Alert, Button, Spinner } from 'react-bootstrap';
 import { When } from 'react-if';
-import PropTypes from 'prop-types'
 
 // Resources
 import { MdErrorOutline, MdRefresh } from 'react-icons/md';
-import { FRow, FCol } from './FlexContainers';
+import { FRow, FCol, CenterContainer } from './Containers';
 import TagButtonGroup from './TagButtonGroup';
 import Post from './post/Post';
 
 // API
 import { getPostsByTags } from '../api/api.js';
-
-function CenterContainer(props) {
-  return (
-    <div className="d-flex">
-      <Container className="outer-container w-auto">
-        {props.children}
-      </Container>
-    </div>
-  );
-}
-CenterContainer.propTypes = {
-  children: PropTypes.node
-}
 
 
 function Search() {
