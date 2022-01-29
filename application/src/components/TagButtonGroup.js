@@ -5,55 +5,55 @@ import PropTypes from 'prop-types'
 
 const tagList = [
   // Location
-  'Forest',
-  'Mountain',
-  'Desert',
-  'River',
-  'Lake',
-  'Ocean',
-  'Cave',
-  'Trail',
-  'Farm',
-  'City',
-  'Building',
-  'Wilderness',
+  'forest',
+  'mountain',
+  'desert',
+  'river',
+  'lake',
+  'ocean',
+  'cave',
+  'trail',
+  'farm',
+  'city',
+  'building',
+  'wilderness',
 
   // Activity
-  'Hiking',
-  'Climbing',
-  'Hunting',
-  'Walking',
-  'Running',
-  'Cycling',
-  'Sports',
-  'Tourism',
-  'Event',
-  'Food',
-  'Entertainment',
+  'hiking',
+  'climbing',
+  'hunting',
+  'walking',
+  'running',
+  'cycling',
+  'sports',
+  'tourism',
+  'event',
+  'food',
+  'entertainment',
 
   // Season
-  'Summer',
-  'Fall',
-  'Winter',
-  'Spring',
+  'summer',
+  'fall',
+  'winter',
+  'spring',
 
   // Object
-  'Nature',
-  'Scenery',
-  'Sky',
-  'Animal',
-  'Art',
-  'Architecture',
+  'nature',
+  'scenery',
+  'sky',
+  'animal',
+  'art',
+  'architecture',
 
   // Adjective
-  'Unique',
-  'Free',
-  'Cheap',
-  'Expensive',
-  'Underground',
-  'Seasonal',
-  'Dangerous',
-  'Other',
+  'unique',
+  'free',
+  'cheap',
+  'expensive',
+  'underground',
+  'seasonal',
+  'dangerous',
+  'other',
 ];
 
 function TagButtonGroup(props) {
@@ -99,8 +99,7 @@ function TagButtonGroup(props) {
 
 TagButtonGroup.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.string),
-  setTags: PropTypes.func.isRequired,
-  filter: PropTypes.string,
+  setTags: PropTypes.func.isRequired
 }
 
 export default TagButtonGroup;
