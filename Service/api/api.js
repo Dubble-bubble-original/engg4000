@@ -83,7 +83,6 @@ exports.createUserPost = (req, res) => {
 
     return res.status(201).json({
       post: {
-        _id: newUserPost._id,
         author: newUserPost.author,
         body: newUserPost.body,
         tags: newUserPost.tags,
@@ -115,7 +114,11 @@ exports.updateUserPost = (req, res) => {
 
   const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
-    .populate('author')
+    .select('-_id -access_key')
+    .populate({
+      path: 'author',
+      select: '-_id'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
@@ -156,7 +159,9 @@ exports.getUserPost = (req, res) => {
   const acessKey = req.params.ak;
 
   UserPost.findOne({ access_key: acessKey })
-    .populate('author')
+    .populate({
+      path: 'author'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
@@ -210,6 +215,7 @@ exports.getUserPosts = (req, res) => {
           img_url: 1,
           date_created: 1,
           location: 1,
+          location_string: 1,
           maxTagMatch: {
             $size: {
               $setIntersection: ['$tags', providedTags]
@@ -234,7 +240,7 @@ exports.getUserPosts = (req, res) => {
     return res.status(400).send({ message: 'Invalid search filters provided' });
   }
 
-  // Add Authors to the searach filters
+  // Add Authors to the search filters and hide all id's
   searchFilters = [
     ...searchFilters,
     {
@@ -245,7 +251,14 @@ exports.getUserPosts = (req, res) => {
         as: 'author'
       }
     },
-    { $unwind: '$author' }
+    { $unwind: '$author' },
+    {
+      $project: {
+        _id: false,
+        access_key: false,
+        'author._id': false
+      }
+    }
   ];
 
   // Get current page number
@@ -273,6 +286,13 @@ exports.getRecentPosts = (req, res) => {
       }
     },
     { $unwind: '$author' },
+    {
+      $project: {
+        _id: false,
+        access_key: false,
+        'author._id': false
+      }
+    },
     { $sort: { date_created: -1, _id: 1 } }
   ];
 
@@ -361,6 +381,7 @@ exports.getUser = (req, res) => {
   }
 
   User.findById(userId)
+    .select('-_id')
     .then((doc) => {
       if (!doc) {
         logger.info('User Not Found');
@@ -628,8 +649,11 @@ exports.createFullUserPost = async (req, res) => {
 
       return res.status(201).json({
         post: {
-          _id: newUserPost._id,
-          author: newUser,
+          author: {
+            name: newUser.name,
+            avatar_url: newUser.avatar_url,
+            email: newUser.email
+          },
           body: newUserPost.body,
           tags: newUserPost.tags,
           title: newUserPost.title,
