@@ -9,7 +9,7 @@ import './post.css';
 
 // Resources
 import StaticMap from '../maps/StaticMap';
-import { FRow, FCol } from '../FlexContainers';
+import { FRow, FCol } from '../Containers';
 import PlaceholderAvatar from '../../resources/images/placeholder-avatar.png';
 
 // Show placeholder image if avatar image fails
