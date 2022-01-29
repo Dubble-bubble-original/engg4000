@@ -7,7 +7,7 @@ import './navBar.scss';
 import { IconContext } from 'react-icons';
 import { MdHome, MdSearch, MdAddLocation, MdMoreHoriz } from 'react-icons/md';
 import Logo from '../../resources/images/nota-logo-no-text.png';
-import { FRow } from '../FlexContainers'
+import { FRow } from '../Containers'
 
 function NavLinks(props) {
   // Handler to call closePopup() if it was given when clicking a link
