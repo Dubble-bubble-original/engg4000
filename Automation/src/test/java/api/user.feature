@@ -131,13 +131,14 @@ Feature: User endpoints tests
     When method post
     Then status 201
     * def user_id = response.user._id
+    * def user_name = response.user.name
 
     # Call get user endpoint
     Given path 'user/' + user_id
     And header token = auth_token
     When method get
     Then status 200
-    And match response._id == user_id
+    And match response.name == user_name
 
     # Call delete user endpoint
     Given path 'user/' + user_id

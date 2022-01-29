@@ -32,14 +32,18 @@ Feature: Delete user post endpoint tests
     Then status 404
     And match response.message == 'User Post Not Found'
 
-  Scenario: Try to delete a user post with invalid id
-    # Call create user post endpoint with empty body
+  Scenario: Try to delete a user post
+    # Call create user post endpoint
     Given path 'userpost'
     And header token = auth_token
     And request read('../data/userPost.json')
     When method post
     Then status 201
-    * def post_id = response.post._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
 
     # Call delete user post endpoint with invalid access key
     Given path 'userpost/12345'
@@ -93,41 +97,36 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
 
     Given path 'post/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.status.user == 'No User Provided'
-    And match response.post._id == post_id
+    * match response.post._id == '#notpresent'
 
   Scenario: Try to delete a post with no avatar and post image
-    # Creating a temporary user
-    Given path 'user'
-    And header token = auth_token
-    And request read('../data/user_userPost_missingImages.json').user
-    When method post
-    Then status 201
-    * def author_id = response.user._id
+    # Create a post with invalid avatar and post image
+    * def data = read('../data/user_userPost_missingImages.json')
+    * def postData = call read('classpath:utils/createPost.feature') { data: '#(data)' }
 
-    # Creating a temporary post
-    Given path 'userpost'
-    And header token = auth_token
-    * def postData = read('../data/user_userPost_missingImages.json').post
-    * set postData.author = author_id
-    And request postData
-    When method post
-    Then status 201
-    * def post_id = response.post._id
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(postData.response.post.access_key)' }
+    * def post_id = post.response._id
+    * def author_id = post.response.author._id
 
     Given path 'post/' + post_id
     And header token = auth_token
     When method delete
     Then status 200
     And match response.status.message == 'Post Deleted Successfully'
-    And match response.post._id == post_id
     And match response.post.author._id == author_id
+    * match response.post._id == '#notpresent'
 
   Scenario: Try to delete a post with an invalid avatar and post image
     # Creating a temporary user
@@ -146,7 +145,11 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
 
     Given path 'post/' + post_id
     And header token = auth_token
@@ -154,6 +157,7 @@ Feature: Delete user post endpoint tests
     Then status 200
     And match response.status.avatar == 'Avatar Image Not Found'
     And match response.status.postImg == 'Post Image Not Found'
+    * match response.post._id == '#notpresent'
 
   Scenario: Try to delete a full user post
     # Creating avatar and post image
@@ -175,8 +179,12 @@ Feature: Delete user post endpoint tests
     And request postData
     When method post
     Then status 201
-    * def post_id = response.post._id
-    * def author_id = response.post.author._id
+    * def access_key = response.post.access_key
+
+    # Call getPost.feature to get post id
+    * def post = call read('classpath:utils/getPost.feature') { access_key: '#(access_key)' }
+    * def post_id = post.response._id
+    * def author_id = post.response.author._id
 
     # Successfully Delete the created post
     Given path 'post/' + post_id
@@ -184,5 +192,4 @@ Feature: Delete user post endpoint tests
     When method delete
     Then status 200
     And match response.status.message == 'Post Deleted Successfully'
-    And match response.post._id == post_id
-    And match response.post.author._id == author_id
+    * match response.post._id == '#notpresent'

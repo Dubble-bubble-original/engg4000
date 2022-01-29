@@ -34,7 +34,7 @@ const authTokenLimiter = RATE_LIMIT({
 
 const createDeletePostLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit each IP to 10 create or delete requests per window
+  max: 15, // Limit each IP to 15 create or delete requests per window
   message: { message: 'Too Many POST/DELETE requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
