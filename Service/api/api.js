@@ -14,7 +14,7 @@ const {
 } = require('../s3/s3');
 
 // Constants
-const POST_LIMIT = 15;
+const POST_LIMIT_DEFAULT = 15;
 const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
@@ -83,7 +83,6 @@ exports.createUserPost = (req, res) => {
 
     return res.status(201).json({
       post: {
-        _id: newUserPost._id,
         author: newUserPost.author,
         body: newUserPost.body,
         tags: newUserPost.tags,
@@ -115,7 +114,11 @@ exports.updateUserPost = (req, res) => {
 
   const query = { _id: userPostId };
   UserPost.findOneAndUpdate(query, req.body.update, { new: true })
-    .populate('author')
+    .select('-_id -access_key')
+    .populate({
+      path: 'author',
+      select: '-_id'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
@@ -156,7 +159,9 @@ exports.getUserPost = (req, res) => {
   const acessKey = req.params.ak;
 
   UserPost.findOne({ access_key: acessKey })
-    .populate('author')
+    .populate({
+      path: 'author'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
@@ -183,13 +188,13 @@ exports.getUserPosts = (req, res) => {
 
   // Check if the filters have tags
   if (req.body.tags?.length > 0) {
+    providedTags = req.body.tags.map((tag) => tag.toLowerCase());
     searchFilters = [
-      { $match: { tags: { $in: req.body.tags } } }
+      { $match: { tags: { $in: providedTags } } }
     ];
-    providedTags = req.body.tags;
   }
 
-  // Check id filters have Title
+  // Check if filters have Title
   if (req.body.title) {
     searchFilters = [
       ...searchFilters,
@@ -210,6 +215,7 @@ exports.getUserPosts = (req, res) => {
           img_url: 1,
           date_created: 1,
           location: 1,
+          location_string: 1,
           maxTagMatch: {
             $size: {
               $setIntersection: ['$tags', providedTags]
@@ -234,7 +240,7 @@ exports.getUserPosts = (req, res) => {
     return res.status(400).send({ message: 'Invalid search filters provided' });
   }
 
-  // Add Authors to the searach filters
+  // Add Authors to the search filters and hide all id's
   searchFilters = [
     ...searchFilters,
     {
@@ -245,13 +251,23 @@ exports.getUserPosts = (req, res) => {
         as: 'author'
       }
     },
-    { $unwind: '$author' }
+    { $unwind: '$author' },
+    {
+      $project: {
+        _id: false,
+        access_key: false,
+        'author._id': false
+      }
+    }
   ];
 
   // Get current page number
   const pageNumber = req.body.page ? (req.body.page - 1) : 0;
 
-  UserPost.aggregate(searchFilters).skip(pageNumber * POST_LIMIT).limit(POST_LIMIT)
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+
+  UserPost.aggregate(searchFilters).skip(pageNumber * postLimit).limit(postLimit)
     .then((docs) => res.status(200).send(docs))
     .catch((err) => {
       logger.error(err.message);
@@ -270,6 +286,13 @@ exports.getRecentPosts = (req, res) => {
       }
     },
     { $unwind: '$author' },
+    {
+      $project: {
+        _id: false,
+        access_key: false,
+        'author._id': false
+      }
+    },
     { $sort: { date_created: -1, _id: 1 } }
   ];
 
@@ -280,7 +303,10 @@ exports.getRecentPosts = (req, res) => {
     ];
   }
 
-  UserPost.aggregate(searchFilters).limit(POST_LIMIT)
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+
+  UserPost.aggregate(searchFilters).limit(postLimit)
     .then((combinedDocs) => res.status(200).send(combinedDocs))
     .catch((error) => {
       logger.error(error.message);
@@ -355,6 +381,7 @@ exports.getUser = (req, res) => {
   }
 
   User.findById(userId)
+    .select('-_id')
     .then((doc) => {
       if (!doc) {
         logger.info('User Not Found');
@@ -622,8 +649,11 @@ exports.createFullUserPost = async (req, res) => {
 
       return res.status(201).json({
         post: {
-          _id: newUserPost._id,
-          author: newUser,
+          author: {
+            name: newUser.name,
+            avatar_url: newUser.avatar_url,
+            email: newUser.email
+          },
           body: newUserPost.body,
           tags: newUserPost.tags,
           title: newUserPost.title,
