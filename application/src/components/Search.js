@@ -16,7 +16,7 @@ import { getPostsByTags } from '../api/api.js';
 function CenterContainer(props) {
   return (
     <div className="d-flex">
-      <Container className="outer-container" style={{width:'auto'}}>
+      <Container className="outer-container w-auto">
         {props.children}
       </Container>
     </div>
@@ -150,7 +150,7 @@ function Search() {
         <When condition={showResults && (!isLoading || isPaginating)}>
           <Container className="outer-container" data-testid="search-page">
             <FRow className="h4">
-              <FCol style={{width:'100%'}}>Results ({numResults})</FCol>
+              <FCol className="w-100">Results ({numResults})</FCol>
               <FCol>
                 <MdRefresh 
                   className="clickable hover-outline rounded h2 mb-0" 
@@ -161,7 +161,7 @@ function Search() {
             </FRow>
             <FRow>
               <FCol>Tags:</FCol>
-              <FCol style={{width:'100%'}}>
+              <FCol className="w-100">
                 <div className="tag-container">
                   {
                     searchTags.sort().map(tag => 

@@ -43,10 +43,7 @@ function AvatarUploadModal(props) {
           image={props.image}
           width={500}
           height={500}
-          style={{
-            width: '100%',
-            height: 'auto'
-          }}
+          className="w-100 h-auto"
           border={50}
           borderRadius={500}
           color={[0, 0, 0, 0.6]}

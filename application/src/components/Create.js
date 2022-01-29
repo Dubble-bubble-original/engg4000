@@ -199,7 +199,7 @@ function Create(props) {
             <Section num="1" title="Location">
               <div>Show us the location of your adventure!</div>
               <br/>
-              <div style={{width:'100%', height:'350px'}}>
+              <div className="w-100" style={{height:'350px'}}>
                 <LocationPickerMap onPositionChange={setPosition} setIsTruePosition={setIsTruePosition} />
               </div>
               <Alert
