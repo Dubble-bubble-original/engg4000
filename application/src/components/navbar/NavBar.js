@@ -16,7 +16,7 @@ function NavLinks(props) {
   }
 
   return (
-    <IconContext.Provider value={{color:'#EC4038'}}>
+    <IconContext.Provider value={{color:'var(--bs-primary)'}}>
       <Nav className="me-auto">
           <Nav.Link data-testid="nav-home-btn" onClick={() => clickHandler(props.setContent('home'))} className={props.content === 'home' ? 'active' : ''}>Home <MdHome/></Nav.Link>
           <Nav.Link data-testid="nav-search-btn" onClick={() => clickHandler(props.setContent('search'))} className={props.content === 'search' ? 'active' : ''}>Search <MdSearch/></Nav.Link>

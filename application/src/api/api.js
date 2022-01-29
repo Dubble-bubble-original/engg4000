@@ -34,7 +34,23 @@ export const getPostByAccessKey = async (accessKey) => {
         method: 'GET',
         url: serviceUrl + '/userpost/' + accessKey,
         headers: {
-            'token': authToken
+          'token': authToken
+        }
+    });
+    return response.data;
+  });
+}
+
+// Get posts by tags
+export const getPostsByTags = async (tags, page) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+        method: 'POST',
+        url: serviceUrl + '/userposts',
+        data: { tags, page },
+        headers: {
+          'token': authToken,
+          'Content-Type': 'application/json',
         }
     });
     return response.data;
@@ -48,7 +64,7 @@ export const deletePostByID = async (_id) => {
         method: 'DELETE',
         url: serviceUrl + '/post/' + _id,
         headers: {
-            'token': authToken
+          'token': authToken
         }
     });
     return response.data;
@@ -145,20 +161,20 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
 
 const requestWithToken = async (request) => {
   for (let i=0; i<MAX_RETRY_LIMIT; i++) {
-      try {
-          // Make the given request
-          return await request();
-      } catch(error) {
-          if(error?.response?.status === 401) {
-              // Get New Auth Token and retry
-              await getAuthToken();
-          }
-          else {
-              // Don't retry if a different error occurs
-              logger.warn(error);
-              return null;
-          }
+    try {
+      // Make the given request
+      return await request();
+    } catch(error) {
+      if(error?.response?.status === 401) {
+        // Get New Auth Token and retry
+        await getAuthToken();
       }
+      else {
+        // Don't retry if a different error occurs
+        logger.warn(error);
+        return null;
+      }
+    }
   }
   logger.warn('Unable to get auth token after '+MAX_RETRY_LIMIT+' tries.');
   return null;
