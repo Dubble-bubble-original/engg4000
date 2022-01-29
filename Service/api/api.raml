@@ -149,50 +149,52 @@ types:
                 }
   /{id}:
     delete:
-    description: "Deletes a user post."
-    responses:
-      200:
-        body:
-          application/json:
-            example: |
-              {
-                "message": "User Post Deleted Successfully"
-              }
-      400:
-        body:
-          application/json:
-            example: |
-              {
-                "message": "Invalid User Post ID"
-              }
-      404:
-        body:
-          application/json:
-            example: |
-              {
-                "message": "User Post Not Found"
-              }
-      500:
-        body:
-          application/json:
-            example: |
-              {
-                "message": "An Unknown Error Occurred"
-              }
+      description: "Deletes a user post."
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Post Deleted Successfully"
+                }
+        400:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "Invalid User Post ID"
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "User Post Not Found"
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
 
 /userPosts:
   post:
     description: Returns an array of Userposts which matches the filters provided in req.body.
     body:
       application/json:
-        example: { "title" : "Post Title", "tags" : ["Tag1", "Tag2"] }, "page": "1", "post_limit": 6 }
+        example: { "title" : "Post Title", "tags" : ["Tag1", "Tag2"] , "page": "1", "post_limit": 6 }
     responses:
       200:
         body:
           application/json:
-            type: array
-            items:
-              type: userPost
+            example: |
+              {
+                posts: [UserPost],
+                totalCount: 72
+              }
       500:
         body:
           type: string
@@ -357,45 +359,46 @@ types:
         200:
           body:
             application/json:
-              example: |
-              {
-                status:
-                { 
-                  message: "Post Deleted Successfully"
-                }
-                post: UserPost
-              }
-              example: |
-              {
-                status:
-                {
-                  user: "No User Provided" || "User Not Found"
-                  avatar: "Avatar Image Not Found"
-                  postImg: "Post Image Not Found"
-                }
-                post: UserPost
-              }
+              examples:
+                fullSuccess: |
+                  {
+                    status:
+                    {
+                      message: "Post Deleted Successfully"
+                    }
+                    post: UserPost
+                  }
+                partialSuccess: |
+                  {
+                    status:
+                    {
+                      user: "No User Provided" || "User Not Found"
+                      avatar: "Avatar Image Not Found"
+                      postImg: "Post Image Not Found"
+                    }
+                    post: UserPost
+                  }
         400:
           body:
             application/json:
               example: |
-              {
-                message: "Invalid Post ID Provided"
-              }
+                {
+                  message: "Invalid Post ID Provided"
+                }
         404:
           body:
             application/json:
               example: |
-              {
-                message: "User Post Not Found"
-              }
+                {
+                  message: "User Post Not Found"
+                }
         500:
           body:
             application/json:
               example:
-              {
-                message: "An Unknown Error Occurred"
-              }
+                {
+                  message: "An Unknown Error Occurred"
+                }
               
 /image:
   post:
