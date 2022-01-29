@@ -42,6 +42,7 @@ function StaticMap(props) {
 
       <Modal size='xl' scrollable show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
+          {props.locationString}
         </Modal.Header>
         <Modal.Body style={{width:'100%', height:window.innerHeight}}>
           <DynamicMap position={props.position} zoom={zoom} />
@@ -52,6 +53,7 @@ function StaticMap(props) {
 }
 
 StaticMap.propTypes = {
+  locationString: PropTypes.string,
   zoom: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
