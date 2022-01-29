@@ -1,6 +1,6 @@
 // React
 import { useState, useEffect } from 'react';
-import { Container, Button, Fade } from 'react-bootstrap';
+import { Container, Fade } from 'react-bootstrap';
 import { If, Then } from 'react-if';
 
 // Components
@@ -39,26 +39,15 @@ function Home() {
 
     // Todo: Get recent posts
 
-    // setLoading(true);
+    setLoading(false);
   }
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const buttonHandler = () => {
-    setLoading(!isLoading);
-  }
-
   return (
     <>
-    <Button
-        onClick={buttonHandler}
-        aria-controls="fade-in"
-        aria-expanded={isLoading}
-      >
-        Set isLoading
-      </Button>
       <If condition={isLoading}>
         <Then>
         <Container className="home-page outer-container" data-testid="home-page">
@@ -66,6 +55,7 @@ function Home() {
         </Container>
         </Then>
       </If>
+
       <Fade in={!isLoading}>
         <div id="fade-in">
           <Container className="home-page outer-container" data-testid="home-page">
@@ -74,7 +64,6 @@ function Home() {
           <Post postData={postData}/>
         </div>
       </Fade>
-      
     </>
   )
 }
