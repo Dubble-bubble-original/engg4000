@@ -133,9 +133,11 @@ ROUTER.delete(
   USE(API.verifyAuthToken),
   USE(API.deleteFullUserPost)
 );
+
 ROUTER.post(
-  '/sendemail',
-  USE(API.sendEmail)
+  '/sendakemail',
+  USE(API.verifyAuthToken),
+  USE(API.sendAKEmail)
 );
 
 module.exports = ROUTER;

@@ -4,8 +4,8 @@ const fs = require('fs');
 // DB
 const { UserPost, User } = require('../db/dbSchema');
 
-// S3
-const { uploadFile, deleteFile } = require('../s3/s3');
+// AWS
+const { uploadFile, deleteFile } = require('../aws/aws');
 
 // Return Responses
 const Result = { Success: 1, NotFound: 2, Error: 3 };

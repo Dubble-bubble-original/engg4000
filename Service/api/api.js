@@ -1,9 +1,6 @@
 // Packages
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
-const nodemailer = require('nodemailer');
-const aws = require('@aws-sdk/client-ses');
-const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 
 // Utils
 const UTILS = require('../utils/utils');
@@ -11,10 +8,10 @@ const UTILS = require('../utils/utils');
 // DB
 const { UserPost, User } = require('../db/dbSchema');
 
-// S3
+// AWS
 const {
-  checkFile, downloadFile, deleteFile
-} = require('../s3/s3');
+  checkFile, downloadFile, deleteFile, sendEmail
+} = require('../aws/aws');
 
 // Constants
 const POST_LIMIT = 15;
@@ -642,35 +639,25 @@ exports.createFullUserPost = async (req, res) => {
   });
 };
 
-exports.sendEmail = async (req, res) => {
-  const ses = new aws.SES({
-    apiVersion: '2010-12-01',
-    region: 'us-east-1',
-    defaultProvider
-  });
+exports.sendAKEmail = async (req, res) => {
+  if (!req.body.access_key || !req.body.to_email) {
+    return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
+  }
 
-  // create Nodemailer SES transporter
-  const transporter = nodemailer.createTransport({
-    SES: ses
-  });
+  const email = {
+    from: 'notasocial.noreply@gmail.com',
+    to: req.body.to_email,
+    subject: 'Nota Post Access-Key',
+    html: `<p>The access-key to your new Nota post is <strong>${req.body.access_key}</strong>`
+        + '<p><div style="color:red;">WARNING:</div>'
+        + 'If this access-key is lost, you will no longer be able to delete the Nota post.</p>'
+        + '<p>Happy adventuring!</p>'
+  };
 
-  transporter.sendMail(
-    {
-      from: 'joao.vrpontes@gmail.com',
-      to: 'joao.vrpontes@gmail.com',
-      subject: 'Message',
-      text: 'I hope this message gets sent!'
-    },
-    (err, infolog) => {
-      logger.info(infolog.envelope);
-      logger.info(infolog.messageId);
-      return res.status(500).send({ message: err });
-    }
-  );
-
-  return res.status(200);
+  sendEmail(email)
+    .then(() => res.status(200).send({ message: 'Email Sent Successfully' }))
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
 };
-
-// RN it is sending emails to only verrified users like my email -> to my email
-// Figure out why it's producing errors in the logs
-// Figure out how to send emails to non verrified users
