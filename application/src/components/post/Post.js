@@ -26,10 +26,10 @@ function Post({postData}) {
       <FRow>
         <FCol>
           <img className="avatar" src={postData.author.avatar_url} />
-          <div className="user-name text-center">{postData.author.name}</div>
+          <div className="user-name text-center" data-testid="avatar-image">{postData.author.name}</div>
         </FCol>
 
-        <FCol className="post-body">
+        <FCol className="post-body" data-testid="post-body">
           <FRow className="post-content">
             <FCol  className="post-description">
               <FRow className="title-section">
@@ -42,12 +42,12 @@ function Post({postData}) {
               </FRow>
             </FCol>
 
-            <FCol className="post-location">
+            <FCol className="post-location" data-testid="map">
               <StaticMap width={2000} height={200} position={postData.location}/>
               <div className="text-muted text-center">{postData.location_string}</div>
             </FCol>
           </FRow>
-          <div>
+          <div data-testid="post-image">
             <img src={postData.img_url} />
           </div>
         </FCol>
