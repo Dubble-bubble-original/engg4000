@@ -22,7 +22,7 @@ function Search() {
   const [numResults, setNumResults] = useState(0);
   const [isPaginating, setIsPaginating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingTimerId, setLoadingTimerId] = useState(false);
+  const [loadingTimerId, setLoadingTimerId] = useState(null);
   const [showResults, setShowResults] = useState(false);
 
   const searchPosts = () => {

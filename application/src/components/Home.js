@@ -1,62 +1,142 @@
 // React
 import { useState, useEffect } from 'react';
-import { Container } from 'react-bootstrap';
+import { Button, Container, Spinner, Alert } from 'react-bootstrap';
+import { MdErrorOutline, MdRefresh } from 'react-icons/md';
+import { When } from 'react-if';
 
-// Resources
+// Components
 import Post from './post/Post';
-import Avatar from '../resources/images/avatar.jpg';
-import PostImage from '../resources/images/postImage.jpg';
+import { FRow, FCol, CenterContainer } from './Containers';
 
-// Test Post Data
-const postData = {
-  author: {
-    name: 'Nota User',
-    avatar_url: Avatar,
-  },
-  body: 'The body of the message will be shown here. The font might need to be reduced so it contracts better with the title. If it goes on too long we can add elipses. This sentence is just here so that it can long enough to need something.',
-  tags: ['Nature', 'Hiking', 'Mountain', 'Tag'],
-  title: 'Title Goes Here',
-  img_url: PostImage,
-  date_created: '2021-11-20T17:31:03.914+00:00',
-  location: {
-    lat: 45.963589,
-    lng: -66.643112
-  },
-  location_string: 'New Brunswick, Canada',
-}
+// API
+import { getRecentPosts } from '../api/api.js';
 
 // Home component for the application
 function Home() {
 
   // State variables
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [numResults, setNumResults] = useState(0);
+  const [showResults, setShowResults] = useState(false);
+  const [isPaginating, setIsPaginating] = useState(false);
+  const [loadingTimerId, setLoadingTimerId] = useState(null);
+  const [lastDate, setLastDate] = useState(null);
+  const [isError, setIsError] = useState(false);
 
-  const fetchData = async () => {
-
-    // Todo: Get recent posts
-
-    setLoading(false);
+  const refreshPosts = () => {
+    // Call getPost even if the lastDate hasn't changed
+    if (lastDate === null) getPosts();
+    // Else reset the lastDate (which will trigger getPosts)
+    else setLastDate(null);
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const loadMorePosts = () => {
+    // Update the last date (which will trigger getPosts)
+    const lastPost = posts[posts.length-1];
+    setLastDate(lastPost.date_created);
+  }
 
-  // Render is loading page until get recent posts
-  if(isLoading) {
-    return (
-      <div className="home-page" data-testid="home-page">
-        Loading...
-      </div>
-    )
+  const getPosts = async () => {
+    // Reset
+    setIsError(false);
+    setNumResults(0);
+
+    // Add a minimum load time
+    if (lastDate) fakeLoading(setIsPaginating);
+    else fakeLoading(setIsLoading);
+
+    // Call API
+    let result = await getRecentPosts(lastDate);
+    // result = false;
+    if (result) {
+      // Success
+      setNumResults(result.totalCount);
+      if (lastDate) addPosts(result.posts);
+      else setPosts(result.posts);
+    }
+    else {
+      // Error occured
+      setIsError(true);
+    }
+
+    setShowResults(true);
+  }
+
+  const addPosts = (newPosts) => {
+    setPosts(posts.concat(newPosts));
+  }
+
+  // Get recent posts on page load & whenever lastDate changes
+  useEffect(getPosts, [lastDate]);
+
+  const LOAD_DURATION = 800;
+  // Set the isLoading state for the given duration
+  const fakeLoading = (setLoad) => {
+    // Randomize duration (+-200ms)
+    const duration = LOAD_DURATION + Math.floor(Math.random()*400)-200;
+    // Stop any previous loading (if any)
+    clearTimeout(loadingTimerId);
+    // Start loading
+    setLoad(true);
+    // Stop loading after the given duration
+    setLoadingTimerId(
+      setTimeout(() => {
+        setLoad(false);
+      }, duration)
+    );
   }
 
   return (
     <>
       <Container className="home-page outer-container" data-testid="home-page">
-        <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
+        <FRow className="h4 mb-0" data-testid="home-title">
+          <FCol className="w-100">Recent posts</FCol>
+          <FCol>
+            <MdRefresh 
+              className="clickable hover-outline rounded h2 mb-0" 
+              style={{color:'var(--bs-primary)'}} 
+              onClick={refreshPosts}
+            />
+          </FCol>
+        </FRow>
       </Container>
-      <Post postData={postData}/>
+
+      <When condition={showResults && (!isLoading || isPaginating)}>
+        <div>
+          {
+            posts.map((post, index) => 
+              <Post 
+                postData={post}
+                key={index}
+              />
+            )
+          }
+        </div>
+
+        <When condition={isError && !isPaginating}>
+          <Container className="outer-container">
+            <Alert
+              variant="danger"
+              className="mb-0"
+            >
+              <MdErrorOutline/> Recent posts could not be retrieved. Please try again later.
+            </Alert>
+          </Container>
+        </When>
+
+        <When condition={posts.length < numResults && !isPaginating}>
+          <CenterContainer>
+            <Button onClick={loadMorePosts}>Load More</Button>
+          </CenterContainer>
+        </When>
+      </When>
+
+      <When condition={!showResults || isLoading || isPaginating}>
+        <CenterContainer>
+          <Spinner animation="border" variant="primary" />
+        </CenterContainer>
+      </When>
     </>
   )
 }
