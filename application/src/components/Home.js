@@ -48,7 +48,6 @@ function Home() {
 
     // Call API
     let result = await getRecentPosts(lastDate);
-    // result = false;
     if (result) {
       // Success
       setNumResults(result.totalCount);
