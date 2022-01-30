@@ -212,9 +212,11 @@ types:
       200:
         body:
           application/json:
-            type: array
-            items:
-              type: UserPost
+            example: |
+              {
+                posts: [UserPost],
+                totalCount: 72
+              }
       500:
         body:
           application/json:

@@ -33,14 +33,14 @@ Feature: Recent Posts endpoint tests
     And header token = auth_token
     When method post
     Then status 200
-    * def before = $response[*].date_created
+    * def before = $response.posts[*].date_created
     * copy after = before
     * Collections.sort(after, Collections.reverseOrder())
     And match before == after
-    And match response[*].title contains post1.response.post.title
-    And match response[*].title contains post2.response.post.title
-    And match response[*].author.name contains post1.response.post.author.name
-    And match response[*].author.name contains post2.response.post.author.name
+    And match response.posts[*].title contains post1.response.post.title
+    And match response.posts[*].title contains post2.response.post.title
+    And match response.posts[*].author.name contains post1.response.post.author.name
+    And match response.posts[*].author.name contains post2.response.post.author.name
     * def totalPosts = response.length
 
     # Creating 2 more Temporary User Posts
@@ -52,15 +52,15 @@ Feature: Recent Posts endpoint tests
     And header token = auth_token
     When method post
     Then status 200
-    And assert response.length >= totalPosts
-    * def before = $response[*].date_created
+    And assert response.posts.length >= totalPosts
+    * def before = $response.posts[*].date_created
     * copy after = before
     * Collections.sort(after, Collections.reverseOrder())
     And match before == after
-    And match response[*].title contains post3.response.post.title
-    And match response[*].title contains post4.response.post.title
-    And match response[*].author.name contains post3.response.post.author.name
-    And match response[*].author.name contains post4.response.post.author.name
+    And match response.posts[*].title contains post3.response.post.title
+    And match response.posts[*].title contains post4.response.post.title
+    And match response.posts[*].author.name contains post3.response.post.author.name
+    And match response.posts[*].author.name contains post4.response.post.author.name
 
     # CALL THE CLEANUP FEATURE
     * call read('classpath:utils/deletePost.feature') { access_key: '#(post1.response.post.access_key)' }
@@ -80,17 +80,17 @@ Feature: Recent Posts endpoint tests
     And request { date: '#(post2.response.post.date_created)' }
     When method post
     Then status 200
-    * def before = $response[*].date_created
+    * def before = $response.posts[*].date_created
     * copy after = before
     * Collections.sort(after, Collections.reverseOrder())
     And match before == after
     * def result = true
     * def checkOrder = function(post) { if(post.date_created >= post2.response.post.date_created) { result = false } }
-    * karate.forEach(response, checkOrder)
+    * karate.forEach(response.posts, checkOrder)
     And assert result
-    And match response[*].title contains post1.response.post.title
-    And match response[*] !contains post2.response.post
-    And match response[*].author.name contains post1.response.post.author.name
+    And match response.posts[*].title contains post1.response.post.title
+    And match response.posts[*] !contains post2.response.post
+    And match response.posts[*].author.name contains post1.response.post.author.name
 
     # CALL THE CLEANUP FEATURE
     * call read('classpath:utils/deletePost.feature') { access_key: '#(post1.response.post.access_key)' }

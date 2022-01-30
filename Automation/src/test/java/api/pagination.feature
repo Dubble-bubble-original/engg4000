@@ -17,7 +17,7 @@ Feature: Get user post endpoints tests
     And request {post_limit: 1}
     When method post
     Then status 200
-    And assert response.length == 1
+    And assert response.posts.length == 1
 
     # Test for post_limit of 2
     Given path 'recentposts'
@@ -25,7 +25,7 @@ Feature: Get user post endpoints tests
     And request {post_limit: 2}
     When method post
     Then status 200
-    And assert response.length == 2
+    And assert response.posts.length == 2
 
     # Delete the created posts
     * call read('classpath:utils/deletePost.feature') { access_key: '#(post1.response.post.access_key)' }
