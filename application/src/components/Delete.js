@@ -127,7 +127,7 @@ function Delete() {
         <Case condition={searchResult === 'not-found'}>
           <Container className="outer-container" id="post-not-found">
             <div className="h4 red">Post not found <MdErrorOutline/></div>
-            <div>The access key you entered does not match any existing post.</div>
+            <div>The access code you entered does not match any existing post.</div>
           </Container>
         </Case>
 
