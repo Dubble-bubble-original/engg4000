@@ -1,7 +1,7 @@
 // React
 import { useState, useEffect } from 'react';
 import { Container, Fade } from 'react-bootstrap';
-import { If, Then } from 'react-if';
+import { When } from 'react-if';
 
 // Components
 import Post from './post/Post';
@@ -48,13 +48,11 @@ function Home() {
 
   return (
     <>
-      <If condition={isLoading}>
-        <Then>
+      <When condition={isLoading}>
         <Container className="home-page outer-container" data-testid="home-page">
           <LoadingSpinner message="Looking for recent posts..." size="10rem"/>
         </Container>
-        </Then>
-      </If>
+      </When>
 
       <Fade in={!isLoading}>
         <div id="fade-in">
