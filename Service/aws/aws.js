@@ -1,4 +1,7 @@
 const S3 = require('aws-sdk/clients/s3');
+const nodemailer = require('nodemailer');
+const aws = require('@aws-sdk/client-ses');
+const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const fs = require('fs');
 require('dotenv').config();
 const ENV = process.env;
@@ -64,4 +67,27 @@ exports.deleteFile = async (fileKey) => {
   };
 
   return s3.deleteObject(deleteParams).promise();
+};
+
+exports.sendEmail = async (email) => {
+  // create aws SES object
+  const ses = new aws.SES({
+    apiVersion: '2010-12-01',
+    region: ENV.AWS_REGION,
+    defaultProvider
+  });
+
+  // create Nodemailer SES transporter
+  const transporter = nodemailer.createTransport({
+    SES: { ses, aws }
+  });
+
+  return transporter.sendMail(
+    {
+      from: email.from,
+      to: email.to,
+      subject: email.subject,
+      html: email.html
+    }
+  );
 };

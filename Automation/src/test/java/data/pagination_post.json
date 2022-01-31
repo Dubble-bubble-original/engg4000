@@ -13,7 +13,6 @@
     },
     "user": {
         "name": "pagination test", 
-        "avatar_url":"www.pagination.test", 
-        "email":"pagination@pagination.test"
+        "avatar_url":"www.pagination.test"
     }
 }

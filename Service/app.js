@@ -72,7 +72,7 @@ dbConnection.once('open', function() {
 global.auth_tokens = new Map();
 
 // Start listening
-const PORT = ENV.PORT || 9000;
+const PORT = ENV.PORT || 3001;
 APP.listen(PORT, () => {
   logger.info(`Service running on port ${PORT}`);
 });

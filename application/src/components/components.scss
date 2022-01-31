@@ -73,4 +73,68 @@ div.outer-container { /* The div is added so it takes precedence over bootstrap'
     width: 100vw;
 }
 
+.number-circle {
+    display: inline-block;
+    line-height: 0px;
+    border-radius: 50%;
+    background-color: var(--bs-yellow);
+    
+    span {
+        display: inline-block;
+        padding: 50% 0;
+        margin: 0 8px;
+    }
+}
+
+.button-shadow {
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+
+div.tag-container {
+    /* Allow tags to wrap to a new line */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    .tag { 
+        /* Use small padding for tags */
+        padding: 0px 6px; 
+        /* Make tags use TitleCase */
+        text-transform: capitalize;
+    }
+
+    /* Override Bootstrap's button-group CSS for tag-container */
+    &.btn-group > .btn.btn {
+        border-radius: 20px;
+        margin-left: 0;
+        flex: none;
+    }
+}
+
+.spinner-border.spinner-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.125rem;
+}
+
+.img-preview {
+    text-align: right;
+    
+    img {
+        max-width: 100%;
+        max-height: 250px;
+        object-fit: contain;
+        border-radius: 20px;
+    }
+}
+
 /* IDs */
+#avatar-preview {
+    max-width: calc(3.875rem + 0.625rem);
+    img {
+        border-radius: 50%;
+        object-fit: cover;
+        height: 3.875rem;
+        width: 3.875rem;
+    }
+}
