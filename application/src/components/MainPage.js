@@ -19,7 +19,7 @@ function MainPage() {
   // State variables
   const [content, setContent] = useState('home');
   const [showTerms, setShowTerms] = useState(false);
-  
+
   return (
     <div>
       <NavBar content={content} setContent={setContent} setShowTerms={setShowTerms} />
