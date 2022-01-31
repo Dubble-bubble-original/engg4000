@@ -56,7 +56,7 @@ function Post({postData}) {
             </FRow>
             <FRow className="post-image">
               <button className="image-button" onClick={() => setPostImageModal(true)}>
-                <img className="clickable hover-outline" src={postData.img_URL} />
+                <img className="clickable hover-outline" src={postData.img_url} />
               </button>
             </FRow>
           </FCol>
@@ -66,7 +66,7 @@ function Post({postData}) {
       <Modal fullscreen show={postImageModal} onHide={() => setPostImageModal(false)}>
         <Modal.Header closeButton>{postData.title}</Modal.Header>
         <Modal.Body>
-          <img className="modal-image" src={postData.img_URL} />
+          <img className="modal-image" src={postData.img_url} />
         </Modal.Body>
       </Modal>
 
@@ -89,7 +89,7 @@ Post.propTypes = {
     body: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string),
     title: PropTypes.string,
-    img_URL: PropTypes.string,
+    img_url: PropTypes.string,
     date_created: PropTypes.string,
     location: PropTypes.shape({
       lat: PropTypes.number,
