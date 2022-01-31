@@ -44,7 +44,7 @@ function Post({postData}) {
             </FCol>
 
             <FCol className="post-location">
-              <StaticMap width={2000} height={200} position={postData.location}/>
+              <StaticMap width={2000} height={200} position={postData.location} locationString={postData.location_string}/>
               <div className="text-muted text-center">{postData.location_string}</div>
             </FCol>
           </FRow>
