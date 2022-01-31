@@ -87,8 +87,12 @@ div.tag-container {
     flex-wrap: wrap;
     gap: 5px;
 
-    /* Use small padding for tags */
-    .tag { padding: 0px 6px; }
+    .tag { 
+        /* Use small padding for tags */
+        padding: 0px 6px; 
+        /* Make tags use TitleCase */
+        text-transform: capitalize;
+    }
 
     /* Override Bootstrap's button-group CSS for tag-container */
     &.btn-group > .btn.btn {
