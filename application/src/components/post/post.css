@@ -58,7 +58,6 @@
 }
 
 .image-button {
-    background-color: white;
     padding: 0px;
     border: none;
 }
@@ -71,12 +70,11 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background-color: clear;
 }
 
 .post-image {
-    width: 50%;
-    align-self: center;
+    max-height: 50vh;
+    justify-content: center;
 }
 
 /* For screens that are 768px or less */
@@ -109,5 +107,4 @@
     .post-content { flex-direction: column; }
     .post-description { width: 100%; }
     .post-location { width: 100%; }
-    .post-image { width: 80%; }
 }

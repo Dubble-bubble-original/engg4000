@@ -55,26 +55,24 @@ function Post({postData}) {
               </FCol>
             </FRow>
             <FRow className="post-image">
-              <div>
-                <button className="image-button" onClick={() => setPostImageModal(true)}>
-                  <img className="clickable hover-outline" src={postData.img_URL} />
-                </button>
-              </div>
+              <button className="image-button" onClick={() => setPostImageModal(true)}>
+                <img className="clickable hover-outline" src={postData.img_URL} />
+              </button>
             </FRow>
           </FCol>
         </FRow>
       </Container>
 
-      <Modal size='xl' scrollable show={postImageModal} onHide={() => setPostImageModal(false)}>
+      <Modal fullscreen show={postImageModal} onHide={() => setPostImageModal(false)}>
         <Modal.Header closeButton>{postData.title}</Modal.Header>
-        <Modal.Body style={{width:'100%', height:window.innerHeight}}>
+        <Modal.Body>
           <img className="modal-image" src={postData.img_URL} />
         </Modal.Body>
       </Modal>
 
-      <Modal size='xl' scrollable show={avatarImageModal} onHide={() => setAvatarImageModal(false)}>
+      <Modal fullscreen show={avatarImageModal} onHide={() => setAvatarImageModal(false)}>
         <Modal.Header closeButton>{postData.author.name}</Modal.Header>
-        <Modal.Body style={{width:'100%', height:window.innerHeight}}>
+        <Modal.Body>
           <img className="modal-image" src={postData.author.avatar_url} />
         </Modal.Body>
       </Modal>
