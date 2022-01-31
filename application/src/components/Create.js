@@ -1,6 +1,6 @@
 // React
 import { useState, useRef, useEffect } from 'react';
-import { Container, Row, Col, Form, Alert, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Alert, Button, InputGroup, Spinner } from 'react-bootstrap';
 import { When, If, Then, Else } from 'react-if';
 import PropTypes from 'prop-types'
 
@@ -18,6 +18,7 @@ import { TermsLink, TermsCheckbox } from './terms/Terms';
 
 // API
 import { createFullPost, postImages, deleteImage } from '../api/api.js';
+import { geocodePosition } from './maps/Geocoder.js';
 
 function Number(props) {
   return (
@@ -51,6 +52,8 @@ function Optional() {
 function Create(props) {
   // State variables
   const [position, setPosition] = useState(null);
+  const [oldPosition, setOldPosition] = useState(null);
+  const [locationString, setLocationString] = useState('');
   const [isTruePosition, setIsTruePosition] = useState(null);
   const [avatarImg, setAvatarImg] = useState(null);
   const [name, setName] = useState('');
@@ -101,7 +104,7 @@ function Create(props) {
       img_url: getImageURL(picture),
       date_created: new Date(),
       location: position,
-      location_string: 'WIP',
+      location_string: locationString,
       true_location: isTruePosition
     };
   }
@@ -168,6 +171,27 @@ function Create(props) {
     }
   }, [isCreateError]);
 
+  const GEOCODE_UPDATE_TIME = 800;
+  useEffect(() => {
+    // Randomized load time (+-200ms)
+    const loadTime = GEOCODE_UPDATE_TIME + Math.floor(Math.random()*400)-200;
+    // Update locationString after a delay (if needed)
+    const timerId = setTimeout(() => {
+      if (positionChanged()) {
+        geocodePosition(position, (locStr) => {
+          setLocationString(locStr);
+          setOldPosition(position);
+        });
+      }
+    }, loadTime);
+    // Stop the timer if the component unmounts
+    return () => clearTimeout(timerId);
+  }, [position, oldPosition]);
+  
+  const positionChanged = () => {
+    return position?.lat !== oldPosition?.lat || position?.lng !== oldPosition?.lng;
+  }
+
   const resetPage = () => {
     // Reset all state variables to default values
     setPosition(null);
@@ -198,10 +222,18 @@ function Create(props) {
 
             <Section num="1" title="Location">
               <div>Show us the location of your adventure!</div>
-              <br/>
-              <div className="w-100" style={{height:'350px'}}>
+              <div className="mt-3 mb-3" style={{width:'100%', height:'350px'}}>
                 <LocationPickerMap onPositionChange={setPosition} setIsTruePosition={setIsTruePosition} />
               </div>
+              <InputGroup hidden={position === null}>
+                <InputGroup.Text>Location:</InputGroup.Text>
+                <InputGroup.Text>
+                  <If condition={positionChanged()}>
+                    <Then><Spinner animation="border" className="spinner-sm" /></Then>
+                    <Else>{locationString}</Else>
+                  </If>
+                </InputGroup.Text>
+              </InputGroup>
               <Alert
                 variant="danger"
                 className="mb-0 mt-3"
@@ -213,8 +245,7 @@ function Create(props) {
 
             <Section num="2" title="Avatar">
               <div>Tell us more about you!</div>
-              <br/>
-              <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
+              <Row xs={1} sm={2} style={{rowGap: '0.75rem'}} className="mt-3" >
                 <Col>
                   <Form.Group>
                     <Form.Label>Name</Form.Label>
@@ -249,8 +280,7 @@ function Create(props) {
 
             <Section num="3" title="Content">
               <div>What would you like to share?</div>
-              <br/>
-              <Row sm={1} md={2}>
+              <Row sm={1} md={2} className="mt-3">
                 <Form.Group>
                   <Form.Label>Title</Form.Label>
                   <Form.Control
@@ -266,8 +296,7 @@ function Create(props) {
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
-              <br/>
-              <Form.Group>
+              <Form.Group className="mt-3">
                 <Form.Label>Body</Form.Label>
                 <Form.Control
                   isInvalid={!body.trim()}
@@ -286,8 +315,7 @@ function Create(props) {
 
             <Section num="4" title="Tags">
               <div>Select up to 5 tags that relate to your post.</div>
-              <br/>
-              <Form.Group>
+              <Form.Group className="mt-3">
                 <TagButtonGroup tags={tags} setTags={setTags}/>
                 <Alert
                   variant="danger"
@@ -303,8 +331,7 @@ function Create(props) {
               <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
                 <Col>
                   <div className="h4"><Number num="5"/> Picture <Optional/></div>
-                  <div>A picture is worth a thousand words!</div>
-                  <br/>
+                  <div className="mb-3">A picture is worth a thousand words!</div>
                   <ImageUploadButton
                     setUploadedImg={setPicture}
                     fileInputRef={pictureFileInputRef}
@@ -333,14 +360,13 @@ function Create(props) {
               <Post postData={getPostData()}/>
 
               <Section num="7" title="Publish">
-                <div>By publishing this post you are agreeing to our <TermsLink setShowTerms={props.setShowTerms}/>.</div>
-                <br/>
+                <div className="mb-3">By publishing this post you are agreeing to our <TermsLink setShowTerms={props.setShowTerms}/>.</div>
                 <TermsCheckbox
                   agree={termsAgree}
                   setAgree={setTermsAgree}
                 />
-                <br/>
                 <Button
+                  className="mt-3"
                   disabled={!termsAgree || !isPostValid()}
                   onClick={openModal}
                 >
@@ -359,9 +385,7 @@ function Create(props) {
             <div><b>Access code:</b> {accessKey} <CopyButton value={accessKey}/></div>
             <Form.Text>
               This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!<br/>
-            </Form.Text>
-            <br/>
-            <Form.Text>
+              <br/>
               You may enter your email below to send yourself a copy of the access code via email.<br/>
             </Form.Text>
             <br/>
