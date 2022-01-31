@@ -47,16 +47,6 @@
     white-space: pre-wrap;
 }
 
-.tag-container {
-    /* Allow tags to wrap to a new line */
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-.tag-container button.tag {
-    padding: 0px 6px;
-}
-
 .post-location {
     width: 30%; /* Take 30% of post width, leaving 70% for body */
 }

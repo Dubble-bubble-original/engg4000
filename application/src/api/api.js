@@ -106,8 +106,8 @@ export const deleteImage = async (id) => {
 export const postImages = async (avatar, picture) => {
   return await requestWithToken(async() => {
     const formData = new FormData();
-    formData.append('avatar', avatar);
-    formData.append('picture', picture);
+    if (avatar) formData.append('avatar', avatar);
+    if (picture) formData.append('picture', picture);
 
     const response = await axios({
       method: 'POST',
@@ -123,7 +123,7 @@ export const postImages = async (avatar, picture) => {
 }
 
 // Create a user and user post
-export const post = async (avatarId, pictureId, user, userPost) => {
+export const createFullPost = async (avatarId, pictureId, user, post) => {
   return await requestWithToken(async() => {
     const response = await axios({
       method: 'POST',
@@ -132,7 +132,7 @@ export const post = async (avatarId, pictureId, user, userPost) => {
         avatarId,
         pictureId,
         user,
-        post: userPost
+        post
       },
       headers: {
         'Content-Type': 'application/json',

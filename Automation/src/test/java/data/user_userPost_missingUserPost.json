@@ -2,7 +2,6 @@
     "avatarId": "elmo.gif",
     "pictureId": "elmo.gif",
     "user": {
-        "name": "John Doe",
-        "email": "john.doe@mail.com"
+        "name": "John Doe"
     }
 }

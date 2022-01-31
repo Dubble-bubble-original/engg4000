@@ -8,10 +8,10 @@ const UTILS = require('../utils/utils');
 // DB
 const { UserPost, User } = require('../db/dbSchema');
 
-// S3
+// AWS
 const {
-  checkFile, downloadFile, deleteFile
-} = require('../s3/s3');
+  checkFile, downloadFile, deleteFile, sendEmail
+} = require('../aws/aws');
 
 // Constants
 const POST_LIMIT_DEFAULT = 15;
@@ -323,8 +323,7 @@ exports.createUser = (req, res) => {
 
   const newUser = new User({
     name: req.body.name,
-    avatar_url: req.body.avatar_url,
-    email: req.body.email
+    avatar_url: req.body.avatar_url
   });
 
   newUser.save((err) => {
@@ -341,8 +340,7 @@ exports.createUser = (req, res) => {
       user: {
         _id: newUser._id,
         name: newUser.name,
-        avatar_url: newUser.avatar_url,
-        email: newUser.email
+        avatar_url: newUser.avatar_url
       }
     });
   });
@@ -596,8 +594,7 @@ exports.createFullUserPost = async (req, res) => {
 
   // Create user with uploaded avatar
   const newUser = new User({
-    name: user.name,
-    email: user.email
+    name: user.name
   });
   if (avatarId) {
     newUser.avatar_url = BUCKET_URL + avatarId;
@@ -667,4 +664,31 @@ exports.createFullUserPost = async (req, res) => {
       });
     });
   });
+};
+
+exports.sendAKEmail = async (req, res) => {
+  if (!req.body.access_key || !req.body.to_email
+      || !req.body.author_name || !req.body.post_title) {
+    return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
+  }
+
+  const email = {
+    from: 'notasocial.noreply@gmail.com',
+    to: req.body.to_email,
+    subject: 'Nota Post Access Code',
+    html: `<p>Hi ${req.body.author_name}!`
+        + `<p>Your Nota post '${req.body.post_title}' has been successfully posted!`
+        + `<p>The access code to your new Nota post is <strong>${req.body.access_key}</strong>`
+        + '<p><div style="color:red;">WARNING:</div>'
+        + 'If this access code is lost, you will no longer be able to delete the post.</p>'
+        + '<p>To keep your post secure, do NOT share your access code</p>'
+        + '<p>Happy adventuring!</p>'
+  };
+
+  sendEmail(email)
+    .then(() => res.status(200).send({ message: 'Email Sent Successfully' }))
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
 };
