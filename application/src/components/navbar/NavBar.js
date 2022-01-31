@@ -7,7 +7,7 @@ import './navBar.scss';
 import { IconContext } from 'react-icons';
 import { MdHome, MdSearch, MdAddLocation, MdMoreHoriz } from 'react-icons/md';
 import Logo from '../../resources/images/nota-logo-no-text.png';
-import { FRow } from '../FlexContainers'
+import { FRow } from '../Containers'
 
 function NavLinks(props) {
   // Handler to call closePopup() if it was given when clicking a link
@@ -16,7 +16,7 @@ function NavLinks(props) {
   }
 
   return (
-    <IconContext.Provider value={{color:'#EC4038'}}>
+    <IconContext.Provider value={{color:'var(--bs-primary)'}}>
       <Nav className="me-auto">
           <Nav.Link data-testid="nav-home-btn" onClick={() => clickHandler(props.setContent('home'))} className={props.content === 'home' ? 'active' : ''}>Home <MdHome/></Nav.Link>
           <Nav.Link data-testid="nav-search-btn" onClick={() => clickHandler(props.setContent('search'))} className={props.content === 'search' ? 'active' : ''}>Search <MdSearch/></Nav.Link>

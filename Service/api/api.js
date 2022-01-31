@@ -240,10 +240,17 @@ exports.getUserPosts = (req, res) => {
     return res.status(400).send({ message: 'Invalid search filters provided' });
   }
 
-  // Add Authors to the search filters and hide all id's
+  // Get current page number
+  const pageNumber = req.body.page ? (req.body.page - 1) : 0;
+
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+
+  // Finalize the pipeline
   searchFilters = [
     ...searchFilters,
     {
+      // Populate the author data
       $lookup: {
         from: User.collection.name,
         localField: 'author',
@@ -251,24 +258,36 @@ exports.getUserPosts = (req, res) => {
         as: 'author'
       }
     },
+    // Unwind author from an array into a single object
     { $unwind: '$author' },
     {
+      // Hide all id fields
       $project: {
         _id: false,
         access_key: false,
         'author._id': false
       }
+    },
+    {
+      $facet: {
+        // Skip & limit posts returned
+        posts: [
+          { $skip: pageNumber * postLimit },
+          { $limit: postLimit }
+        ],
+        // Give back total number of posts matched (before skip/limit)
+        info: [
+          { $count: 'totalCount' }
+        ]
+      }
     }
   ];
 
-  // Get current page number
-  const pageNumber = req.body.page ? (req.body.page - 1) : 0;
-
-  // Get # of posts per page
-  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
-
-  UserPost.aggregate(searchFilters).skip(pageNumber * postLimit).limit(postLimit)
-    .then((docs) => res.status(200).send(docs))
+  UserPost.aggregate(searchFilters)
+    .then((result) => res.status(200).send({
+      posts: result[0].posts,
+      totalCount: result[0].info[0]?.totalCount ?? 0
+    }))
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
