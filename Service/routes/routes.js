@@ -217,4 +217,10 @@ else if (ENV.NODE_ENV === 'prod') {
   );
 }
 
+ROUTER.post(
+  '/akemail',
+  USE(API.verifyAuthToken),
+  USE(API.sendAKEmail)
+);
+
 module.exports = ROUTER;
