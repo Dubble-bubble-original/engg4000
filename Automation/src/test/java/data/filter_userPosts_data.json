@@ -13,8 +13,7 @@
       "location_string": "New Brunswick, Canada"
     },
     "user": {
-      "name": "User 1",
-      "email": "user1.doe@mail.com"
+      "name": "User 1"
     }
   },
 
@@ -32,8 +31,7 @@
       "location_string": "New Brunswick, Canada"
     },
     "user": {
-      "name": "User 2",
-      "email": "user2.doe@mail.com"
+      "name": "User 2"
     }
   },
 
@@ -51,8 +49,7 @@
       "location_string": "New Brunswick, Canada"
     },
     "user": {
-      "name": "User 3",
-      "email": "user3.doe@mail.com"
+      "name": "User 3"
     }
   },
 
@@ -70,8 +67,7 @@
       "location_string": "New Brunswick, Canada"
     },
     "user": {
-      "name": "User 4",
-      "email": "user4.doe@mail.com"
+      "name": "User 4"
     }
   }
 }

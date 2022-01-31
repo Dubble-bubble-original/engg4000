@@ -1,6 +1,6 @@
 // React
 import { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
 // Stylesheet
@@ -11,7 +11,7 @@ import logo from '../resources/images/nota-logo.png';
 import { getAuthToken } from '../api/api';
 
 // Components
-import TermsModal from './terms/termsModal';
+import { TermsModal, TermsLink, TermsCheckbox } from './terms/Terms';
 
 function WelcomePage(props) {
   // State variables
@@ -27,27 +27,14 @@ function WelcomePage(props) {
     }
   }
 
-  let termsAndConditions = <a data-testid="terms-conditions-link" className="clickable" onClick={() => setShowTerms(true)}>terms and conditions</a>;
-
-  // This is the handler for the checkbox
-  const checkBoxHandler = () => {
-    setAgree(!agree);
-  }
-
   return (
     <div className="container text-center">
       <img className="large-logo mt-5 mb-4" src={logo} alt="Logo" />
       <div className="terms-conditions h5 mb-5" data-testid="terms-conditions-form">
-        By entering this website, you are ageering to our {termsAndConditions}.
+        By entering this website, you are ageering to our <TermsLink setShowTerms={setShowTerms}/>.
       </div>
       <div className="i-agree h5 mb-3">
-        <Form.Check
-          id="agree-checkbox"
-          data-testid="agree-checkbox"
-          type="checkbox"
-          label="I have read and accept the terms and conditions"
-          onChange={checkBoxHandler}
-        />
+        <TermsCheckbox agree={agree} setAgree={setAgree} />
       </div>
       <Button data-testid="enter-btn" className="mb-4" disabled={!agree} onClick={enterButtonHandler}>
         Enter Site

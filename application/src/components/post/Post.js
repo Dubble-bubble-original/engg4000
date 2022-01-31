@@ -9,11 +9,12 @@ import './post.css';
 // Resources
 import StaticMap from '../maps/StaticMap';
 import { FRow, FCol } from '../FlexContainers';
+import PlaceholderAvatar from '../../resources/images/placeholder-avatar.png';
 
 function Post({postData}) {
 
   // Create Tags for rendering
-  const tags = postData.tags.map(tag => {
+  const tags = postData.tags.sort().map(tag => {
     return <Button variant="outline-primary" className="tag" key={tag}>{tag}</Button>;
   });
 
@@ -25,7 +26,7 @@ function Post({postData}) {
     <Container className="outer-container">
       <FRow>
         <FCol>
-          <img className="avatar" src={postData.author.avatar_url} />
+          <img className="avatar" src={postData.author.avatar_url ?? PlaceholderAvatar} />
           <div className="user-name text-center">{postData.author.name}</div>
         </FCol>
 
@@ -47,7 +48,7 @@ function Post({postData}) {
               <div className="text-muted text-center">{postData.location_string}</div>
             </FCol>
           </FRow>
-          <div>
+          <div hidden={!postData.img_url}>
             <img src={postData.img_url} />
           </div>
         </FCol>
@@ -66,7 +67,10 @@ Post.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     title: PropTypes.string,
     img_url: PropTypes.string,
-    date_created: PropTypes.string,
+    date_created: PropTypes.oneOfType([
+      PropTypes.string, 
+      PropTypes.Date
+    ]),
     location: PropTypes.shape({
       lat: PropTypes.number,
       lng: PropTypes.number,

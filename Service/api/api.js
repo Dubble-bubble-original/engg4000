@@ -323,8 +323,7 @@ exports.createUser = (req, res) => {
 
   const newUser = new User({
     name: req.body.name,
-    avatar_url: req.body.avatar_url,
-    email: req.body.email
+    avatar_url: req.body.avatar_url
   });
 
   newUser.save((err) => {
@@ -341,8 +340,7 @@ exports.createUser = (req, res) => {
       user: {
         _id: newUser._id,
         name: newUser.name,
-        avatar_url: newUser.avatar_url,
-        email: newUser.email
+        avatar_url: newUser.avatar_url
       }
     });
   });
@@ -596,8 +594,7 @@ exports.createFullUserPost = async (req, res) => {
 
   // Create user with uploaded avatar
   const newUser = new User({
-    name: user.name,
-    email: user.email
+    name: user.name
   });
   if (avatarId) {
     newUser.avatar_url = BUCKET_URL + avatarId;
