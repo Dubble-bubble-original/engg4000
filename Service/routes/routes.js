@@ -135,7 +135,7 @@ ROUTER.delete(
 );
 
 ROUTER.post(
-  '/sendakemail',
+  '/akemail',
   USE(API.verifyAuthToken),
   USE(API.sendAKEmail)
 );

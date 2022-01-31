@@ -640,17 +640,21 @@ exports.createFullUserPost = async (req, res) => {
 };
 
 exports.sendAKEmail = async (req, res) => {
-  if (!req.body.access_key || !req.body.to_email) {
+  if (!req.body.access_key || !req.body.to_email
+      || !req.body.author_name || !req.body.post_title) {
     return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
   }
 
   const email = {
     from: 'notasocial.noreply@gmail.com',
     to: req.body.to_email,
-    subject: 'Nota Post Access-Key',
-    html: `<p>The access-key to your new Nota post is <strong>${req.body.access_key}</strong>`
+    subject: 'Nota Post Access Code',
+    html: `<p>Hi ${req.body.author_name}!`
+        + `<p>Your Nota post '${req.body.post_title}' has been successfully posted!`
+        + `<p>The access code to your new Nota post is <strong>${req.body.access_key}</strong>`
         + '<p><div style="color:red;">WARNING:</div>'
-        + 'If this access-key is lost, you will no longer be able to delete the Nota post.</p>'
+        + 'If this access code is lost, you will no longer be able to delete the post.</p>'
+        + '<p>To keep your post secure, do NOT share your access code</p>'
         + '<p>Happy adventuring!</p>'
   };
 
