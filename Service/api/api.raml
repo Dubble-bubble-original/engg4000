@@ -460,3 +460,23 @@ types:
                 {
                   "message": "An Unknown Error Occurred"
                 }
+
+/sendakemail:
+  post:
+    description: "Sends an email with an access-key"
+    example: "{"post_title": "Example title", "author_name": "John Doe", "to_email": "example@gmail.com","access_key": "f2646eff-0f9c-45e6-a877-fe0c3502e8cd"}"
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+            {
+              "message": "Email Sent Successfully"
+            }
+      500:
+        body:
+          application/json:
+            example: |
+            {
+              "message": "An Unknown Error Occurred"
+            }
