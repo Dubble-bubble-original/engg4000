@@ -74,7 +74,10 @@ exports.deleteDBUser = async (userID) => (
 // Delete Post
 exports.deleteDBPost = async (postID) => (
   UserPost.findByIdAndDelete(postID)
-    .populate('author')
+    .select('-_id -access_key')
+    .populate({
+      path: 'author'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
