@@ -1,9 +1,13 @@
 // React
 import { useState, useEffect } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Fade } from 'react-bootstrap';
+import { When } from 'react-if';
+
+// Components
+import Post from './post/Post';
+import LoadingSpinner from './LoadingSpinner';
 
 // Resources
-import Post from './post/Post';
 import Avatar from '../resources/images/avatar.jpg';
 import PostImage from '../resources/images/postImage.jpg';
 
@@ -42,21 +46,22 @@ function Home() {
     fetchData();
   }, []);
 
-  // Render is loading page until get recent posts
-  if(isLoading) {
-    return (
-      <div className="home-page" data-testid="home-page">
-        Loading...
-      </div>
-    )
-  }
-
   return (
     <>
-      <Container className="home-page outer-container" data-testid="home-page">
-        <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
-      </Container>
-      <Post postData={postData}/>
+      <When condition={isLoading}>
+        <Container className="home-page outer-container" data-testid="home-page">
+          <LoadingSpinner message="Looking for recent posts..." size="10rem"/>
+        </Container>
+      </When>
+
+      <Fade in={!isLoading}>
+        <div id="fade-in">
+          <Container className="home-page outer-container" data-testid="home-page">
+            <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
+          </Container>
+          <Post postData={postData}/>
+        </div>
+      </Fade>
     </>
   )
 }

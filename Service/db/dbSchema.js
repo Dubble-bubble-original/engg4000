@@ -3,8 +3,7 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema({
   name: { type: String, required: true, immutable: true },
-  avatar_url: { type: String, immutable: true },
-  email: { type: String, required: true, immutable: true }
+  avatar_url: { type: String, immutable: true }
 });
 const User = mongoose.model('User', userSchema, 'User');
 

@@ -20,6 +20,7 @@ let postData = {
   title: 'Unit Tests',
   img_url: PostImage,
   date_created: '2021-11-20T17:31:03.914+00:00',
+  // date_created: Date.now(),
   location: {
     lat: 45.963589,
     lng: -66.643112
@@ -37,18 +38,6 @@ describe('Post Component', () => {
     expect(screen.getByTestId('post-image')).toBeVisible();
   });
 
-  // test('render post component with no post image provided', () => {
-  //   const tempPostData = postData;
-  //   delete tempPostData.img_url;
-
-  //   render(<Post postData={tempPostData} />)
-
-  //   expect(screen.getByTestId('avatar-image')).toBeVisible();
-  //   expect(screen.getByTestId('post-body')).toBeVisible();
-  //   expect(screen.getByTestId('map')).toBeVisible();
-  //   expect(screen.getByTestId('post-image')).not.toBeVisible();
-  // });
-
   test('render post component with no avatar image provided', () => {
     const tempPostData = postData;
     delete tempPostData.author.avatar_url;
@@ -60,5 +49,16 @@ describe('Post Component', () => {
     expect(screen.getByTestId('map')).toBeVisible();
     expect(screen.getByTestId('post-image')).toBeVisible();
   });
-  
+
+  test('render post component with no post image provided', () => {
+    const tempPostData = postData;
+    delete tempPostData.img_url;
+
+    render(<Post postData={tempPostData} />)
+
+    expect(screen.getByTestId('avatar-image')).toBeVisible();
+    expect(screen.getByTestId('post-body')).toBeVisible();
+    expect(screen.getByTestId('map')).toBeVisible();
+    expect(screen.getByTestId('post-image')).not.toBeVisible();
+  });
 });

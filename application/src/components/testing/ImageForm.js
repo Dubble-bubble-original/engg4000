@@ -45,7 +45,7 @@ function ImageForm() {
         console.log('File:');
         console.log(file);
 
-        const user = { name: 'John Doe', email: 'john.doe@mail.com' };
+        const user = { name: 'John Doe' };
         const userPost = { title: 'Title', body: 'Body.', tags: ['forest'], true_location: false, location: { 'lat': 0, 'lng': 0 }, location_string: 'New Brunswick, Canada' };
 
         event.preventDefault();
