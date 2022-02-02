@@ -6,7 +6,7 @@ import Post from './Post';
 import Avatar from '../../resources/images/avatar.jpg';
 import PostImage from '../../resources/images/postImage.jpg';
 
-// Clear everything after each clean up
+// Clear everything after test
 afterEach(cleanup);
 
 // Post Data
