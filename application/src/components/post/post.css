@@ -47,8 +47,34 @@
     white-space: pre-wrap;
 }
 
+.tag-container {
+    /* Allow tags to wrap to a new line */
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tag-container button.tag {
+    padding: 0px 6px;
+}
+
+.image-button {
+    padding: 0px;
+    border: none;
+}
+
 .post-location {
     width: 30%; /* Take 30% of post width, leaving 70% for body */
+}
+
+.modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.post-image {
+    max-height: 50vh;
+    justify-content: center;
 }
 
 /* For screens that are 768px or less */
