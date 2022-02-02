@@ -43,7 +43,7 @@ function Post({postData}) {
         <FRow>
           <FCol>
             <button className="image-button avatar clickable hover-outline" onClick={() => setAvatarImageModal(true)}>
-              <img className="avatar" src={postData.author.avatar_url} />
+              <img className="avatar" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
             </button>
             <div className="user-name text-center">{postData.author.name}</div>
           </FCol>
@@ -66,9 +66,9 @@ function Post({postData}) {
                 <div className="text-muted text-center">{postData.location_string}</div>
               </FCol>
             </FRow>
-            <FRow className="post-image">
+            <FRow className="post-image" hidden={!imgURL}>
               <button className="image-button" onClick={() => setPostImageModal(true)}>
-                <img className="clickable hover-outline" src={postData.img_url} />
+                <img className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
               </button>
             </FRow>
           </FCol>
