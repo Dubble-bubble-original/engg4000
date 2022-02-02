@@ -9,14 +9,16 @@ function MapDemo() {
 
   // State variables
   const [position, setPosition] = useState(null);
+  const [isTruePosition, setIsTruePosition] = useState(false);
 
   return (
     <div style={{textAlign:'left'}}>
       <b>Location Picker:</b><br/>
       latitude: {position?.lat} <br/>
       longitude: {position?.lng}
+      isTruePosition: {isTruePosition}
       <div style={{width:'400px', height:'400px'}}>
-        <LocationPickerMap onPositionChange={setPosition} />
+        <LocationPickerMap onPositionChange={setPosition} setIsTruePosition={setIsTruePosition} />
       </div>
       <br/>
       <b>Static Map</b>

@@ -9,15 +9,27 @@ import './post.css';
 
 // Resources
 import StaticMap from '../maps/StaticMap';
-import { FRow, FCol } from '../FlexContainers';
+import { FRow, FCol } from '../Containers';
+import PlaceholderAvatar from '../../resources/images/placeholder-avatar.png';
+
+// Show placeholder image if avatar image fails
+function handleAvatarImgError(e) {
+  if (e.target.src != PlaceholderAvatar) e.target.src = PlaceholderAvatar;
+}
 
 function Post({postData}) {
+  const [imgURL, setimgURL] = useState(postData.img_url);
+
+  // Show no image if post picture fails
+  const handlePictureImgError = () => {
+    setimgURL(null);
+  }
 
   const [postImageModal, setPostImageModal] = useState(false);
   const [avatarImageModal, setAvatarImageModal] = useState(false);
 
   // Create Tags for rendering
-  const tags = postData.tags.map(tag => {
+  const tags = postData.tags.sort().map(tag => {
     return <Button variant="outline-primary" className="tag" key={tag}>{tag}</Button>;
   });
 
@@ -90,7 +102,10 @@ Post.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     title: PropTypes.string,
     img_url: PropTypes.string,
-    date_created: PropTypes.string,
+    date_created: PropTypes.oneOfType([
+      PropTypes.string, 
+      PropTypes.Date
+    ]),
     location: PropTypes.shape({
       lat: PropTypes.number,
       lng: PropTypes.number,

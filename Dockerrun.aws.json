@@ -1,0 +1,33 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "nginx",
+            "image": "cartermaclennan/engg4000-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": ["client","api"],
+            "memory": 100
+        },
+        {
+            "name": "client",
+            "image": "cartermaclennan/engg4000-client",
+            "hostname": "client",
+            "essential": false,
+            "memory": 300
+        },
+        {
+            "name": "api",
+            "image": "cartermaclennan/engg4000-api",
+            "hostname": "api",
+            "essential": false,
+            "memory": 300
+        }
+    ]
+}
