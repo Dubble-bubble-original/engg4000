@@ -19,21 +19,21 @@ describe('Nav Bar Tests', () => {
     expect(screen.getByTestId('nav-create-btn')).toBeVisible();
   });
 
-  test('test to see if home page is active', () => {
+  test('check home page is active', () => {
     render(< NavBar content={ 'home' } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
     expect(screen.getByTestId('nav-home-btn')).toHaveClass('active');
     expect(screen.getByTestId('nav-search-btn')).not.toHaveClass('active');
     expect(screen.getByTestId('nav-create-btn')).not.toHaveClass('active');
   });
 
-  test('test to see if search page is active', () => {
+  test('check search page is active', () => {
     render(< NavBar content={ 'search' } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
     expect(screen.getByTestId('nav-home-btn')).not.toHaveClass('active');
     expect(screen.getByTestId('nav-search-btn')).toHaveClass('active');
     expect(screen.getByTestId('nav-create-btn')).not.toHaveClass('active');
   });
 
-  test('test to see if create page is active', () => {
+  test('check create page is active', () => {
     render(< NavBar content={ 'create' } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
     expect(screen.getByTestId('nav-home-btn')).not.toHaveClass('active');
     expect(screen.getByTestId('nav-search-btn')).not.toHaveClass('active');
