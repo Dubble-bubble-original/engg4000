@@ -6,7 +6,6 @@ import NavBar from './NavBar';
 afterEach(cleanup);
 
 const props = {
-  content: 'home',
   setContent: jest.fn(),
   setShowTerms: jest.fn(),
   closePopup: jest.fn()
@@ -14,10 +13,30 @@ const props = {
 
 describe('Nav Bar Tests', () => {
   test('render NavBar', () => {
-    render(< NavBar content={ props.content } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
+    render(< NavBar content={ 'home' } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
     expect(screen.getByTestId('nav-home-btn')).toBeVisible();
     expect(screen.getByTestId('nav-search-btn')).toBeVisible();
     expect(screen.getByTestId('nav-create-btn')).toBeVisible();
   });
-  
+
+  test('test to see if home page is active', () => {
+    render(< NavBar content={ 'home' } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
+    expect(screen.getByTestId('nav-home-btn')).toHaveClass('active');
+    expect(screen.getByTestId('nav-search-btn')).not.toHaveClass('active');
+    expect(screen.getByTestId('nav-create-btn')).not.toHaveClass('active');
+  });
+
+  test('test to see if search page is active', () => {
+    render(< NavBar content={ 'search' } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
+    expect(screen.getByTestId('nav-home-btn')).not.toHaveClass('active');
+    expect(screen.getByTestId('nav-search-btn')).toHaveClass('active');
+    expect(screen.getByTestId('nav-create-btn')).not.toHaveClass('active');
+  });
+
+  test('test to see if create page is active', () => {
+    render(< NavBar content={ 'create' } setContent={ props.setContent } setShowTerms={ props.setShowTerms }/>);
+    expect(screen.getByTestId('nav-home-btn')).not.toHaveClass('active');
+    expect(screen.getByTestId('nav-search-btn')).not.toHaveClass('active');
+    expect(screen.getByTestId('nav-create-btn')).toHaveClass('active');
+  });
 });

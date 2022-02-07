@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Post Component check to see if the tags are displayed in sorted order 1`] = `
+<div
+  class="f-row tag-container"
+  data-testid="tags"
+>
+  <button
+    class="tag btn btn-outline-primary"
+    type="button"
+  >
+    Tag 1
+  </button>
+  <button
+    class="tag btn btn-outline-primary"
+    type="button"
+  >
+    Tag 2
+  </button>
+  <button
+    class="tag btn btn-outline-primary"
+    type="button"
+  >
+    Tag 3
+  </button>
+</div>
+`;

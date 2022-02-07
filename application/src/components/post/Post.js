@@ -56,7 +56,7 @@ function Post({postData}) {
                   <div className="text-muted">{date_string}</div>
                 </FRow>
                 <div className="post-body">{postData.body}</div>
-                <FRow className="tag-container">
+                <FRow className="tag-container" data-testid="tags">
                   {tags}
                 </FRow>
               </FCol>
@@ -66,9 +66,9 @@ function Post({postData}) {
                 <div className="text-muted text-center">{postData.location_string}</div>
               </FCol>
             </FRow>
-            <FRow className="post-image" hidden={!imgURL} data-testid="post-image">
+            <FRow className="post-image" hidden={!imgURL}>
               <button className="image-button" onClick={() => setPostImageModal(true)}>
-                <img className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
+                <img data-testid="post-image" className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
               </button>
             </FRow>
           </FCol>
