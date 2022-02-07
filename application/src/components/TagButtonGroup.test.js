@@ -11,25 +11,25 @@ const setTags = jest.fn();
 const tags = ['river', 'running', 'fall', 'scenery', 'seasonal'];
 
 describe('TagButtonGroup Component', () => {
-    test('render TagButtonGroup', () => {
-        render(<TagButtonGroup tags={tags} setTags={setTags} />);
 
-        expect(screen.getByTestId('filter-input')).toBeInTheDocument();
-        expect(screen.getByTestId('tag-group')).toBeInTheDocument();
-    });
+  beforeEach(() => {
+    render(<TagButtonGroup tags={tags} setTags={setTags} />);
+  });
+    
+  test('render TagButtonGroup', () => {
+    expect(screen.getByTestId('filter-input')).toBeInTheDocument();
+    expect(screen.getByTestId('tag-group')).toBeInTheDocument();
+  });
 
-    test('check to make sure provided tags are selected', async () => {
-        render(<TagButtonGroup tags={tags} setTags={setTags} />);
+  test('check to make sure provided tags are selected', async () => {
+    for (let index = 0; index < tags.length; index++) {
+      let tag = await screen.findByDisplayValue(tags[index]);
+      expect(tag).toHaveProperty('checked');
+      expect(tag).toMatchSnapshot();
+    }
+  });
 
-        for (let index = 0; index < tags.length; index++) {
-            let tag = await screen.findByDisplayValue(tags[index]);
-            expect(tag).toHaveProperty('checked');
-            expect(tag).toMatchSnapshot();
-        }
-    });
-
-    test('Sanpshot test for tagList', () => {
-        render(<TagButtonGroup tags={tags} setTags={setTags} />);
-        expect(screen.getAllByTestId('tags')).toMatchSnapshot();
-    });
+  test('Sanpshot test for tagList', () => {
+    expect(screen.getAllByTestId('tags')).toMatchSnapshot();
+  });
 });

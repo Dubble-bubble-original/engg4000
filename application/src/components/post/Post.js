@@ -102,10 +102,7 @@ Post.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     title: PropTypes.string,
     img_url: PropTypes.string,
-    date_created: PropTypes.oneOfType([
-      PropTypes.string,
-      // PropTypes.Date
-    ]),
+    date_created: PropTypes.string,
     location: PropTypes.shape({
       lat: PropTypes.number,
       lng: PropTypes.number,
