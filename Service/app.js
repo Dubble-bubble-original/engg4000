@@ -30,18 +30,20 @@ APP.use('/', require('./routes/routes'));
 // Setup logger
 global.logger = WINSTON.createLogger({
   level: 'info',
-  format: WINSTON.format.json(),
+  format: WINSTON.format.combine(
+    WINSTON.format.timestamp(),
+    WINSTON.format.prettyPrint()
+  ),
   transports: [
     new WINSTON.transports.File({ filename: 'logs/error.log', level: 'error' }),
     new WINSTON.transports.File({ filename: 'logs/combined.log' })
   ]
 });
+
 if (ENV.NODE_ENV === 'dev') {
-  logger.add(new WINSTON.transports.Console({
-    format: WINSTON.format.simple()
-  }));
-  logger.info('Service logger initialized');
+  logger.add(new WINSTON.transports.Console({}));
 }
+logger.info('Service logger initialized');
 
 // Global error handler
 APP.use(function(err, req, res, next) {
@@ -70,7 +72,7 @@ dbConnection.once('open', function() {
 global.auth_tokens = new Map();
 
 // Start listening
-const PORT = ENV.PORT || 9000;
+const PORT = ENV.PORT || 3001;
 APP.listen(PORT, () => {
   logger.info(`Service running on port ${PORT}`);
 });

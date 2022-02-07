@@ -34,7 +34,23 @@ export const getPostByAccessKey = async (accessKey) => {
         method: 'GET',
         url: serviceUrl + '/userpost/' + accessKey,
         headers: {
-            'token': authToken
+          'token': authToken
+        }
+    });
+    return response.data;
+  });
+}
+
+// Get posts by tags
+export const getPostsByTags = async (tags, page) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+        method: 'POST',
+        url: serviceUrl + '/userposts',
+        data: { tags, page },
+        headers: {
+          'token': authToken,
+          'Content-Type': 'application/json',
         }
     });
     return response.data;
@@ -43,21 +59,16 @@ export const getPostByAccessKey = async (accessKey) => {
 
 // Delete post
 export const deletePostByID = async (_id) => {
-  // TODO: Call the exposed delete post endpoint (DBO-57)
-  // return await requestWithToken(async() => {
-  //   const response = await axios({
-  //       method: 'DELETE',
-  //       url: serviceUrl + '/userpost/' + _id,
-  //       headers: {
-  //           'token': authToken
-  //       }
-  //   });
-  //   return response.data;
-  // });
-  
-  //! Temporary data
-  _id;
-  return { message: 'User Post Deleted Successfully' };
+  return await requestWithToken(async() => {
+    const response = await axios({
+        method: 'DELETE',
+        url: serviceUrl + '/post/' + _id,
+        headers: {
+          'token': authToken
+        }
+    });
+    return response.data;
+  });
 }
 
 // Create an image
@@ -111,8 +122,8 @@ export const deleteImage = async (id) => {
 export const postImages = async (avatar, picture) => {
   return await requestWithToken(async() => {
     const formData = new FormData();
-    formData.append('avatar', avatar);
-    formData.append('picture', picture);
+    if (avatar) formData.append('avatar', avatar);
+    if (picture) formData.append('picture', picture);
 
     const response = await axios({
       method: 'POST',
@@ -128,7 +139,7 @@ export const postImages = async (avatar, picture) => {
 }
 
 // Create a user and user post
-export const post = async (avatarId, pictureId, user, userPost) => {
+export const createFullPost = async (avatarId, pictureId, user, post) => {
   return await requestWithToken(async() => {
     const response = await axios({
       method: 'POST',
@@ -137,7 +148,7 @@ export const post = async (avatarId, pictureId, user, userPost) => {
         avatarId,
         pictureId,
         user,
-        post: userPost
+        post
       },
       headers: {
         'Content-Type': 'application/json',
@@ -150,20 +161,20 @@ export const post = async (avatarId, pictureId, user, userPost) => {
 
 const requestWithToken = async (request) => {
   for (let i=0; i<MAX_RETRY_LIMIT; i++) {
-      try {
-          // Make the given request
-          return await request();
-      } catch(error) {
-          if(error?.response?.status === 401) {
-              // Get New Auth Token and retry
-              await getAuthToken();
-          }
-          else {
-              // Don't retry if a different error occurs
-              logger.warn(error);
-              return null;
-          }
+    try {
+      // Make the given request
+      return await request();
+    } catch(error) {
+      if(error?.response?.status === 401) {
+        // Get New Auth Token and retry
+        await getAuthToken();
       }
+      else {
+        // Don't retry if a different error occurs
+        logger.warn(error);
+        return null;
+      }
+    }
   }
   logger.warn('Unable to get auth token after '+MAX_RETRY_LIMIT+' tries.');
   return null;

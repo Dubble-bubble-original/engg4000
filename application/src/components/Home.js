@@ -1,9 +1,13 @@
 // React
 import { useState, useEffect } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Fade } from 'react-bootstrap';
+import { When } from 'react-if';
+
+// Components
+import Post from './post/Post';
+import LoadingSpinner from './LoadingSpinner';
 
 // Resources
-import Post from './post/Post';
 import Avatar from '../resources/images/avatar.jpg';
 import PostImage from '../resources/images/postImage.jpg';
 
@@ -16,7 +20,7 @@ const postData = {
   body: 'The body of the message will be shown here. The font might need to be reduced so it contracts better with the title. If it goes on too long we can add elipses. This sentence is just here so that it can long enough to need something.',
   tags: ['Nature', 'Hiking', 'Mountain', 'Tag'],
   title: 'Title Goes Here',
-  img_URL: PostImage,
+  img_url: PostImage,
   date_created: '2021-11-20T17:31:03.914+00:00',
   location: {
     lat: 45.963589,
@@ -42,21 +46,22 @@ function Home() {
     fetchData();
   }, []);
 
-  // Render is loading page until get recent posts
-  if(isLoading) {
-    return (
-      <div className="home-page" data-testid="home-page">
-        Loading...
-      </div>
-    )
-  }
-
   return (
     <>
-      <Container className="home-page outer-container" data-testid="home-page">
-        <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
-      </Container>
-      <Post postData={postData}/>
+      <When condition={isLoading}>
+        <Container className="home-page outer-container" data-testid="home-page">
+          <LoadingSpinner message="Looking for recent posts..." size="10rem"/>
+        </Container>
+      </When>
+
+      <Fade in={!isLoading}>
+        <div id="fade-in">
+          <Container className="home-page outer-container" data-testid="home-page">
+            <div data-testid="home-title" className="h4 mb-0">Recent posts</div>
+          </Container>
+          <Post postData={postData}/>
+        </div>
+      </Fade>
     </>
   )
 }

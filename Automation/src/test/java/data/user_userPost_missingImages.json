@@ -11,7 +11,6 @@
     "true_location": true
   },
   "user": {
-    "name": "John Doe",
-    "email": "john.doe@mail.com"
+    "name": "John Doe"
   }
 }

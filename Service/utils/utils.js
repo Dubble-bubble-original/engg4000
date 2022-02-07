@@ -4,8 +4,8 @@ const fs = require('fs');
 // DB
 const { UserPost, User } = require('../db/dbSchema');
 
-// S3
-const { uploadFile, deleteFile } = require('../s3/s3');
+// AWS
+const { uploadFile, deleteFile } = require('../aws/aws');
 
 // Return Responses
 const Result = { Success: 1, NotFound: 2, Error: 3 };
@@ -74,7 +74,10 @@ exports.deleteDBUser = async (userID) => (
 // Delete Post
 exports.deleteDBPost = async (postID) => (
   UserPost.findByIdAndDelete(postID)
-    .populate('author')
+    .select('-_id -access_key')
+    .populate({
+      path: 'author'
+    })
     .exec()
     .then((doc) => {
       if (!doc) {
