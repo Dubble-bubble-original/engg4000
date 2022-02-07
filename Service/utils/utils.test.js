@@ -50,3 +50,92 @@ describe('isAuthTokenStale', () => {
     expect(result).toBe(false);
   });
 });
+
+// Tests for lowerCaseTags function
+describe('lowerCaseTags', () => {
+  test('tags are all upper case', () => {
+    const tags = ['FOREST', 'NATURE', 'SUNSET'];
+    const expectedResult = ['forest', 'nature', 'sunset'];
+    const result = UTILS.lowerCaseTags(tags);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('tags are all lower case', () => {
+    const tags = ['forest', 'nature', 'sunset'];
+    const expectedResult = ['forest', 'nature', 'sunset'];
+    const result = UTILS.lowerCaseTags(tags);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('tags contain upper and lower case letters', () => {
+    const tags = ['Forest', 'Nature', 'Sunset'];
+    const expectedResult = ['forest', 'nature', 'sunset'];
+    const result = UTILS.lowerCaseTags(tags);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+// Tests for getImageID function
+describe('getImageID', () => {
+  test('get image id with file extension from S3 object url', () => {
+    const imageUrl = 'https://senior-design-img-bucket.s3.amazonaws.com/image.jpg';
+    const expectedResult = 'image.jpg';
+    const result = UTILS.getImageID(imageUrl);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('get image id with no file extension from S3 object url', () => {
+    const imageUrl = 'https://senior-design-img-bucket.s3.amazonaws.com/image';
+    const expectedResult = 'image';
+    const result = UTILS.getImageID(imageUrl);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+// Tests for getPageNumber function
+describe('getPageNumber', () => {
+  test('get page number when page is > 1', () => {
+    const pageNumber = 5;
+    const expectedResult = 4;
+    const result = UTILS.getPageNumber(pageNumber);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('get page number when page is 1', () => {
+    const pageNumber = 1;
+    const expectedResult = 0;
+    const result = UTILS.getPageNumber(pageNumber);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('get page number when page is 0', () => {
+    const pageNumber = 0;
+    const expectedResult = 0;
+    const result = UTILS.getPageNumber(pageNumber);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('get page number when page null', () => {
+    const pageNumber = null;
+    const expectedResult = 0;
+    const result = UTILS.getPageNumber(pageNumber);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('get page number when page undefined', () => {
+    const pageNumber = undefined;
+    const expectedResult = 0;
+    const result = UTILS.getPageNumber(pageNumber);
+
+    expect(result).toEqual(expectedResult);
+  });
+});

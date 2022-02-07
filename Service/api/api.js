@@ -188,7 +188,12 @@ exports.getUserPosts = (req, res) => {
 
   // Check if the filters have tags
   if (req.body.tags?.length > 0) {
-    providedTags = req.body.tags.map((tag) => tag.toLowerCase());
+    providedTags = UTILS.lowerCaseTags(req.body.tags);
+
+    // TODO: Remove this
+    console.log('providedTags:');
+    console.log(providedTags);
+
     searchFilters = [
       { $match: { tags: { $in: providedTags } } }
     ];
@@ -262,7 +267,7 @@ exports.getUserPosts = (req, res) => {
   ];
 
   // Get current page number
-  const pageNumber = req.body.page ? (req.body.page - 1) : 0;
+  const pageNumber = getPageNumber(req.body.page);
 
   // Get # of posts per page
   const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
