@@ -1,21 +1,29 @@
 // React
 import { Spinner } from 'react-bootstrap';
 import PropTypes from 'prop-types'
+import { When } from 'react-if';
 
 function LoadingSpinner(props) {
 
   return (
-    <div className="loading-spinner">
-        <Spinner className="m-3" animation="border" role="status" variant="primary" style={{width: props.size, height: props.size}}/>
-        <br/>
+    <div className="text-center">
+      <Spinner 
+        animation="border"
+        role="status"
+        variant="primary"
+        style={{width: props.size, height: props.size}}
+      />
+      <When condition={props.message}>
+        <br/><br/>
         <span className="h4">{props.message}</span>
+      </When>
     </div>
   )
 }
 
 LoadingSpinner.defaultProps = {
-    message: 'Loading...',
-    size: '10rem'
+    message: '',
+    size: '2rem'
 }
 
 LoadingSpinner.propTypes = {
