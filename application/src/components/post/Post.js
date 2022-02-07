@@ -1,8 +1,8 @@
 // React
+import { Container, Button, Modal } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 import { useState } from 'react';
-import { Container, Button } from 'react-bootstrap';
-import PropTypes from 'prop-types'
-import { format } from 'date-fns'
 
 // Stylesheet
 import './post.css';
@@ -25,6 +25,9 @@ function Post({postData}) {
     setimgURL(null);
   }
 
+  const [postImageModal, setPostImageModal] = useState(false);
+  const [avatarImageModal, setAvatarImageModal] = useState(false);
+
   // Create Tags for rendering
   const tags = postData.tags.sort().map(tag => {
     return <Button variant="outline-primary" className="tag" key={tag}>{tag}</Button>;
@@ -35,37 +38,57 @@ function Post({postData}) {
   const date_string = format(date, 'MMMM d, yyyy');
 
   return (
-    <Container className="outer-container">
-      <FRow>
-        <FCol>
-          <img className="avatar" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
-          <div className="user-name text-center">{postData.author.name}</div>
-        </FCol>
+    <>
+      <Container className="outer-container">
+        <FRow>
+          <FCol>
+            <button className="image-button avatar clickable hover-outline" onClick={() => setAvatarImageModal(true)}>
+              <img className="avatar" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
+            </button>
+            <div className="user-name text-center">{postData.author.name}</div>
+          </FCol>
 
-        <FCol className="post-body">
-          <FRow className="post-content">
-            <FCol  className="post-description">
-              <FRow className="title-section">
-                <div className="post-title">{postData.title}</div> 
-                <div className="text-muted">{date_string}</div>
-              </FRow>
-              <div className="post-body">{postData.body}</div>
-              <FRow className="tag-container">
-                {tags}
-              </FRow>
-            </FCol>
+          <FCol className="post-body">
+            <FRow className="post-content">
+              <FCol  className="post-description">
+                <FRow className="title-section">
+                  <div className="post-title">{postData.title}</div> 
+                  <div className="text-muted">{date_string}</div>
+                </FRow>
+                <div className="post-body">{postData.body}</div>
+                <FRow className="tag-container">
+                  {tags}
+                </FRow>
+              </FCol>
 
-            <FCol className="post-location">
-              <StaticMap width={2000} height={200} position={postData.location} locationString={postData.location_string}/>
-              <div className="text-muted text-center">{postData.location_string}</div>
-            </FCol>
-          </FRow>
-          <div hidden={!imgURL}>
-            <img src={imgURL} onError={handlePictureImgError} />
-          </div>
-        </FCol>
-      </FRow>
-    </Container>
+              <FCol className="post-location">
+                <StaticMap width={2000} height={200} position={postData.location}/>
+                <div className="text-muted text-center">{postData.location_string}</div>
+              </FCol>
+            </FRow>
+            <FRow className="post-image" hidden={!imgURL}>
+              <button className="image-button" onClick={() => setPostImageModal(true)}>
+                <img className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
+              </button>
+            </FRow>
+          </FCol>
+        </FRow>
+      </Container>
+
+      <Modal fullscreen show={postImageModal} onHide={() => setPostImageModal(false)}>
+        <Modal.Header closeButton>{postData.title}</Modal.Header>
+        <Modal.Body>
+          <img className="modal-image" src={postData.img_url} />
+        </Modal.Body>
+      </Modal>
+
+      <Modal fullscreen show={avatarImageModal} onHide={() => setAvatarImageModal(false)}>
+        <Modal.Header closeButton>{postData.author.name}</Modal.Header>
+        <Modal.Body>
+          <img className="modal-image" src={postData.author.avatar_url} />
+        </Modal.Body>
+      </Modal>
+    </>
   )
 }
 
