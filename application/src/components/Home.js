@@ -1,12 +1,14 @@
 // React
 import { useState, useEffect } from 'react';
-import { Button, Container, Spinner, Alert } from 'react-bootstrap';
+import { Button, Container, Alert, Fade } from 'react-bootstrap';
 import { MdErrorOutline, MdRefresh } from 'react-icons/md';
 import { When } from 'react-if';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 // Components
 import Post from './post/Post';
 import { FRow, FCol, CenterContainer } from './Containers';
+import LoadingSpinner from './LoadingSpinner';
 
 // API
 import { getRecentPosts } from '../api/api.js';
@@ -101,39 +103,46 @@ function Home() {
         </FRow>
       </Container>
 
-      <When condition={showResults && (!isLoading || isPaginating)}>
-        <div>
-          {
-            posts.map((post, index) => 
-              <Post 
-                postData={post}
-                key={index}
-              />
-            )
-          }
+      <Fade in={showResults && (!isLoading || isPaginating)}>
+        <div hidden={!(showResults && (!isLoading || isPaginating))}>
+          <TransitionGroup>
+            {
+              posts.map((post, index) =>
+                <CSSTransition
+                  key={index}
+                  timeout={150}
+                  classNames="fade-in"
+                >
+                  <Post
+                    postData={post}
+                  />
+                </CSSTransition>
+              )
+            }
+          </TransitionGroup>
+
+          <When condition={isError && !isPaginating}>
+            <Container className="outer-container">
+              <Alert
+                variant="danger"
+                className="mb-0"
+              >
+                <MdErrorOutline/> Recent posts could not be retrieved. Please try again later.
+              </Alert>
+            </Container>
+          </When>
+
+          <When condition={posts.length < numResults && !isPaginating}>
+            <CenterContainer>
+              <Button onClick={loadMorePosts}>Load More</Button>
+            </CenterContainer>
+          </When>
         </div>
-
-        <When condition={isError && !isPaginating}>
-          <Container className="outer-container">
-            <Alert
-              variant="danger"
-              className="mb-0"
-            >
-              <MdErrorOutline/> Recent posts could not be retrieved. Please try again later.
-            </Alert>
-          </Container>
-        </When>
-
-        <When condition={posts.length < numResults && !isPaginating}>
-          <CenterContainer>
-            <Button onClick={loadMorePosts}>Load More</Button>
-          </CenterContainer>
-        </When>
-      </When>
+      </Fade>
 
       <When condition={!showResults || isLoading || isPaginating}>
         <CenterContainer>
-          <Spinner animation="border" variant="primary" />
+          <LoadingSpinner/>
         </CenterContainer>
       </When>
     </>
