@@ -57,6 +57,22 @@ export const getPostsByTags = async (tags, page) => {
   });
 }
 
+// Get recent posts
+export const getRecentPosts = async (date) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+        method: 'POST',
+        url: serviceUrl + '/recentposts',
+        data: { date },
+        headers: {
+          'token': authToken,
+          'Content-Type': 'application/json',
+        }
+    });
+    return response.data;
+  });
+}
+
 // Delete post
 export const deletePostByID = async (_id) => {
   return await requestWithToken(async() => {
