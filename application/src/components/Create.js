@@ -15,9 +15,10 @@ import Post from './post/Post';
 import ConfirmationModal from './ConfirmationModal';
 import CopyButton from './CopyButton';
 import { TermsLink, TermsCheckbox } from './terms/Terms';
+import LoadingSpinner from './LoadingSpinner';
 
 // API
-import { createFullPost, postImages, deleteImage } from '../api/api.js';
+import { createFullPost, postImages, deleteImage, sendAccessKeyEmail } from '../api/api.js';
 import { geocodePosition } from './maps/Geocoder.js';
 
 function Number(props) {
@@ -64,14 +65,17 @@ function Create(props) {
   const [picture, setPicture] = useState(null);
   const [termsAgree, setTermsAgree] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [created, setCreated] = useState(false);
-  const [accessKey, setAccessKey] = useState('');
+  const [created, setCreated] = useState(true);
+  const [accessKey, setAccessKey] = useState('1de519c3-b863-4edf-a4c5-f9f02f12f9d6');
   const [isCreateError, setIsCreateError] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailResult, setEmailResult] = useState(null);
+  const [emailLoading, setEmailLoading] = useState(false);
 
   // Other variables
   const pictureFileInputRef = useRef(null);
   const errorFeedbackRef = useRef(null);
+  const emailFormRef = useRef(null);
   const MAX_TAGS = 5;
 
   useEffect(() => {
@@ -160,8 +164,23 @@ function Create(props) {
     }
   }
 
-  const sendEmail = () => {
-    // Todo: DBO-73 Call the send email endpoint from the create post component
+  const sendEmail = async () => {
+    // Hide old message (if any)
+    setEmailResult(null);
+    
+    // Basic validation
+    if (!email || !emailFormRef.current.checkValidity()) return;
+
+    // Add a little bit of loading to prevent flickering
+    setEmailLoading(true);
+    setTimeout(() => {setEmailLoading(false)}, 500);
+
+    // Make API call
+    const result = await sendAccessKeyEmail(accessKey, email, name, title);
+
+    // Show feedback
+    if (result) setEmailResult('sent');
+    else setEmailResult('error');
   }
 
   useEffect(() => {
@@ -208,6 +227,8 @@ function Create(props) {
     setAccessKey('');
     setIsCreateError(false);
     setEmail('');
+    setEmailResult(null);
+    setEmailLoading(false);
   }
 
   return (
@@ -389,7 +410,7 @@ function Create(props) {
               You may enter your email below to send yourself a copy of the access code via email.<br/>
             </Form.Text>
             <br/>
-            <Form noValidate onSubmit={preventSubmit} validated={!!email}>
+            <Form noValidate onSubmit={preventSubmit} validated={!!email} ref={emailFormRef}>
               <Form.Group>
                 <Form.Label>Email <Optional/></Form.Label>
                 <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
@@ -405,12 +426,29 @@ function Create(props) {
                     </Form.Control.Feedback>
                   </Col>
                   <Col xs="auto" sm="auto">
-                    <Button onClick={sendEmail}>Send Email</Button>
+                    <If condition={emailLoading}>
+                      <Then><LoadingSpinner /></Then>
+                      <Else><Button onClick={sendEmail} type="submit">Send Email</Button></Else>
+                    </If>
                   </Col>
                 </Row>
               </Form.Group>
             </Form>
             <br/>
+            <When condition={emailResult && !emailLoading}>
+              <If condition={emailResult==='sent'}>
+                <Then>
+                  <Alert variant="success">
+                    <MdOutlineCheckCircle/> Email sent successfully. (Check your spam folder)
+                  </Alert>
+                </Then>
+                <Else>
+                  <Alert variant="danger">
+                    <MdErrorOutline/> Email could not be sent.
+                  </Alert>
+                </Else>
+              </If>
+            </When>
             <Button onClick={resetPage}>Create a New Post</Button>
           </Container>
         </Else>
