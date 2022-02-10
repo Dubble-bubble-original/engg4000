@@ -10,7 +10,7 @@ ENV REACT_APP_MAPS_API_KEY=$API_KEY
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --no-optional -f
 COPY . .
 RUN npm run build
 

@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package.json .
 RUN npm install
-RUN npm install pm2 -g
+RUN npm install --no-optional -f pm2 -g
 COPY . .
 
 EXPOSE 3001
