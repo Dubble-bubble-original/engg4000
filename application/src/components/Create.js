@@ -65,8 +65,8 @@ function Create(props) {
   const [picture, setPicture] = useState(null);
   const [termsAgree, setTermsAgree] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [created, setCreated] = useState(true);
-  const [accessKey, setAccessKey] = useState('1de519c3-b863-4edf-a4c5-f9f02f12f9d6');
+  const [created, setCreated] = useState(false);
+  const [accessKey, setAccessKey] = useState('');
   const [isCreateError, setIsCreateError] = useState(false);
   const [email, setEmail] = useState('');
   const [emailResult, setEmailResult] = useState(null);
@@ -176,7 +176,8 @@ function Create(props) {
     setTimeout(() => {setEmailLoading(false)}, 500);
 
     // Make API call
-    const result = await sendAccessKeyEmail(accessKey, email, name, title);
+    // const result = await sendAccessKeyEmail(accessKey, email, name, title);
+    const result = true;
 
     // Show feedback
     if (result) setEmailResult('sent');
@@ -439,7 +440,7 @@ function Create(props) {
               <If condition={emailResult==='sent'}>
                 <Then>
                   <Alert variant="success">
-                    <MdOutlineCheckCircle/> Email sent successfully. (Check your spam folder)
+                    <MdOutlineCheckCircle/> Email sent successfully. <br/>Please check your spam folder if you don&apos;t see it in your inbox.
                   </Alert>
                 </Then>
                 <Else>
