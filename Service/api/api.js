@@ -8,10 +8,10 @@ const UTILS = require('../utils/utils');
 // DB
 const { UserPost, User } = require('../db/dbSchema');
 
-// S3
+// AWS
 const {
-  checkFile, downloadFile, deleteFile
-} = require('../s3/s3');
+  checkFile, downloadFile, deleteFile, sendEmail
+} = require('../aws/aws');
 
 // Constants
 const POST_LIMIT_DEFAULT = 15;
@@ -241,10 +241,17 @@ exports.getUserPosts = (req, res) => {
     return res.status(400).send({ message: 'Invalid search filters provided' });
   }
 
-  // Add Authors to the search filters and hide all id's
+  // Get current page number
+  const pageNumber = req.body.page ? (req.body.page - 1) : 0;
+
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+
+  // Finalize the pipeline
   searchFilters = [
     ...searchFilters,
     {
+      // Populate the author data
       $lookup: {
         from: User.collection.name,
         localField: 'author',
@@ -252,24 +259,36 @@ exports.getUserPosts = (req, res) => {
         as: 'author'
       }
     },
+    // Unwind author from an array into a single object
     { $unwind: '$author' },
     {
+      // Hide all id fields
       $project: {
         _id: false,
         access_key: false,
         'author._id': false
       }
+    },
+    {
+      $facet: {
+        // Skip & limit posts returned
+        posts: [
+          { $skip: pageNumber * postLimit },
+          { $limit: postLimit }
+        ],
+        // Give back total number of posts matched (before skip/limit)
+        info: [
+          { $count: 'totalCount' }
+        ]
+      }
     }
   ];
 
-  // Get current page number
-  const pageNumber = UTILS.getPageNumber(req.body.page);
-
-  // Get # of posts per page
-  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
-
-  UserPost.aggregate(searchFilters).skip(pageNumber * postLimit).limit(postLimit)
-    .then((docs) => res.status(200).send(docs))
+  UserPost.aggregate(searchFilters)
+    .then((result) => res.status(200).send({
+      posts: result[0].posts,
+      totalCount: result[0].info[0]?.totalCount ?? 0
+    }))
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
@@ -277,8 +296,21 @@ exports.getUserPosts = (req, res) => {
 };
 
 exports.getRecentPosts = (req, res) => {
-  let searchFilters = [
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+  let postFilters = [{ $limit: postLimit }];
+
+  // Filter by date (if given)
+  if (req.body.date) {
+    postFilters = [
+      { $match: { date_created: { $lt: new Date(req.body.date) } } },
+      ...postFilters
+    ];
+  }
+
+  const pipeline = [
     {
+      // Populate the author data
       $lookup: {
         from: User.collection.name,
         localField: 'author',
@@ -286,29 +318,35 @@ exports.getRecentPosts = (req, res) => {
         as: 'author'
       }
     },
+    // Unwind author from an array into a single object
     { $unwind: '$author' },
     {
+      // Hide all id fields
       $project: {
         _id: false,
         access_key: false,
         'author._id': false
       }
     },
-    { $sort: { date_created: -1, _id: 1 } }
+    // Sort by most recent
+    { $sort: { date_created: -1, _id: 1 } },
+    {
+      $facet: {
+        // Filter posts returned
+        posts: postFilters,
+        // Give back total number of posts matched (before limit)
+        info: [
+          { $count: 'totalCount' }
+        ]
+      }
+    }
   ];
 
-  if (req.body.date) {
-    searchFilters = [
-      { $match: { date_created: { $lt: new Date(req.body.date) } } },
-      ...searchFilters
-    ];
-  }
-
-  // Get # of posts per page
-  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
-
-  UserPost.aggregate(searchFilters).limit(postLimit)
-    .then((combinedDocs) => res.status(200).send(combinedDocs))
+  UserPost.aggregate(pipeline)
+    .then((result) => res.status(200).send({
+      posts: result[0].posts,
+      totalCount: result[0].info[0]?.totalCount ?? 0
+    }))
     .catch((error) => {
       logger.error(error.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
@@ -324,8 +362,7 @@ exports.createUser = (req, res) => {
 
   const newUser = new User({
     name: req.body.name,
-    avatar_url: req.body.avatar_url,
-    email: req.body.email
+    avatar_url: req.body.avatar_url
   });
 
   newUser.save((err) => {
@@ -342,8 +379,7 @@ exports.createUser = (req, res) => {
       user: {
         _id: newUser._id,
         name: newUser.name,
-        avatar_url: newUser.avatar_url,
-        email: newUser.email
+        avatar_url: newUser.avatar_url
       }
     });
   });
@@ -597,8 +633,7 @@ exports.createFullUserPost = async (req, res) => {
 
   // Create user with uploaded avatar
   const newUser = new User({
-    name: user.name,
-    email: user.email
+    name: user.name
   });
   if (avatarId) {
     newUser.avatar_url = BUCKET_URL + avatarId;
@@ -668,4 +703,31 @@ exports.createFullUserPost = async (req, res) => {
       });
     });
   });
+};
+
+exports.sendAKEmail = async (req, res) => {
+  if (!req.body.access_key || !req.body.to_email
+      || !req.body.author_name || !req.body.post_title) {
+    return res.status(400).send({ message: INVALID_REQUEST_ERROR_MSG });
+  }
+
+  const email = {
+    from: 'notasocial.noreply@gmail.com',
+    to: req.body.to_email,
+    subject: 'Nota Post Access Code',
+    html: `<p>Hi ${req.body.author_name}!`
+        + `<p>Your Nota post '${req.body.post_title}' has been successfully posted!`
+        + `<p>The access code to your new Nota post is <strong>${req.body.access_key}</strong>`
+        + '<p><div style="color:red;">WARNING:</div>'
+        + 'If this access code is lost, you will no longer be able to delete the post.</p>'
+        + '<p>To keep your post secure, do NOT share your access code</p>'
+        + '<p>Happy adventuring!</p>'
+  };
+
+  sendEmail(email)
+    .then(() => res.status(200).send({ message: 'Email Sent Successfully' }))
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
 };

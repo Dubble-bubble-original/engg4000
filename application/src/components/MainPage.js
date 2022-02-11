@@ -11,7 +11,7 @@ import Home from './Home';
 import Search from './Search';
 import Create from './Create';
 import Delete from './Delete';
-import TermsModal from './terms/termsModal';
+import { TermsModal } from './terms/Terms';
 
 // Homepage component for the application
 function MainPage() {
@@ -19,13 +19,13 @@ function MainPage() {
   // State variables
   const [content, setContent] = useState('home');
   const [showTerms, setShowTerms] = useState(false);
-  
+
   return (
     <div>
       <NavBar content={content} setContent={setContent} setShowTerms={setShowTerms} />
       <Switch>
         <Case condition={content === 'search'}><Search/></Case>
-        <Case condition={content === 'create'}><Create/></Case>
+        <Case condition={content === 'create'}><Create setShowTerms={setShowTerms}/></Case>
         <Case condition={content === 'delete'}><Delete/></Case>
         <Default><Home/></Default>
       </Switch>

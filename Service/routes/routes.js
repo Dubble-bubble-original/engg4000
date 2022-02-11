@@ -9,7 +9,7 @@ const ENV = process.env;
 // Multer setup (used to upload files to the server)
 const multer = require('multer');
 const upload = multer({
-  limits: { fileSize: 5000000 }, // 5MB
+  limits: { fileSize: 15000000 }, // 15MB
   dest: './uploads'
 });
 
@@ -216,5 +216,11 @@ else if (ENV.NODE_ENV === 'prod') {
     USE(API.deleteImage)
   );
 }
+
+ROUTER.post(
+  '/akemail',
+  USE(API.verifyAuthToken),
+  USE(API.sendAKEmail)
+);
 
 module.exports = ROUTER;
