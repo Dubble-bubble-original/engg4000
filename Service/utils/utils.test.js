@@ -51,12 +51,12 @@ describe('isAuthTokenStale', () => {
   });
 });
 
-// Tests for lowerCaseTags function
+// Tests for toLowerCaseTags function
 describe('lowerCaseTags', () => {
   test('tags are all upper case', () => {
     const tags = ['FOREST', 'NATURE', 'SUNSET'];
     const expectedResult = ['forest', 'nature', 'sunset'];
-    const result = UTILS.lowerCaseTags(tags);
+    const result = UTILS.toLowerCaseTags(tags);
 
     expect(result).toEqual(expectedResult);
   });
@@ -64,7 +64,7 @@ describe('lowerCaseTags', () => {
   test('tags are all lower case', () => {
     const tags = ['forest', 'nature', 'sunset'];
     const expectedResult = ['forest', 'nature', 'sunset'];
-    const result = UTILS.lowerCaseTags(tags);
+    const result = UTILS.toLowerCaseTags(tags);
 
     expect(result).toEqual(expectedResult);
   });
@@ -72,7 +72,7 @@ describe('lowerCaseTags', () => {
   test('tags contain upper and lower case letters', () => {
     const tags = ['Forest', 'Nature', 'Sunset'];
     const expectedResult = ['forest', 'nature', 'sunset'];
-    const result = UTILS.lowerCaseTags(tags);
+    const result = UTILS.toLowerCaseTags(tags);
 
     expect(result).toEqual(expectedResult);
   });
