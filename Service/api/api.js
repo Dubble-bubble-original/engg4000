@@ -263,7 +263,7 @@ exports.getUserPosts = (req, res) => {
   ];
 
   // Get current page number
-  const pageNumber = getPageNumber(req.body.page);
+  const pageNumber = UTILS.getPageNumber(req.body.page);
 
   // Get # of posts per page
   const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
