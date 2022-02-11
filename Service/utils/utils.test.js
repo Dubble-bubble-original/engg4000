@@ -52,7 +52,7 @@ describe('isAuthTokenStale', () => {
 });
 
 // Tests for toLowerCaseTags function
-describe('lowerCaseTags', () => {
+describe('toLowerCaseTags', () => {
   test('tags are all upper case', () => {
     const tags = ['FOREST', 'NATURE', 'SUNSET'];
     const expectedResult = ['forest', 'nature', 'sunset'];
