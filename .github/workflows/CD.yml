@@ -2,7 +2,7 @@ name: CD Pipeline
 on:
   push:
     branches:  
-    - 'update-installation-method'
+    - 'master'
 
 jobs:
   test:
