@@ -43,12 +43,12 @@ function Post({postData}) {
         <FRow>
           <FCol>
             <button className="image-button avatar clickable hover-outline" onClick={() => setAvatarImageModal(true)}>
-              <img className="avatar" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
+              <img className="avatar" data-testid="avatar-image" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
             </button>
             <div className="user-name text-center">{postData.author.name}</div>
           </FCol>
 
-          <FCol className="post-body">
+          <FCol className="post-body" data-testid="post-body">
             <FRow className="post-content">
               <FCol  className="post-description">
                 <FRow className="title-section">
@@ -56,19 +56,19 @@ function Post({postData}) {
                   <div className="text-muted">{date_string}</div>
                 </FRow>
                 <div className="post-body">{postData.body}</div>
-                <FRow className="tag-container">
+                <FRow className="tag-container" data-testid="tags">
                   {tags}
                 </FRow>
               </FCol>
 
-              <FCol className="post-location">
+              <FCol className="post-location" data-testid="map">
                 <StaticMap width={2000} height={200} position={postData.location}/>
                 <div className="text-muted text-center">{postData.location_string}</div>
               </FCol>
             </FRow>
             <FRow className="post-image" hidden={!imgURL}>
               <button className="image-button" onClick={() => setPostImageModal(true)}>
-                <img className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
+                <img data-testid="post-image" className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
               </button>
             </FRow>
           </FCol>
@@ -102,10 +102,7 @@ Post.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     title: PropTypes.string,
     img_url: PropTypes.string,
-    date_created: PropTypes.oneOfType([
-      PropTypes.string, 
-      PropTypes.Date
-    ]),
+    date_created: PropTypes.string,
     location: PropTypes.shape({
       lat: PropTypes.number,
       lng: PropTypes.number,
