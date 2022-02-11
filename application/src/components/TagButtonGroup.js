@@ -62,7 +62,7 @@ function TagButtonGroup(props) {
 
   return (
     <>
-      <InputGroup className="mb-3" style={{maxWidth:250}}>
+      <InputGroup className="mb-3" style={{maxWidth:250}} data-testid="filter-input">
         <InputGroup.Text>Filter:</InputGroup.Text>
         <FormControl
           type="text"
@@ -75,6 +75,7 @@ function TagButtonGroup(props) {
           type="checkbox"
           value={props.tags}
           onChange={(val)=>{props.setTags(val)}}
+          data-testid="tag-group"
       >
         {
           tagList
@@ -87,6 +88,7 @@ function TagButtonGroup(props) {
                 value={tag}
                 key={tag}
                 id={'tgb-btn-'+tag}
+                data-testid="tags"
               >
                 {tag}
               </ToggleButton>

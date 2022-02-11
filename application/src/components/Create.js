@@ -106,7 +106,7 @@ function Create(props) {
       tags: tags,
       title: title,
       img_url: getImageURL(picture),
-      date_created: new Date(),
+      date_created: new Date().toISOString(),
       location: position,
       location_string: locationString,
       true_location: isTruePosition

@@ -1,0 +1,430 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TagButtonGroup Component Sanpshot test for tagList 1`] = `
+Array [
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-forest"
+    role="button"
+    tabindex="0"
+  >
+    forest
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-mountain"
+    role="button"
+    tabindex="0"
+  >
+    mountain
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-desert"
+    role="button"
+    tabindex="0"
+  >
+    desert
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-river"
+    role="button"
+    tabindex="0"
+  >
+    river
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-lake"
+    role="button"
+    tabindex="0"
+  >
+    lake
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-ocean"
+    role="button"
+    tabindex="0"
+  >
+    ocean
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-cave"
+    role="button"
+    tabindex="0"
+  >
+    cave
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-trail"
+    role="button"
+    tabindex="0"
+  >
+    trail
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-farm"
+    role="button"
+    tabindex="0"
+  >
+    farm
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-city"
+    role="button"
+    tabindex="0"
+  >
+    city
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-building"
+    role="button"
+    tabindex="0"
+  >
+    building
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-wilderness"
+    role="button"
+    tabindex="0"
+  >
+    wilderness
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-hiking"
+    role="button"
+    tabindex="0"
+  >
+    hiking
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-climbing"
+    role="button"
+    tabindex="0"
+  >
+    climbing
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-hunting"
+    role="button"
+    tabindex="0"
+  >
+    hunting
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-walking"
+    role="button"
+    tabindex="0"
+  >
+    walking
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-running"
+    role="button"
+    tabindex="0"
+  >
+    running
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-cycling"
+    role="button"
+    tabindex="0"
+  >
+    cycling
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-sports"
+    role="button"
+    tabindex="0"
+  >
+    sports
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-tourism"
+    role="button"
+    tabindex="0"
+  >
+    tourism
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-event"
+    role="button"
+    tabindex="0"
+  >
+    event
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-food"
+    role="button"
+    tabindex="0"
+  >
+    food
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-entertainment"
+    role="button"
+    tabindex="0"
+  >
+    entertainment
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-summer"
+    role="button"
+    tabindex="0"
+  >
+    summer
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-fall"
+    role="button"
+    tabindex="0"
+  >
+    fall
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-winter"
+    role="button"
+    tabindex="0"
+  >
+    winter
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-spring"
+    role="button"
+    tabindex="0"
+  >
+    spring
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-nature"
+    role="button"
+    tabindex="0"
+  >
+    nature
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-scenery"
+    role="button"
+    tabindex="0"
+  >
+    scenery
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-sky"
+    role="button"
+    tabindex="0"
+  >
+    sky
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-animal"
+    role="button"
+    tabindex="0"
+  >
+    animal
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-art"
+    role="button"
+    tabindex="0"
+  >
+    art
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-architecture"
+    role="button"
+    tabindex="0"
+  >
+    architecture
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-unique"
+    role="button"
+    tabindex="0"
+  >
+    unique
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-free"
+    role="button"
+    tabindex="0"
+  >
+    free
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-cheap"
+    role="button"
+    tabindex="0"
+  >
+    cheap
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-expensive"
+    role="button"
+    tabindex="0"
+  >
+    expensive
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-underground"
+    role="button"
+    tabindex="0"
+  >
+    underground
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-seasonal"
+    role="button"
+    tabindex="0"
+  >
+    seasonal
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-dangerous"
+    role="button"
+    tabindex="0"
+  >
+    dangerous
+  </label>,
+  <label
+    class="tag btn btn-outline-primary"
+    data-testid="tags"
+    for="tgb-btn-other"
+    role="button"
+    tabindex="0"
+  >
+    other
+  </label>,
+]
+`;
+
+exports[`TagButtonGroup Component check to make sure provided tags are selected 1`] = `
+<input
+  autocomplete="off"
+  checked=""
+  class="btn-check"
+  id="tgb-btn-river"
+  type="checkbox"
+  value="river"
+/>
+`;
+
+exports[`TagButtonGroup Component check to make sure provided tags are selected 2`] = `
+<input
+  autocomplete="off"
+  checked=""
+  class="btn-check"
+  id="tgb-btn-running"
+  type="checkbox"
+  value="running"
+/>
+`;
+
+exports[`TagButtonGroup Component check to make sure provided tags are selected 3`] = `
+<input
+  autocomplete="off"
+  checked=""
+  class="btn-check"
+  id="tgb-btn-fall"
+  type="checkbox"
+  value="fall"
+/>
+`;
+
+exports[`TagButtonGroup Component check to make sure provided tags are selected 4`] = `
+<input
+  autocomplete="off"
+  checked=""
+  class="btn-check"
+  id="tgb-btn-scenery"
+  type="checkbox"
+  value="scenery"
+/>
+`;
+
+exports[`TagButtonGroup Component check to make sure provided tags are selected 5`] = `
+<input
+  autocomplete="off"
+  checked=""
+  class="btn-check"
+  id="tgb-btn-seasonal"
+  type="checkbox"
+  value="seasonal"
+/>
+`;
