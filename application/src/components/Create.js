@@ -176,8 +176,7 @@ function Create(props) {
     setTimeout(() => {setEmailLoading(false)}, 500);
 
     // Make API call
-    // const result = await sendAccessKeyEmail(accessKey, email, name, title);
-    const result = true;
+    const result = await sendAccessKeyEmail(accessKey, email, name, title);
 
     // Show feedback
     if (result) setEmailResult('sent');
