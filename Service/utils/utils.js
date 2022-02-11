@@ -29,7 +29,7 @@ exports.isAuthTokenStale = (currentTime, timeStamp) => (
 );
 
 // Get array of lower case tags
-exports.lowerCaseTags = (tags) => tags.map((tag) => tag.toLowerCase());
+exports.toLowerCaseTags = (tags) => tags.map((tag) => tag.toLowerCase());
 
 // Get page number
 exports.getPageNumber = (pageNumber) => (pageNumber ? (pageNumber - 1) : 0);

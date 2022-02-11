@@ -188,11 +188,7 @@ exports.getUserPosts = (req, res) => {
 
   // Check if the filters have tags
   if (req.body.tags?.length > 0) {
-    providedTags = UTILS.lowerCaseTags(req.body.tags);
-
-    // TODO: Remove this
-    console.log('providedTags:');
-    console.log(providedTags);
+    providedTags = UTILS.toLowerCaseTags(req.body.tags);
 
     searchFilters = [
       { $match: { tags: { $in: providedTags } } }
