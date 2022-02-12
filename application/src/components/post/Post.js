@@ -86,7 +86,7 @@ function Post({postData}) {
       <Modal fullscreen show={postImageModal} onHide={() => setPostImageModal(false)}>
         <Modal.Header closeButton>{postData.title}</Modal.Header>
         <Modal.Body>
-          <img className="modal-image" src={postData.img_url} />
+          <img className="modal-image" src={imgURL} />
         </Modal.Body>
       </Modal>
 
