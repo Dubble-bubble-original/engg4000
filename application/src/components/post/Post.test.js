@@ -75,7 +75,7 @@ describe('Post Component', () => {
 
     expect(screen.getByTestId('post-body')).toBeVisible();
     expect(screen.getByTestId('map')).toBeVisible();
-    expect(screen.getByTestId('post-image')).not.toBeVisible();
+    expect(screen.queryByTestId('post-image')).not.toBeInTheDocument();
 
     // Check for avatar image
     let avatarImage = screen.getByTestId('avatar-image');
