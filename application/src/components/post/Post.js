@@ -2,7 +2,8 @@
 import { Container, Button, Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { When } from 'react-if';
+import { useState, useEffect } from 'react';
 
 // Stylesheet
 import './post.css';
@@ -18,12 +19,17 @@ function handleAvatarImgError(e) {
 }
 
 function Post({postData}) {
-  const [imgURL, setimgURL] = useState(postData.img_url);
+  const [imgURL, setImgURL] = useState(null);
 
   // Show no image if post picture fails
   const handlePictureImgError = () => {
-    setimgURL(null);
+    setImgURL(null);
   }
+
+  useEffect(() => {
+    // Update imgURL stat based on img_url prop
+    setImgURL(postData.img_url);
+  }, [postData.img_url]);
 
   const [postImageModal, setPostImageModal] = useState(false);
   const [avatarImageModal, setAvatarImageModal] = useState(false);
@@ -66,11 +72,13 @@ function Post({postData}) {
                 <div className="text-muted text-center">{postData.location_string}</div>
               </FCol>
             </FRow>
-            <FRow className="post-image" hidden={!imgURL}>
-              <button className="image-button" onClick={() => setPostImageModal(true)}>
-                <img data-testid="post-image" className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
-              </button>
-            </FRow>
+            <When condition={imgURL}>
+              <FRow className="post-image">
+                <button className="image-button" onClick={() => setPostImageModal(true)}>
+                  <img data-testid="post-image" className="clickable hover-outline" src={imgURL} onError={handlePictureImgError}/>
+                </button>
+              </FRow>
+            </When>
           </FCol>
         </FRow>
       </Container>
