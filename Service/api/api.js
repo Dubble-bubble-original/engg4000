@@ -58,7 +58,7 @@ exports.createUserPost = (req, res) => {
 
   const dateCreated = Date.now();
   const accessKey = uuidv4();
-  const uniqueObjectId = new mongoose.Types.ObjectId();
+  const uniqueObjectId = new ObjectId();
   const newUserPost = new UserPost({
     uid: uniqueObjectId,
     author: req.body.author,
@@ -655,7 +655,9 @@ exports.createFullUserPost = async (req, res) => {
     // Create post with new user id and uploaded post picture
     const dateCreated = Date.now();
     const accessKey = uuidv4();
+    const uniqueObjectId = new ObjectId();
     const newUserPost = new UserPost({
+      uid: uniqueObjectId,
       author: newUser._id,
       body: post.body,
       tags: post.tags,
@@ -688,6 +690,7 @@ exports.createFullUserPost = async (req, res) => {
 
       return res.status(201).json({
         post: {
+          uid: newUserPost.uid,
           author: {
             name: newUser.name,
             avatar_url: newUser.avatar_url,
