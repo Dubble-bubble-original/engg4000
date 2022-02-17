@@ -1,6 +1,9 @@
 import axios from 'axios';
 import logger from '../logger/logger';
 
+// Use credentials for Axios (needed to send cookies needed for express-session)
+axios.defaults.withCredentials = true
+
 // Auth Token
 let authToken;
 
@@ -155,7 +158,7 @@ export const postImages = async (avatar, picture) => {
 }
 
 // Create a user and user post
-export const createFullPost = async (avatarId, pictureId, user, post) => {
+export const createFullPost = async (avatarId, pictureId, user, post, captchaToken) => {
   return await requestWithToken(async() => {
     const response = await axios({
       method: 'POST',
@@ -165,6 +168,40 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
         pictureId,
         user,
         post
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'token': authToken,
+        'captcha-token': captchaToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Create captcha
+export const createCaptcha = async () => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/captcha/create',
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Verify captcha
+export const verifyCaptcha = async (resp, trail) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/captcha/verify',
+      data: {
+        response: resp,
+        trail: trail
       },
       headers: {
         'Content-Type': 'application/json',
@@ -205,6 +242,9 @@ const requestWithToken = async (request) => {
       if(error?.response?.status === 401) {
         // Get New Auth Token and retry
         await getAuthToken();
+      }
+      else if (error?.response?.status === 403) {
+        return {status: 403};
       }
       else {
         // Don't retry if a different error occurs

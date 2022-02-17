@@ -14,12 +14,14 @@ function Captcha(props) {
       create={createCaptcha}
       verify={verifyCaptcha}
       callback={props.captchaSuccess}
+      refObject={props.refObject}
     />
   );
 }
 
 Captcha.propTypes = {
-  captchaSuccess: PropTypes.func.isRequired
+  captchaSuccess: PropTypes.func.isRequired,
+  refObject: PropTypes.object
 }
 
 export default Captcha;

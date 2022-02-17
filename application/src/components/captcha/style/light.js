@@ -16,7 +16,7 @@ const lightTheme = `.scaptcha-icon-dark {
   width: 100%;
   height: 50px;
   padding: 13px;
-  max-width: 400px;
+  max-width: 300px;
 }
 
 .scaptcha-anchor-checkbox {

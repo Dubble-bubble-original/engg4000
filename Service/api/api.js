@@ -2,6 +2,9 @@
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 
+// Captcha
+const sliderCaptcha = require('@slider-captcha/core');
+
 // Utils
 const UTILS = require('../utils/utils');
 
@@ -626,6 +629,13 @@ exports.createFullUserPost = async (req, res) => {
     return res.status(400).send({ message: 'Missing User Post' });
   }
 
+  // Request must include a valid captcha token for this session
+  const captchaToken = req.header('captcha-token');
+  if (!captchaToken || captchaToken !== req.session.captchaToken) {
+    logger.info('Missing or Invalid Captcha Token');
+    return res.status(403).send({ message: 'Missing or Invalid Captcha Token' });
+  }
+
   const {
     user, post, avatarId, pictureId
   } = req.body;
@@ -725,6 +735,35 @@ exports.sendAKEmail = async (req, res) => {
 
   sendEmail(email)
     .then(() => res.status(200).send({ message: 'Email Sent Successfully' }))
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.createCaptcha = async (req, res) => {
+  sliderCaptcha.create({
+    distort: true,
+    rotate: true
+  })
+    .then(function ({ data, solution }) {
+      req.session.captcha = solution;
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.verifyCaptcha = async (req, res) => {
+  sliderCaptcha.verify(req.session.captcha, req.body)
+    .then(function (verification) {
+      if (verification.result === 'success') {
+        req.session.captchaToken = verification.token;
+      }
+      res.status(200).send(verification);
+    })
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });

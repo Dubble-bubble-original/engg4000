@@ -33,8 +33,10 @@ const SliderCaptcha = ({
   create,
   verify,
   text,
+  refObject
 }) => {
   const [verified, setVerified] = useState(false);
+  refObject.current.reset = () => setVerified(false);
   const submitResponse = (response, trail) =>
     new Promise((resolve) => {
       fetchVerification(verify)(response, trail)
@@ -75,6 +77,7 @@ SliderCaptcha.propTypes = {
     anchor: PropTypes.string,
     challenge: PropTypes.string,
   }),
+  refObject: PropTypes.object
 };
 
 SliderCaptcha.defaultProps = {
@@ -85,6 +88,7 @@ SliderCaptcha.defaultProps = {
     anchor: 'I\'m not a robot',
     challenge: 'Slide to finish the puzzle',
   },
+  refObject: {current: {}}
 };
 
 export default SliderCaptcha;
