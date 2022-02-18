@@ -98,6 +98,11 @@ function Search() {
     );
   }
 
+  useEffect(() => {
+    // Stop the timer if the component unmounts
+    return () => clearTimeout(loadingTimerId);
+  }, [loadingTimerId]);
+
   const tagsEqual = () => {
     if (tags.length !== searchTags.length) return false;
     const a1 = tags.sort();
