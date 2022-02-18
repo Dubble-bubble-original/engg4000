@@ -629,13 +629,6 @@ exports.createFullUserPost = async (req, res) => {
     return res.status(400).send({ message: 'Missing User Post' });
   }
 
-  // Request must include a valid captcha token for this session
-  const captchaToken = req.header('captcha-token');
-  if (!captchaToken || captchaToken !== req.session.captchaToken) {
-    logger.info('Missing or Invalid Captcha Token');
-    return res.status(403).send({ message: 'Missing or Invalid Captcha Token' });
-  }
-
   const {
     user, post, avatarId, pictureId
   } = req.body;
@@ -768,4 +761,14 @@ exports.verifyCaptcha = async (req, res) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
+};
+
+exports.verifyCaptchaToken = async (req, res, next) => {
+  // Request must include a valid captcha token for this session
+  const captchaToken = req.header('captcha-token');
+  if (!captchaToken || captchaToken !== req.session.captchaToken) {
+    logger.info('Missing or Invalid Captcha Token');
+    return res.status(403).send({ message: 'Missing or Invalid Captcha Token' });
+  }
+  return next();
 };

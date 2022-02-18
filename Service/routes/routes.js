@@ -190,6 +190,7 @@ else if (ENV.NODE_ENV === 'prod') {
     '/post',
     createDeletePostLimiter,
     USE(API.verifyAuthToken),
+    USE(API.verifyCaptchaToken),
     USE(API.createFullUserPost)
   );
 
