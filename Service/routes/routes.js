@@ -55,6 +55,14 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.createAuthToken)
   );
 
+  ROUTER.post(
+    '/verifyImage',
+    // USE(API.verifyAuthToken),
+    // Change this to take two images
+    USE(upload.single('image')),
+    USE(API.checkImages)
+  );
+
   // User post endpoints
   ROUTER.post(
     '/post',

@@ -1,5 +1,7 @@
 // Packages
 const fs = require('fs');
+const imageDecoder = require('image-decode');
+const tf = require('@tensorflow/tfjs-node');
 
 // DB
 const { UserPost, User } = require('../db/dbSchema');
@@ -91,6 +93,23 @@ exports.deleteDBPost = async (postID) => (
       return Result.Error;
     })
 );
+
+// Convert the image to UInt8 Byte array
+exports.convert = async (img) => {
+  // Decoded image in UInt8 Byte array
+  const imgData = await fs.readFileSync(img);
+  const image = await imageDecoder(imgData);
+
+  const numChannels = 3;
+  const numPixels = image.width * image.height;
+  const values = new Int32Array(numPixels * numChannels);
+
+  for (let i = 0; i < numPixels; i++) {
+    for (let c = 0; c < numChannels; ++c) values[i * numChannels + c] = image.data[i * 4 + c];
+  }
+
+  return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
+};
 
 // Get Image ID from Image URL
 exports.getImageID = (imgURL) => imgURL.substring(imgURL.lastIndexOf('/') + 1);

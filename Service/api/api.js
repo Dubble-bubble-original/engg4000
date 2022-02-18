@@ -1,4 +1,5 @@
 // Packages
+const fs = require('fs');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 
@@ -729,4 +730,22 @@ exports.sendAKEmail = async (req, res) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
+};
+
+exports.checkImages = async (req, res) => {
+  if (!req.file) {
+    res.status(400).send('Missing image multipart/form-data');
+  }
+  else {
+    const image = await UTILS.convert(req.file.path);
+    const predictions = await model.classify(image);
+
+    // Remove the image from Tesor and Model memory
+    image.dispose();
+
+    // Delete file from local server
+    fs.promises.unlink(req.file.path);
+
+    res.status(200).send({ predictions });
+  }
 };
