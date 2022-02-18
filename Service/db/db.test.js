@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongoose').Types;
 const db = require('./dbUtils');
 const { User, UserPost } = require('./dbSchema');
 const dbName = db.generateDBName();
@@ -25,7 +26,8 @@ describe('CRUD User Collection Tests', () => {
     },
     location_string: 'New Brunswick, Canada',
     true_location: true,
-    access_key: '7f3a187f-115b-455d-892b-d8465e3167ea'
+    access_key: '7f3a187f-115b-455d-892b-d8465e3167ea',
+    uid: new ObjectId()
   });
 
   test('Creating and Reading a User Document', async () => {
