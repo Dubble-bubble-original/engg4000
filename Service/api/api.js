@@ -58,7 +58,9 @@ exports.createUserPost = (req, res) => {
 
   const dateCreated = Date.now();
   const accessKey = uuidv4();
+  const uniqueObjectId = new ObjectId();
   const newUserPost = new UserPost({
+    uid: uniqueObjectId,
     author: req.body.author,
     body: req.body.body,
     tags: req.body.tags,
@@ -83,6 +85,7 @@ exports.createUserPost = (req, res) => {
 
     return res.status(201).json({
       post: {
+        uid: newUserPost.uid,
         author: newUserPost.author,
         body: newUserPost.body,
         tags: newUserPost.tags,
@@ -209,6 +212,7 @@ exports.getUserPosts = (req, res) => {
       ...searchFilters,
       {
         $project: {
+          uid: 1,
           title: 1,
           body: 1,
           tags: 1,
@@ -321,7 +325,7 @@ exports.getRecentPosts = (req, res) => {
     // Unwind author from an array into a single object
     { $unwind: '$author' },
     {
-      // Hide all id fields
+      // Hide all id fields except uid
       $project: {
         _id: false,
         access_key: false,
@@ -652,7 +656,9 @@ exports.createFullUserPost = async (req, res) => {
     // Create post with new user id and uploaded post picture
     const dateCreated = Date.now();
     const accessKey = uuidv4();
+    const uniqueObjectId = new ObjectId();
     const newUserPost = new UserPost({
+      uid: uniqueObjectId,
       author: newUser._id,
       body: post.body,
       tags: post.tags,
@@ -685,6 +691,7 @@ exports.createFullUserPost = async (req, res) => {
 
       return res.status(201).json({
         post: {
+          uid: newUserPost.uid,
           author: {
             name: newUser.name,
             avatar_url: newUser.avatar_url,

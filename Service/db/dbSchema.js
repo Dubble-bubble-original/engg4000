@@ -8,6 +8,7 @@ const userSchema = new Schema({
 const User = mongoose.model('User', userSchema, 'User');
 
 const userPostSchema = new Schema({
+  uid: { type: mongoose.Schema.Types.ObjectId, required: true, immutable: true },
   author: {
     type: mongoose.Schema.Types.ObjectId, required: true, immutable: true, ref: 'User'
   },
