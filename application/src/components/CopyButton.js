@@ -41,6 +41,7 @@ function CopyButton(props) {
       <Button 
         title="Copy"
         onClick={handleCopyClick}
+        data-testid="copy-button"
         style={{
           padding: '0.2rem',
           lineHeight: 0
