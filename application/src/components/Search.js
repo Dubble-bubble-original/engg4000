@@ -171,16 +171,13 @@ function Search() {
             <When condition={posts.length > 0}>
               <TransitionGroup>
                 {
-                  posts.map((post, index) =>
+                  posts.map((post) => 
                     <CSSTransition
-                      key={index}
+                      key={post.uid}
                       timeout={150}
                       classNames="fade-in"
                     >
-                      <Post
-                        postData={post}
-                        key={index}
-                      />
+                      <Post postData={post}/>
                     </CSSTransition>
                   )
                 }

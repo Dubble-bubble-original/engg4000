@@ -27,7 +27,7 @@ const USE = (fn) => (req, res, next) => {
 const authTokenLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 100, // Limit each IP to 100 auth token requests per window
-  message: { message: 'Too Many Auth requests From This IP Address' },
+  message: { message: 'Too Many Auth Requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -35,7 +35,7 @@ const authTokenLimiter = RATE_LIMIT({
 const createDeletePostLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 15, // Limit each IP to 15 create or delete requests per window
-  message: { message: 'Too Many POST/DELETE requests From This IP Address' },
+  message: { message: 'Too Many POST/DELETE Requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -43,7 +43,15 @@ const createDeletePostLimiter = RATE_LIMIT({
 const getPostsLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 250, // Limit each IP to 250 get requests per window
-  message: { message: 'Too Many GET requests From This IP Address' },
+  message: { message: 'Too Many GET Requests From This IP Address' },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
+const emailLimiter = RATE_LIMIT({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 email requests per window
+  message: { message: 'Too Many Email Requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -163,6 +171,13 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.verifyAuthToken),
     USE(API.getImageUrl)
   );
+
+  // Email endpoints
+  ROUTER.post(
+    '/akemail',
+    USE(API.verifyAuthToken),
+    USE(API.sendAKEmail)
+  );
 }
 // Production API
 else if (ENV.NODE_ENV === 'prod') {
@@ -223,12 +238,14 @@ else if (ENV.NODE_ENV === 'prod') {
     USE(API.verifyAuthToken),
     USE(API.deleteImage)
   );
-}
 
-ROUTER.post(
-  '/akemail',
-  USE(API.verifyAuthToken),
-  USE(API.sendAKEmail)
-);
+  // Email endpoints
+  ROUTER.post(
+    '/akemail',
+    emailLimiter,
+    USE(API.verifyAuthToken),
+    USE(API.sendAKEmail)
+  );
+}
 
 module.exports = ROUTER;
