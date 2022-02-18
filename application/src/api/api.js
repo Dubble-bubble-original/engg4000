@@ -175,6 +175,27 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
   });
 }
 
+// Send email with access key
+export const sendAccessKeyEmail = async (access_key, to_email, author_name, post_title) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/akemail',
+      data: {
+        access_key,
+        to_email,
+        author_name,
+        post_title
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
 const requestWithToken = async (request) => {
   for (let i=0; i<MAX_RETRY_LIMIT; i++) {
     try {
