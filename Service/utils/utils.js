@@ -28,6 +28,12 @@ exports.isAuthTokenStale = (currentTime, timeStamp) => (
   Math.floor((currentTime - timeStamp) / 1000) / 60 >= 30
 );
 
+// Get array of lower case tags
+exports.toLowerCaseTags = (tags) => tags.map((tag) => tag.toLowerCase());
+
+// Get Image ID from Image URL
+exports.getImageID = (imgURL) => imgURL.substring(imgURL.lastIndexOf('/') + 1);
+
 // Create S3 Image
 exports.createS3Image = async (file) => (
   // Upload file to S3 bucket
@@ -91,8 +97,5 @@ exports.deleteDBPost = async (postID) => (
       return Result.Error;
     })
 );
-
-// Get Image ID from Image URL
-exports.getImageID = (imgURL) => imgURL.substring(imgURL.lastIndexOf('/') + 1);
 
 exports.Result = Result;

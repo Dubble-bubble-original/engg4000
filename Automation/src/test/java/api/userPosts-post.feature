@@ -67,8 +67,9 @@ Feature: User post endpoints tests
     When method get
     Then status 200
     And match response.access_key == post_access_key
-     And match response.author._id == author_id
-     And match response.author.name == author_name
+    And match response.author._id == author_id
+    And match response.author.name == author_name
+    And match response.uid == '#present'
     * def post_id = response._id
 
     # Call update user post endpoint
@@ -78,7 +79,7 @@ Feature: User post endpoints tests
     When method patch
     Then status 200
     And match response.title == 'new title'
-     And match response.author.name == author_name
+    And match response.author.name == author_name
 
     # Call delete user post endpoint
     Given path 'userpost/' + post_id
@@ -126,6 +127,7 @@ Feature: User post endpoints tests
     When method post
     Then status 200
     And match each response.posts contains { title: "Ferrari" }
+    And match each response.posts contains { uid: '#present' }
     And match response.posts[*].author.name contains post2.response.post.author.name
     And match response.posts[*].author.name contains post4.response.post.author.name
     And assert response.totalCount > 0
@@ -336,6 +338,7 @@ Feature: User post endpoints tests
     * def access_key = response.post.access_key
     * match response.post._id == '#notpresent'
     * match response.post.author._id == '#notpresent'
+    * match response.post.uid == '#present'
 
     # Delete the created post
     * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
@@ -351,6 +354,7 @@ Feature: User post endpoints tests
     * def access_key = response.post.access_key
     * match response.post._id == '#notpresent'
     * match response.post.author._id == '#notpresent'
+    * match response.post.uid == '#present'
 
     # Delete the created post
     * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
@@ -364,6 +368,7 @@ Feature: User post endpoints tests
     Then status 201
     * match response.post._id == '#notpresent'
     * match response.post.author._id == '#notpresent'
+    * match response.post.uid == '#present'
     * def access_key = response.post.access_key
 
     # Delete the created post

@@ -46,6 +46,8 @@ function NavBar(props) {
           <img
             src={Logo}
             alt="Nota logo"
+            className="clickable"
+            onClick={() => props.setContent('home')}
           />
         </Navbar.Brand>
 
