@@ -41,6 +41,7 @@ Feature: Recent Posts endpoint tests
     And match response.posts[*].title contains post2.response.post.title
     And match response.posts[*].author.name contains post1.response.post.author.name
     And match response.posts[*].author.name contains post2.response.post.author.name
+    And match each response.posts contains { uid: '#present' }
     * def totalPosts = response.length
 
     # Creating 2 more Temporary User Posts

@@ -107,15 +107,13 @@ function Home() {
         <div hidden={!(showResults && (!isLoading || isPaginating))}>
           <TransitionGroup>
             {
-              posts.map((post, index) =>
+              posts.map((post) =>
                 <CSSTransition
-                  key={index}
+                  key={post.uid}
                   timeout={150}
                   classNames="fade-in"
                 >
-                  <Post
-                    postData={post}
-                  />
+                  <Post postData={post}/>
                 </CSSTransition>
               )
             }
