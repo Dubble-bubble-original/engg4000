@@ -23,7 +23,7 @@ APP.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 30 * 60 * 1000 // 30 minutes
+    maxAge: 5 * 60 * 1000 // 5 minutes
   },
   store: new MongoStore({
     mongoUrl: db.connectionString
