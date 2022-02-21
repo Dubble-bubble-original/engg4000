@@ -16,8 +16,8 @@ require('dotenv').config();
 const ENV = process.env;
 
 // API Middleware
-APP.use(EXPRESS.json());
-APP.use(EXPRESS.urlencoded({ extended: true }));
+APP.use(EXPRESS.json({ limit: '2mb' }));
+APP.use(EXPRESS.urlencoded({ limit: '2mb', extended: true }));
 APP.use(session({
   secret: ENV.SESSION_SECRET,
   resave: false,

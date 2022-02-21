@@ -191,7 +191,6 @@ function Create(props) {
 
     // Add a little bit of loading to prevent flickering
     setEmailLoading(true);
-    setTimeout(() => {setEmailLoading(false)}, 500);
 
     // Make API call
     const result = await sendAccessKeyEmail(accessKey, email, name, title);
@@ -202,9 +201,20 @@ function Create(props) {
   }
 
   useEffect(() => {
+    if (emailLoading) {
+      // Add small delay when sending email
+      const timeoutID = setTimeout(() => {setEmailLoading(false)}, 500);
+      // Stop the timer if the component unmounts
+      return () => clearTimeout(timeoutID);
+    }
+  }, [emailLoading]);
+
+  useEffect(() => {
     // Scroll to the error 0.5s after it appears
     if (createErrorMsg) {
-      setTimeout(() => errorFeedbackRef.current.scrollIntoView(true), 500);
+      const timeoutID = setTimeout(() => errorFeedbackRef.current.scrollIntoView(true), 500);
+      // Stop the timer if the component unmounts
+      return () => clearTimeout(timeoutID);
     }
   }, [createErrorMsg]);
 
@@ -213,7 +223,7 @@ function Create(props) {
     // Randomized load time (+-200ms)
     const loadTime = GEOCODE_UPDATE_TIME + Math.floor(Math.random()*400)-200;
     // Update locationString after a delay (if needed)
-    const timerId = setTimeout(() => {
+    const timeoutID = setTimeout(() => {
       if (positionChanged() && position !== null) {
         geocodePosition(position, (locStr) => {
           setLocationString(locStr);
@@ -222,7 +232,7 @@ function Create(props) {
       }
     }, loadTime);
     // Stop the timer if the component unmounts
-    return () => clearTimeout(timerId);
+    return () => clearTimeout(timeoutID);
   }, [position, oldPosition]);
   
   const positionChanged = () => {
