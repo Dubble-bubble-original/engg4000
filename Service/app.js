@@ -80,7 +80,7 @@ global.auth_tokens = new Map();
 // Start listening
 const PORT = ENV.PORT || 3001;
 // Keep the model in memory, make sure it's loaded only once
-loadModel().then(() => {
+loadModel().finally(() => {
   APP.listen(PORT, () => {
     logger.info(`Service running on port ${PORT}`);
   });

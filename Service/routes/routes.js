@@ -63,14 +63,6 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.createAuthToken)
   );
 
-  ROUTER.post(
-    '/verifyImage',
-    // USE(API.verifyAuthToken),
-    // Change this to take two images
-    USE(upload.single('image')),
-    USE(API.checkImages)
-  );
-
   // User post endpoints
   ROUTER.post(
     '/post',
@@ -178,6 +170,13 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.verifyAuthToken),
     USE(API.sendAKEmail)
   );
+
+  // Check Images Endpoint
+  ROUTER.post(
+    '/verifyImage/:ak',
+    // USE(API.verifyAuthToken),
+    USE(API.verifyImages)
+  );
 }
 // Production API
 else if (ENV.NODE_ENV === 'prod') {
@@ -245,6 +244,15 @@ else if (ENV.NODE_ENV === 'prod') {
     emailLimiter,
     USE(API.verifyAuthToken),
     USE(API.sendAKEmail)
+  );
+
+  // Check Images Endpoint
+  ROUTER.post(
+    '/verifyImages/:ak',
+    // USE(API.verifyAuthToken),
+    // Change this to take two images
+    USE(upload.single('image')),
+    USE(API.verifyImages)
   );
 }
 

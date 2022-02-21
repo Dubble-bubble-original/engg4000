@@ -1,5 +1,4 @@
 // Packages
-const fs = require('fs');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 
@@ -740,20 +739,32 @@ exports.sendAKEmail = async (req, res) => {
     });
 };
 
-exports.checkImages = async (req, res) => {
-  if (!req.file) {
-    res.status(400).send('Missing image multipart/form-data');
+exports.verifyImages = async (req, res) => {
+  const accessKey = req.params.ak;
+
+  const post = await UTILS.getPost(accessKey);
+
+  // If post is not found return
+  if (post === UTILS.Result.NotFound) {
+    return res.status(404).send({ message: 'User Post Not Found' });
   }
-  else {
-    const image = await UTILS.convert(req.file.path);
-    const predictions = await model.classify(image);
-
-    // Remove the image from Tesor and Model memory
-    image.dispose();
-
-    // Delete file from local server
-    fs.promises.unlink(req.file.path);
-
-    res.status(200).send({ predictions });
+  if (post === UTILS.Result.Error) {
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
+
+  // Convert Images
+  const postImage = await UTILS.convert(UTILS.getImageID(post.img_url));
+  const avatarImage = await UTILS.convert(UTILS.getImageID(post.author.avatar_url));
+
+  // Call model to check images
+  const postImageResults = await model.classify(postImage);
+  const avatarImageResults = await model.classify(avatarImage);
+
+  // Remove the images from Tesor and Model memory
+  postImage.dispose();
+  avatarImage.dispose();
+
+  console.log(post);
+
+  return res.status(200).send({ postImage: postImageResults, avatarImage: avatarImageResults });
 };

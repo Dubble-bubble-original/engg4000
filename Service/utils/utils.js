@@ -100,6 +100,26 @@ exports.deleteDBPost = async (postID) => (
     })
 );
 
+// Get Post
+exports.getPost = async (accessKey) => (
+  UserPost.findOne({ access_key: accessKey })
+    .populate({
+      path: 'author'
+    })
+    .exec()
+    .then((doc) => {
+      if (!doc) {
+        logger.info('User Post Not Found');
+        return Result.NotFound;
+      }
+      return doc;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return Result.Error;
+    })
+);
+
 // Convert the image to UInt8 Byte array
 exports.convert = async (img) => {
   // Decoded image in UInt8 Byte array
