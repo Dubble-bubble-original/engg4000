@@ -1,5 +1,5 @@
 // React
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, FormText } from 'react-bootstrap';
 import { MdContentCopy } from 'react-icons/md';
 import PropTypes from 'prop-types'
@@ -9,6 +9,7 @@ import logger from '../logger/logger';
 
 function CopyButton(props) {
   const [isCopied, setIsCopied] = useState(false);
+  const [timeoutID, setTimeoutID] = useState(null);
 
   async function copyTextToClipboard(text) {
     // Try to use clipboard API
@@ -27,14 +28,21 @@ function CopyButton(props) {
         // Show feedback on success
         setIsCopied(true);
         // Hide it after a few seconds
-        setTimeout(() => {
-          setIsCopied(false);
-        }, 1500);
+        setTimeoutID(
+          setTimeout(() => {
+            setIsCopied(false);
+          }, 1500)
+        );
       })
       .catch((err) => {
         logger.warn('Could not copy to clipboard: '+err);
       });
   }
+
+  useEffect(() => {
+    // Stop the timer if the component unmounts
+    return () => clearTimeout(timeoutID);
+  });
 
   return (
     <>

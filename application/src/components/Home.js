@@ -88,6 +88,11 @@ function Home() {
     );
   }
 
+  useEffect(() => {
+    // Stop the timer if the component unmounts
+    return () => clearTimeout(loadingTimerId);
+  }, [loadingTimerId]);
+
   return (
     <>
       <Container className="home-page outer-container" data-testid="home-page">

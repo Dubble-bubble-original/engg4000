@@ -65,6 +65,7 @@
 
 .post-location {
     width: 30%; /* Take 30% of post width, leaving 70% for body */
+    max-height: 30vh;
 }
 
 .modal-image {
