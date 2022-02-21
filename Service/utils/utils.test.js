@@ -50,3 +50,49 @@ describe('isAuthTokenStale', () => {
     expect(result).toBe(false);
   });
 });
+
+// Tests for toLowerCaseTags function
+describe('toLowerCaseTags', () => {
+  test('tags are all upper case', () => {
+    const tags = ['FOREST', 'NATURE', 'SUNSET'];
+    const expectedResult = ['forest', 'nature', 'sunset'];
+    const result = UTILS.toLowerCaseTags(tags);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('tags are all lower case', () => {
+    const tags = ['forest', 'nature', 'sunset'];
+    const expectedResult = ['forest', 'nature', 'sunset'];
+    const result = UTILS.toLowerCaseTags(tags);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('tags contain upper and lower case letters', () => {
+    const tags = ['Forest', 'Nature', 'Sunset'];
+    const expectedResult = ['forest', 'nature', 'sunset'];
+    const result = UTILS.toLowerCaseTags(tags);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+// Tests for getImageID function
+describe('getImageID', () => {
+  test('get image id with file extension from S3 object url', () => {
+    const imageUrl = 'https://senior-design-img-bucket.s3.amazonaws.com/image.jpg';
+    const expectedResult = 'image.jpg';
+    const result = UTILS.getImageID(imageUrl);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('get image id with no file extension from S3 object url', () => {
+    const imageUrl = 'https://senior-design-img-bucket.s3.amazonaws.com/image';
+    const expectedResult = 'image';
+    const result = UTILS.getImageID(imageUrl);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
