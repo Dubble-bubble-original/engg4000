@@ -15,9 +15,10 @@ import Post from './post/Post';
 import ConfirmationModal from './ConfirmationModal';
 import CopyButton from './CopyButton';
 import { TermsLink, TermsCheckbox } from './terms/Terms';
+import LoadingSpinner from './LoadingSpinner';
 
 // API
-import { createFullPost, postImages, deleteImage } from '../api/api.js';
+import { createFullPost, postImages, deleteImage, sendAccessKeyEmail } from '../api/api.js';
 import { geocodePosition } from './maps/Geocoder.js';
 
 function Number(props) {
@@ -68,10 +69,13 @@ function Create(props) {
   const [accessKey, setAccessKey] = useState('');
   const [isCreateError, setIsCreateError] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailResult, setEmailResult] = useState(null);
+  const [emailLoading, setEmailLoading] = useState(false);
 
   // Other variables
   const pictureFileInputRef = useRef(null);
   const errorFeedbackRef = useRef(null);
+  const emailFormRef = useRef(null);
   const MAX_TAGS = 5;
 
   useEffect(() => {
@@ -102,7 +106,7 @@ function Create(props) {
       tags: tags,
       title: title,
       img_url: getImageURL(picture),
-      date_created: new Date(),
+      date_created: new Date().toISOString(),
       location: position,
       location_string: locationString,
       true_location: isTruePosition
@@ -160,14 +164,39 @@ function Create(props) {
     }
   }
 
-  const sendEmail = () => {
-    // Todo: DBO-73 Call the send email endpoint from the create post component
+  const sendEmail = async () => {
+    // Hide old message (if any)
+    setEmailResult(null);
+    
+    // Basic validation
+    if (!email || !emailFormRef.current.checkValidity()) return;
+
+    // Add a little bit of loading to prevent flickering
+    setEmailLoading(true);
+
+    // Make API call
+    const result = await sendAccessKeyEmail(accessKey, email, name, title);
+
+    // Show feedback
+    if (result) setEmailResult('sent');
+    else setEmailResult('error');
   }
 
   useEffect(() => {
-    // Scroll to the error 0.5s after it appears
+    if (emailLoading) {
+      // Add small delay when sending email
+      const timeoutID = setTimeout(() => {setEmailLoading(false)}, 500);
+      // Stop the timer if the component unmounts
+      return () => clearTimeout(timeoutID);
+    }
+  }, [emailLoading]);
+
+  useEffect(() => {
     if (isCreateError) {
-      setTimeout(() => errorFeedbackRef.current.scrollIntoView(true), 500);
+      // Scroll to the error 0.5s after it appears
+      const timeoutID = setTimeout(() => errorFeedbackRef.current.scrollIntoView(true), 500);
+      // Stop the timer if the component unmounts
+      return () => clearTimeout(timeoutID);
     }
   }, [isCreateError]);
 
@@ -176,7 +205,7 @@ function Create(props) {
     // Randomized load time (+-200ms)
     const loadTime = GEOCODE_UPDATE_TIME + Math.floor(Math.random()*400)-200;
     // Update locationString after a delay (if needed)
-    const timerId = setTimeout(() => {
+    const timeoutID = setTimeout(() => {
       if (positionChanged()) {
         geocodePosition(position, (locStr) => {
           setLocationString(locStr);
@@ -185,7 +214,7 @@ function Create(props) {
       }
     }, loadTime);
     // Stop the timer if the component unmounts
-    return () => clearTimeout(timerId);
+    return () => clearTimeout(timeoutID);
   }, [position, oldPosition]);
   
   const positionChanged = () => {
@@ -208,6 +237,8 @@ function Create(props) {
     setAccessKey('');
     setIsCreateError(false);
     setEmail('');
+    setEmailResult(null);
+    setEmailLoading(false);
   }
 
   return (
@@ -389,7 +420,7 @@ function Create(props) {
               You may enter your email below to send yourself a copy of the access code via email.<br/>
             </Form.Text>
             <br/>
-            <Form noValidate onSubmit={preventSubmit} validated={!!email}>
+            <Form noValidate onSubmit={preventSubmit} validated={!!email} ref={emailFormRef}>
               <Form.Group>
                 <Form.Label>Email <Optional/></Form.Label>
                 <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
@@ -405,12 +436,29 @@ function Create(props) {
                     </Form.Control.Feedback>
                   </Col>
                   <Col xs="auto" sm="auto">
-                    <Button onClick={sendEmail}>Send Email</Button>
+                    <If condition={emailLoading}>
+                      <Then><LoadingSpinner /></Then>
+                      <Else><Button onClick={sendEmail} type="submit">Send Email</Button></Else>
+                    </If>
                   </Col>
                 </Row>
               </Form.Group>
             </Form>
             <br/>
+            <When condition={emailResult && !emailLoading}>
+              <If condition={emailResult==='sent'}>
+                <Then>
+                  <Alert variant="success">
+                    <MdOutlineCheckCircle/> Email sent successfully. <br/>Please check your spam folder if you don&apos;t see it in your inbox.
+                  </Alert>
+                </Then>
+                <Else>
+                  <Alert variant="danger">
+                    <MdErrorOutline/> Email could not be sent.
+                  </Alert>
+                </Else>
+              </If>
+            </When>
             <Button onClick={resetPage}>Create a New Post</Button>
           </Container>
         </Else>

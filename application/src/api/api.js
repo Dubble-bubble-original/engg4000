@@ -57,6 +57,22 @@ export const getPostsByTags = async (tags, page) => {
   });
 }
 
+// Get recent posts
+export const getRecentPosts = async (date) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+        method: 'POST',
+        url: serviceUrl + '/recentposts',
+        data: { date },
+        headers: {
+          'token': authToken,
+          'Content-Type': 'application/json',
+        }
+    });
+    return response.data;
+  });
+}
+
 // Delete post
 export const deletePostByID = async (_id) => {
   return await requestWithToken(async() => {
@@ -149,6 +165,27 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
         pictureId,
         user,
         post
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Send email with access key
+export const sendAccessKeyEmail = async (access_key, to_email, author_name, post_title) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/akemail',
+      data: {
+        access_key,
+        to_email,
+        author_name,
+        post_title
       },
       headers: {
         'Content-Type': 'application/json',

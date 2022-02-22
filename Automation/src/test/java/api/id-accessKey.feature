@@ -67,8 +67,8 @@ Feature: Tests for making sure _id's and access_key are not returned
     And header token = auth_token
     When method post
     Then status 200
-    * match each response..['access_key'] == '#notpresent'
-    * match each response..['_id'] == '#notpresent'
+    * match each response.posts..['access_key'] == '#notpresent'
+    * match each response.posts..['_id'] == '#notpresent'
 
   # Test for GET '/user' endpoint
   Scenario: Test for get user endpoint

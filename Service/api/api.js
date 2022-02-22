@@ -58,7 +58,9 @@ exports.createUserPost = (req, res) => {
 
   const dateCreated = Date.now();
   const accessKey = uuidv4();
+  const uniqueObjectId = new ObjectId();
   const newUserPost = new UserPost({
+    uid: uniqueObjectId,
     author: req.body.author,
     body: req.body.body,
     tags: req.body.tags,
@@ -83,6 +85,7 @@ exports.createUserPost = (req, res) => {
 
     return res.status(201).json({
       post: {
+        uid: newUserPost.uid,
         author: newUserPost.author,
         body: newUserPost.body,
         tags: newUserPost.tags,
@@ -188,7 +191,8 @@ exports.getUserPosts = (req, res) => {
 
   // Check if the filters have tags
   if (req.body.tags?.length > 0) {
-    providedTags = req.body.tags.map((tag) => tag.toLowerCase());
+    providedTags = UTILS.toLowerCaseTags(req.body.tags);
+
     searchFilters = [
       { $match: { tags: { $in: providedTags } } }
     ];
@@ -208,6 +212,7 @@ exports.getUserPosts = (req, res) => {
       ...searchFilters,
       {
         $project: {
+          uid: 1,
           title: 1,
           body: 1,
           tags: 1,
@@ -295,8 +300,21 @@ exports.getUserPosts = (req, res) => {
 };
 
 exports.getRecentPosts = (req, res) => {
-  let searchFilters = [
+  // Get # of posts per page
+  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
+  let postFilters = [{ $limit: postLimit }];
+
+  // Filter by date (if given)
+  if (req.body.date) {
+    postFilters = [
+      { $match: { date_created: { $lt: new Date(req.body.date) } } },
+      ...postFilters
+    ];
+  }
+
+  const pipeline = [
     {
+      // Populate the author data
       $lookup: {
         from: User.collection.name,
         localField: 'author',
@@ -304,29 +322,35 @@ exports.getRecentPosts = (req, res) => {
         as: 'author'
       }
     },
+    // Unwind author from an array into a single object
     { $unwind: '$author' },
     {
+      // Hide all id fields except uid
       $project: {
         _id: false,
         access_key: false,
         'author._id': false
       }
     },
-    { $sort: { date_created: -1, _id: 1 } }
+    // Sort by most recent
+    { $sort: { date_created: -1, _id: 1 } },
+    {
+      $facet: {
+        // Filter posts returned
+        posts: postFilters,
+        // Give back total number of posts matched (before limit)
+        info: [
+          { $count: 'totalCount' }
+        ]
+      }
+    }
   ];
 
-  if (req.body.date) {
-    searchFilters = [
-      { $match: { date_created: { $lt: new Date(req.body.date) } } },
-      ...searchFilters
-    ];
-  }
-
-  // Get # of posts per page
-  const postLimit = req.body.post_limit ?? POST_LIMIT_DEFAULT;
-
-  UserPost.aggregate(searchFilters).limit(postLimit)
-    .then((combinedDocs) => res.status(200).send(combinedDocs))
+  UserPost.aggregate(pipeline)
+    .then((result) => res.status(200).send({
+      posts: result[0].posts,
+      totalCount: result[0].info[0]?.totalCount ?? 0
+    }))
     .catch((error) => {
       logger.error(error.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
@@ -632,7 +656,9 @@ exports.createFullUserPost = async (req, res) => {
     // Create post with new user id and uploaded post picture
     const dateCreated = Date.now();
     const accessKey = uuidv4();
+    const uniqueObjectId = new ObjectId();
     const newUserPost = new UserPost({
+      uid: uniqueObjectId,
       author: newUser._id,
       body: post.body,
       tags: post.tags,
@@ -665,6 +691,7 @@ exports.createFullUserPost = async (req, res) => {
 
       return res.status(201).json({
         post: {
+          uid: newUserPost.uid,
           author: {
             name: newUser.name,
             avatar_url: newUser.avatar_url,
