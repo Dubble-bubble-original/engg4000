@@ -1,6 +1,9 @@
+/* eslint-disable max-len */
 // Packages
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
+const fs = require('fs');
+const download = require('image-downloader');
 
 // Utils
 const UTILS = require('../utils/utils');
@@ -752,19 +755,36 @@ exports.verifyImages = async (req, res) => {
     return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
+  // Download post image
+  const postImage = await download.image({
+    url: post.img_url,
+    dest: './model'
+  });
+  // Download Avatar Image
+  const avatarImage = await download.image({
+    url: post.author.avatar_url,
+    dest: './model'
+  });
+
   // Convert Images
-  const postImage = await UTILS.convert(UTILS.getImageID(post.img_url));
-  const avatarImage = await UTILS.convert(UTILS.getImageID(post.author.avatar_url));
+  const postImageData = await UTILS.convert(postImage.filename);
+  const avatarImageData = await UTILS.convert(avatarImage.filename);
 
   // Call model to check images
-  const postImageResults = await model.classify(postImage);
-  const avatarImageResults = await model.classify(avatarImage);
+  const postImageResults = await model.classify(postImageData);
+  const avatarImageResults = await model.classify(avatarImageData);
 
   // Remove the images from Tesor and Model memory
-  postImage.dispose();
-  avatarImage.dispose();
+  postImageData.dispose();
+  avatarImageData.dispose();
 
-  console.log(post);
+  // Delete dowloaded images from storage
+  fs.promises.unlink(postImage.filename);
+  fs.promises.unlink(avatarImage.filename);
 
-  return res.status(200).send({ postImage: postImageResults, avatarImage: avatarImageResults });
+  // TODO: Create a function in utils to check if the image needs to be removed or not
+  // TODO: Create a function in utils to upadte the post iamge if needed
+  // TODO: Also create two default images in the S3 bukcet, for post and avatar
+
+  return res.status(200).send({ postImage_Resulst: postImageResults, avatarImage_Results: avatarImageResults });
 };
