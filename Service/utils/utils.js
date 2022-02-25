@@ -1,6 +1,9 @@
 // Packages
 const fs = require('fs');
 
+const Filter = require('bad-words');
+const filter = new Filter();
+
 // DB
 const { UserPost, User } = require('../db/dbSchema');
 
@@ -97,5 +100,8 @@ exports.deleteDBPost = async (postID) => (
       return Result.Error;
     })
 );
+
+// Clean strings of bad words
+exports.cleanString = (string) => filter.clean(string);
 
 exports.Result = Result;

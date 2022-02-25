@@ -96,3 +96,22 @@ describe('getImageID', () => {
     expect(result).toEqual(expectedResult);
   });
 });
+
+// Tests for cleanString function
+describe('cleanString', () => {
+  test('clean string containing bad words', () => {
+    const string = 'This Fuck String Shit is Damn clean hell now!';
+    const expectedResult = 'This **** String **** is **** clean **** now!';
+    const result = UTILS.cleanString(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('clean string containing no bad words', () => {
+    const string = 'This String is clean!';
+    const expectedResult = 'This String is clean!';
+    const result = UTILS.cleanString(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
