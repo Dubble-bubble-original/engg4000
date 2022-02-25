@@ -778,11 +778,31 @@ exports.verifyImages = async (req, res) => {
   postImageData.dispose();
   avatarImageData.dispose();
 
+  // Delete post image if needed
+  if (UTILS.checkImage(postImageResults)) {
+    // Delete Image
+    const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
+    if (results === UTILS.Result.Error) {
+      logger.error(INTERNAL_SERVER_ERROR_MSG);
+    }
+
+    // Update the post to default post image
+  }
+
+  if (UTILS.checkImage(avatarImageResults)) {
+    // Delete Image
+    const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
+    if (results === UTILS.Result.Error) {
+      logger.error(INTERNAL_SERVER_ERROR_MSG);
+    }
+
+    // Update the post to default avatar image
+  }
+
   // Delete dowloaded images from storage
   fs.promises.unlink(postImage.filename);
   fs.promises.unlink(avatarImage.filename);
 
-  // TODO: Create a function in utils to check if the image needs to be removed or not
   // TODO: Create a function in utils to upadte the post iamge if needed
   // TODO: Also create two default images in the S3 bukcet, for post and avatar
 

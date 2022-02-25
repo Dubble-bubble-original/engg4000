@@ -137,6 +137,15 @@ exports.convert = async (img) => {
   return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
 };
 
+exports.checkImage = async (predictions) => {
+  const neutral = predictions[0];
+  const prob = Number((neutral.probability * 100).toFixed(0));
+  if (prob >= 85) {
+    return true;
+  }
+  return false;
+};
+
 // Get Image ID from Image URL
 exports.getImageID = (imgURL) => imgURL.substring(imgURL.lastIndexOf('/') + 1);
 
