@@ -45,6 +45,7 @@
 .post-body {
     /* Keep extra whitespace inside the description of the post (e.g., newlines) */
     white-space: pre-wrap;
+    width: 100%;
 }
 
 .tag-container {
@@ -64,6 +65,7 @@
 
 .post-location {
     width: 30%; /* Take 30% of post width, leaving 70% for body */
+    max-height: 30vh;
 }
 
 .modal-image {
