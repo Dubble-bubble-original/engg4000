@@ -71,6 +71,7 @@ function Create(props) {
   const [email, setEmail] = useState('');
   const [emailResult, setEmailResult] = useState(null);
   const [emailLoading, setEmailLoading] = useState(false);
+  const [error429Message, setError429Message] = useState(null);
 
   // Other variables
   const pictureFileInputRef = useRef(null);
@@ -134,8 +135,10 @@ function Create(props) {
     let imgResult = null;
     if (avatarImg || picture) {
       imgResult = await postImages(avatarImg, picture);
-      if (!imgResult) {
+
+      if (imgResult?.error) {
         setIsCreateError(true);
+        setError429Message(imgResult?.message);
         return;
       }
     }
@@ -151,12 +154,13 @@ function Create(props) {
     const result = await createFullPost(avatarId, pictureId, user, post);
 
     // Show feedback
-    if (result) {
+    if (!result?.error) {
       setAccessKey(result.post.access_key);
       setCreated(true);
     }
     else {
       setIsCreateError(true);
+      setError429Message(result?.message);
 
       // Delete images (if any)
       if (avatarId) deleteImage(avatarId);
@@ -179,7 +183,7 @@ function Create(props) {
     const result = await sendAccessKeyEmail(accessKey, email, name, title);
 
     // Show feedback
-    if (result) setEmailResult('sent');
+    if (!result?.error) setEmailResult('sent');
     else setEmailResult('error');
   }
 
@@ -229,6 +233,7 @@ function Create(props) {
     setEmail('');
     setEmailResult(null);
     setEmailLoading(false);
+    setError429Message(null);
   }
 
   return (
@@ -457,7 +462,11 @@ function Create(props) {
       <When condition={isCreateError}>
         <Container className="outer-container" ref={errorFeedbackRef}>
           <Alert variant="danger" className="mb-0">
-            <MdErrorOutline/> Post could not be created. Please try again later.
+            <MdErrorOutline/> {
+                (error429Message)
+                ? error429Message
+                :'Post could not be created. Please try again later.'
+              }
           </Alert>
         </Container>
       </When>

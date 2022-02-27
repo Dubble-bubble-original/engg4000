@@ -26,6 +26,8 @@ function Search() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingTimerId, setLoadingTimerId] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [error429Message, setError429Message] = useState(null);
+
 
   const searchPosts = () => {
     // Call getPost even if the tags haven't changed
@@ -49,6 +51,8 @@ function Search() {
   }
 
   const getPosts = async () => {
+    setError429Message(null)
+
     // Should not work if called without any tag selected
     if (searchTags.length === 0) return;
 
@@ -64,7 +68,7 @@ function Search() {
 
     // Call API
     const result = await getPostsByTags(searchTags, page);
-    if (result) {
+    if (!result?.error) {
       // Success
       setNumResults(result.totalCount);
       if (page>1) addPosts(result.posts);
@@ -73,6 +77,7 @@ function Search() {
     else {
       // Error occured
       setPosts([]);
+      setError429Message(result?.message)
     }
 
     setShowResults(true);
@@ -121,9 +126,16 @@ function Search() {
         <Alert
           variant="danger"
           className="mb-0 mt-3"
-          hidden={tags.length}
+          hidden={tags.length} 
         >
           <MdErrorOutline/> You must select at least one tag.
+        </Alert>
+        <Alert
+          variant="danger"
+          className="mb-0 mt-3"
+          hidden={!error429Message} 
+        >
+          <MdErrorOutline/> {error429Message}
         </Alert>
         <Button 
           className="mt-3"

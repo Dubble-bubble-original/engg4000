@@ -25,6 +25,7 @@ function Home() {
   const [loadingTimerId, setLoadingTimerId] = useState(null);
   const [lastDate, setLastDate] = useState(null);
   const [isError, setIsError] = useState(false);
+  const [error429Message, setError429Message] = useState(null);
 
   const refreshPosts = () => {
     // Call getPost even if the lastDate hasn't changed
@@ -42,6 +43,7 @@ function Home() {
   const getPosts = async () => {
     // Reset
     setIsError(false);
+    setError429Message(null)
     setNumResults(0);
 
     // Add a minimum load time
@@ -50,7 +52,7 @@ function Home() {
 
     // Call API
     let result = await getRecentPosts(lastDate);
-    if (result) {
+    if (!result?.error) {
       // Success
       setNumResults(result.totalCount);
       if (lastDate) addPosts(result.posts);
@@ -59,6 +61,7 @@ function Home() {
     else {
       // Error occured
       setIsError(true);
+      setError429Message(result.message)
     }
 
     setShowResults(true);
@@ -103,6 +106,17 @@ function Home() {
         </FRow>
       </Container>
 
+      <When condition={isError && !isPaginating}>
+        <Container className="outer-container">
+          <Alert
+            variant="danger"
+            className="mb-0"
+          >
+            <MdErrorOutline/> {(error429Message)?error429Message:'Recent posts could not be retrieved. Please try again later.'}
+          </Alert>
+        </Container>
+      </When>
+
       <Fade in={showResults && (!isLoading || isPaginating)}>
         <div hidden={!(showResults && (!isLoading || isPaginating))}>
           <TransitionGroup>
@@ -120,17 +134,6 @@ function Home() {
               )
             }
           </TransitionGroup>
-
-          <When condition={isError && !isPaginating}>
-            <Container className="outer-container">
-              <Alert
-                variant="danger"
-                className="mb-0"
-              >
-                <MdErrorOutline/> Recent posts could not be retrieved. Please try again later.
-              </Alert>
-            </Container>
-          </When>
 
           <When condition={posts.length < numResults && !isPaginating}>
             <CenterContainer>

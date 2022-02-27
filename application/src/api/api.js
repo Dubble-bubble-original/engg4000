@@ -24,6 +24,13 @@ export const getAuthToken = async () => {
     authToken = response.data.token;
   } catch(error) {
     logger.warn(error);
+
+    if(error?.response?.status === 429) {
+      return ({
+        error: true,
+        message: error?.response?.data?.message,
+      });
+    }
   }
 }
 
@@ -202,14 +209,27 @@ const requestWithToken = async (request) => {
       // Make the given request
       return await request();
     } catch(error) {
+      if(error?.response?.status === 429) {
+        logger.warn(error);
+        return ({
+          error: true,
+          message: error?.response?.data?.message,
+        });
+      }
       if(error?.response?.status === 401) {
         // Get New Auth Token and retry
-        await getAuthToken();
+        const response = await getAuthToken();
+        if (response?.error) {
+          return response;
+        }
       }
       else {
         // Don't retry if a different error occurs
         logger.warn(error);
-        return null;
+        return ({
+          error: true,
+          message: null,
+        });
       }
     }
   }
