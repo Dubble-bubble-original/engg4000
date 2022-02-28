@@ -175,6 +175,20 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
   });
 }
 
+// Call endpoint to check images
+export const checkImages = async (access_key) => {
+  return await requestWithToken(async() => {
+    const response = await axios ({
+      method: 'POST',
+      url: serviceUrl + '/verifyImage/' + access_key,
+      headers: {
+        'token': authToken
+      }
+    });
+    return response;
+  })
+}
+
 // Send email with access key
 export const sendAccessKeyEmail = async (access_key, to_email, author_name, post_title) => {
   return await requestWithToken(async() => {
