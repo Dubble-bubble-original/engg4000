@@ -174,7 +174,7 @@ if (ENV.NODE_ENV === 'dev') {
   // Check Images Endpoint
   ROUTER.post(
     '/verifyImage/:ak',
-    // USE(API.verifyAuthToken),
+    USE(API.verifyAuthToken),
     USE(API.verifyImages)
   );
 }
@@ -248,10 +248,8 @@ else if (ENV.NODE_ENV === 'prod') {
 
   // Check Images Endpoint
   ROUTER.post(
-    '/verifyImages/:ak',
-    // USE(API.verifyAuthToken),
-    // Change this to take two images
-    USE(upload.single('image')),
+    '/verifyImage/:ak',
+    USE(API.verifyAuthToken),
     USE(API.verifyImages)
   );
 }
