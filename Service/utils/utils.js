@@ -146,6 +146,40 @@ exports.checkImage = async (predictions) => {
   return false;
 };
 
+exports.updatePostImage = async (query, body) => {
+  UserPost.findOneAndUpdate(query, body, { new: true })
+    .select('-_id -access_key')
+    .exec()
+    .then((doc) => {
+      if (!doc) {
+        logger.info('Post Image Not Updated');
+        return Result.NotFound;
+      }
+      logger.info('Post Image Updated');
+      return Result.Success;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return Result.Error;
+    });
+};
+
+exports.updateAvatarImage = async (query, body) => {
+  User.findOneAndUpdate(query, body, { new: true })
+    .then(() => {
+      if (!doc) {
+        logger.info('Avatar Image Not Updated');
+        return Result.NotFound;
+      }
+      logger.info('Avatar Image Updated');
+      return Result.Success;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return Result.Error;
+    });
+};
+
 // Get Image ID from Image URL
 exports.getImageID = (imgURL) => imgURL.substring(imgURL.lastIndexOf('/') + 1);
 

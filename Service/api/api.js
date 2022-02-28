@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable max-len */
 // Packages
 const uuidv4 = require('uuid').v4;
@@ -532,17 +533,19 @@ exports.deleteFullUserPost = async (req, res) => {
     if (post.author.avatar_url) {
       // Get avatar image id
       const avatarID = UTILS.getImageID(post.author.avatar_url);
-      // Checking if Avatar Image Exists
-      const avatarExists = await checkFile(avatarID);
+      if (avatarID !== 'default_avatarImage.png') {
+        // Checking if Avatar Image Exists
+        const avatarExists = await checkFile(avatarID);
 
-      // Delete avatar image if it exists
-      let avatarImg = {};
-      if (avatarExists) {
-        avatarImg = UTILS.deleteS3Image(avatarID);
-      }
-      if (avatarImg === UTILS.Result.Error || !avatarExists) {
-        status.avatar = 'Avatar Image Not Found';
-        fullyDeleted = false;
+        // Delete avatar image if it exists
+        let avatarImg = {};
+        if (avatarExists) {
+          avatarImg = UTILS.deleteS3Image(avatarID);
+        }
+        if (avatarImg === UTILS.Result.Error || !avatarExists) {
+          status.avatar = 'Avatar Image Not Found';
+          fullyDeleted = false;
+        }
       }
     }
   }
@@ -551,17 +554,19 @@ exports.deleteFullUserPost = async (req, res) => {
   if (post.img_url) {
     // Get post image id
     const postImageID = UTILS.getImageID(post.img_url);
-    // Checking if Post Image Exists
-    const postImageExists = await checkFile(postImageID);
+    if (postImageID !== 'default_postImage.jpeg') {
+      // Checking if Post Image Exists
+      const postImageExists = await checkFile(postImageID);
 
-    // Deleting post image if it exists
-    let postImg = {};
-    if (postImageExists) {
-      postImg = UTILS.deleteS3Image(postImageID);
-    }
-    if (postImg === UTILS.Result.Error || !postImageExists) {
-      status.postImg = 'Post Image Not Found';
-      fullyDeleted = false;
+      // Deleting post image if it exists
+      let postImg = {};
+      if (postImageExists) {
+        postImg = UTILS.deleteS3Image(postImageID);
+      }
+      if (postImg === UTILS.Result.Error || !postImageExists) {
+        status.postImg = 'Post Image Not Found';
+        fullyDeleted = false;
+      }
     }
   }
 
@@ -755,56 +760,80 @@ exports.verifyImages = async (req, res) => {
     return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
-  // Download post image
-  const postImage = await download.image({
-    url: post.img_url,
-    dest: './model'
-  });
-  // Download Avatar Image
-  const avatarImage = await download.image({
-    url: post.author.avatar_url,
-    dest: './model'
-  });
+  // Check Avatar Image
+  if (post.author.avatar_url) {
+    // Download Avatar Image
+    const avatarImage = await download.image({
+      url: post.author.avatar_url,
+      dest: './model'
+    });
 
-  // Convert Images
-  const postImageData = await UTILS.convert(postImage.filename);
-  const avatarImageData = await UTILS.convert(avatarImage.filename);
+    // Convert Image
+    const avatarImageData = await UTILS.convert(avatarImage.filename);
 
-  // Call model to check images
-  const postImageResults = await model.classify(postImageData);
-  const avatarImageResults = await model.classify(avatarImageData);
+    // Remove the image from Tesor and Model memory
+    avatarImageData.dispose();
 
-  // Remove the images from Tesor and Model memory
-  postImageData.dispose();
-  avatarImageData.dispose();
+    // Call model to check image
+    const avatarImageResults = await model.classify(avatarImageData);
 
-  // Delete post image if needed
-  if (UTILS.checkImage(postImageResults)) {
-    // Delete Image
-    const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
-    if (results === UTILS.Result.Error) {
-      logger.error(INTERNAL_SERVER_ERROR_MSG);
+    if (UTILS.checkImage(avatarImageResults)) {
+      // Delete Image
+      const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
+      if (results === UTILS.Result.Error) {
+        logger.error(INTERNAL_SERVER_ERROR_MSG);
+      }
+
+      // Update avatar image
+      const query = { _id: post.author._id };
+      const body = {
+        upadte: {
+          avatar_url: `${BUCKET_URL}default_avatarImage.png`
+        }
+      };
+      await UTILS.updateAvatarImage(query, body);
     }
-
-    // Update the post to default post image
   }
 
-  if (UTILS.checkImage(avatarImageResults)) {
-    // Delete Image
-    const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
-    if (results === UTILS.Result.Error) {
-      logger.error(INTERNAL_SERVER_ERROR_MSG);
-    }
+  // Check Post Image
+  if (post.img_url) {
+    // Download post image
+    const postImage = await download.image({
+      url: post.img_url,
+      dest: './model'
+    });
 
-    // Update the post to default avatar image
+    // Convert Image
+    const postImageData = await UTILS.convert(postImage.filename);
+
+    // Call model to check image
+    const postImageResults = await model.classify(postImageData);
+
+    // Remove the images from Tesor and Model memory
+    postImageData.dispose();
+
+    // Delete post image if needed
+    if (UTILS.checkImage(postImageResults)) {
+      // Delete Image
+      const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
+      if (results === UTILS.Result.Error) {
+        logger.error(INTERNAL_SERVER_ERROR_MSG);
+      }
+
+      // Update post image
+      const query = { _id: post._id };
+      const body = {
+        upadte: {
+          avatar_url: `${BUCKET_URL}default_postImage.jpeg`
+        }
+      };
+      await UTILS.updatePostImage(query, body);
+    }
   }
 
   // Delete dowloaded images from storage
   fs.promises.unlink(postImage.filename);
   fs.promises.unlink(avatarImage.filename);
-
-  // TODO: Create a function in utils to upadte the post iamge if needed
-  // TODO: Also create two default images in the S3 bukcet, for post and avatar
 
   return res.status(200).send({ postImage_Resulst: postImageResults, avatarImage_Results: avatarImageResults });
 };
