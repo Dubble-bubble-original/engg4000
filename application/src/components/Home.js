@@ -35,17 +35,25 @@ function Home() {
   }
 
   const loadMorePosts = () => {
-    // Update the last date (which will trigger getPosts)
+    // Call getpost even if lastDate hasn't changed
     const lastPost = posts[posts.length-1];
-    setLastDate(lastPost.date_created);
+    if (lastDate === lastPost.date_created) getPosts();
+    // Else update the last date (which will trigger getPosts)
+    else setLastDate(lastPost.date_created);
   }
 
   const getPosts = async () => {
     // Reset
     setIsError(false);
-    setError429Message(null)
-    setNumResults(0);
+    setError429Message(null);
 
+    // Reset UI on refresh
+    if (lastDate === null) {
+      setShowResults(false);
+      setNumResults(0);
+      setPosts([]);
+    }
+    
     // Add a minimum load time
     if (lastDate) fakeLoading(setIsPaginating);
     else fakeLoading(setIsLoading);
@@ -61,7 +69,7 @@ function Home() {
     else {
       // Error occured
       setIsError(true);
-      setError429Message(result.message)
+      setError429Message(result.message);
     }
 
     setShowResults(true);
@@ -111,17 +119,6 @@ function Home() {
         </FRow>
       </Container>
 
-      <When condition={isError && !isPaginating}>
-        <Container className="outer-container">
-          <Alert
-            variant="danger"
-            className="mb-0"
-          >
-            <MdErrorOutline/> {(error429Message)?error429Message:'Recent posts could not be retrieved. Please try again later.'}
-          </Alert>
-        </Container>
-      </When>
-
       <Fade in={showResults && (!isLoading || isPaginating)}>
         <div hidden={!(showResults && (!isLoading || isPaginating))}>
           <TransitionGroup>
@@ -137,6 +134,17 @@ function Home() {
               )
             }
           </TransitionGroup>
+
+          <When condition={isError && !isPaginating}>
+            <Container className="outer-container">
+              <Alert
+                variant="danger"
+                className="mb-0"
+              >
+                <MdErrorOutline/> {error429Message?error429Message:'Recent posts could not be retrieved. Please try again later.'}
+              </Alert>
+            </Container>
+          </When>
 
           <When condition={posts.length < numResults && !isPaginating}>
             <CenterContainer>
