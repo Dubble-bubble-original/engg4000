@@ -14,6 +14,14 @@ const MAX_RETRY_LIMIT = 2;
 // Get the service url from the environment file
 const serviceUrl = ENV.REACT_APP_SERVICE_URL;
 
+// Corresponding 429 Error Message
+const error429Message = [
+  'You have returned to this site too many times this hour. ',
+  'You have created, deleted, or published too many posts this hour.',
+  'You have refreshed user posts too many times this hour.',
+  'You have sent out too many emails this hour.'
+];
+
 // Get Auth token
 export const getAuthToken = async () => {
   try {
@@ -28,7 +36,7 @@ export const getAuthToken = async () => {
     if(error?.response?.status === 429) {
       return ({
         error: true,
-        message: error?.response?.data?.message,
+        message: error429Message[error?.response?.data?.errorCode],
       });
     }
   }
@@ -213,7 +221,7 @@ const requestWithToken = async (request) => {
         logger.warn(error);
         return ({
           error: true,
-          message: error?.response?.data?.message,
+          message: error429Message[error?.response?.data?.errorCode],
         });
       }
       if(error?.response?.status === 401) {
