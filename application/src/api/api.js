@@ -16,10 +16,10 @@ const serviceUrl = ENV.REACT_APP_SERVICE_URL;
 
 // Corresponding 429 Error Message
 const error429Message = [
-  'You have returned to this site too many times this hour. ',
-  'You have created, deleted, or published too many posts this hour.',
-  'You have refreshed user posts too many times this hour.',
-  'You have sent out too many emails this hour.'
+  'You have returned to this site too many times this hour. Please try again later.',
+  'You have created, deleted, or published too many posts this hour. Please try again later.',
+  'You have loaded user posts too many times this hour. Please try again later.',
+  'You have sent out too many emails this hour. Please try again later.'
 ];
 
 // Get Auth token
