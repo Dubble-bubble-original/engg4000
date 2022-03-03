@@ -11,7 +11,7 @@ const geocodePosition = (pos, callback) => {
       latlng: pos.lat+','+pos.lng,
       language: 'en',
       result_type: 'country|administrative_area_level_1|locality',
-      key: process.env.REACT_APP_MAPS_API_KEY 
+      key: process.env.REACT_APP_GEO_API_KEY 
     }
   })
   .then((response) => {
