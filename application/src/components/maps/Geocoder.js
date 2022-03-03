@@ -1,6 +1,5 @@
 import { geocode } from '../../api/api.js';
 
-// const GEOCODE_API = 'https://maps.googleapis.com/maps/api/geocode/json';
 const DEFAULT_LOCATION_STRING = 'Unknown Location';
 
 // Get a location_string given lat/lng position
