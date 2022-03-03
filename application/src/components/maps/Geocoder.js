@@ -11,9 +11,11 @@ const geocodePosition = (pos, callback) => {
 
   geocode(pos.lat, pos.lng)
     .then(result => {
+      console.log(result);
       callback(result.locationString);
     })
-    .catch(() => {
+    .catch(e => {
+      console.log(e);
       callback(DEFAULT_LOCATION_STRING);
     });
 

@@ -766,7 +766,7 @@ exports.geocodePosition = async (req, res) => {
       // Return failure for all other status:
       // OVER_QUERY_LIMIT, ZERO_RESULTS, REQUEST_DENIED, INVALID_REQUEST, UNKNOWN_ERROR
       logger.error(`Geocoding failed. Status: ${status}. Response: ${JSON.stringify(response.data)}`);
-      return fail();
+      return res.status(500).send(response);
     })
     .catch((e) => {
       logger.error(`Geocoding error: ${e.message}`);

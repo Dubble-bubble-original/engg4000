@@ -41,7 +41,7 @@ global.logger = WINSTON.createLogger({
 });
 
 // if (ENV.NODE_ENV === 'dev') {
-loggger.add(new WINSTON.transports.Console({}));
+logger.add(new WINSTON.transports.Console({}));
 // }
 logger.info('Service logger initialized');
 
