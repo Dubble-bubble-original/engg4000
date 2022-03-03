@@ -196,6 +196,21 @@ export const sendAccessKeyEmail = async (access_key, to_email, author_name, post
   });
 }
 
+// Geocode position based on lat/lng
+export const geocode = async (lat, lng) => {
+  return await requestWithToken(async() => {
+    const latlng = lat+','+lng;
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/geocode/' + latlng,
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
 const requestWithToken = async (request) => {
   for (let i=0; i<MAX_RETRY_LIMIT; i++) {
     try {
