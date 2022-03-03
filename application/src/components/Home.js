@@ -88,6 +88,11 @@ function Home() {
     );
   }
 
+  useEffect(() => {
+    // Stop the timer if the component unmounts
+    return () => clearTimeout(loadingTimerId);
+  }, [loadingTimerId]);
+
   return (
     <>
       <Container className="home-page outer-container" data-testid="home-page">
@@ -107,15 +112,13 @@ function Home() {
         <div hidden={!(showResults && (!isLoading || isPaginating))}>
           <TransitionGroup>
             {
-              posts.map((post, index) =>
+              posts.map((post) =>
                 <CSSTransition
-                  key={index}
+                  key={post.uid}
                   timeout={150}
                   classNames="fade-in"
                 >
-                  <Post
-                    postData={post}
-                  />
+                  <Post postData={post}/>
                 </CSSTransition>
               )
             }

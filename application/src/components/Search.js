@@ -98,6 +98,11 @@ function Search() {
     );
   }
 
+  useEffect(() => {
+    // Stop the timer if the component unmounts
+    return () => clearTimeout(loadingTimerId);
+  }, [loadingTimerId]);
+
   const tagsEqual = () => {
     if (tags.length !== searchTags.length) return false;
     const a1 = tags.sort();
@@ -171,16 +176,13 @@ function Search() {
             <When condition={posts.length > 0}>
               <TransitionGroup>
                 {
-                  posts.map((post, index) =>
+                  posts.map((post) => 
                     <CSSTransition
-                      key={index}
+                      key={post.uid}
                       timeout={150}
                       classNames="fade-in"
                     >
-                      <Post
-                        postData={post}
-                        key={index}
-                      />
+                      <Post postData={post}/>
                     </CSSTransition>
                   )
                 }
