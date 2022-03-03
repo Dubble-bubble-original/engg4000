@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}  
       - name: Build Images
         run: |
-          docker build --build-arg API_KEY=${{ secrets.API_KEY }} --build-arg GEO_KEY=${{ secrets.GEO_KEY }} --build-arg SERVICE_URL=${{ secrets.SERVICE_URL }} -t ${{ secrets.DOCKER_USERNAME }}/engg4000-client ./application
+          docker build --build-arg API_KEY=${{ secrets.API_KEY }} --build-arg SERVICE_URL=${{ secrets.SERVICE_URL }} -t ${{ secrets.DOCKER_USERNAME }}/engg4000-client ./application
           docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-api ./Service
           docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx ./nginx
       
