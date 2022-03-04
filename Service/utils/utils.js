@@ -137,6 +137,7 @@ exports.convert = async (img) => {
   return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
 };
 
+// Returns true if the image has to be deleted
 exports.checkImage = async (predictions) => {
   const neutral = predictions[0];
   const prob = Number((neutral.probability * 100).toFixed(0));
@@ -146,7 +147,8 @@ exports.checkImage = async (predictions) => {
   return false;
 };
 
-exports.updatePostImage = async (query, body) => {
+// Update Post
+exports.updatePost = async (query, body) => {
   UserPost.findOneAndUpdate(query, body, { new: true })
     .select('-_id -access_key')
     .exec()
@@ -164,7 +166,8 @@ exports.updatePostImage = async (query, body) => {
     });
 };
 
-exports.updateAvatarImage = async (query, body) => {
+// Update User
+exports.updateUser = async (query, body) => {
   User.findOneAndUpdate(query, body, { new: true })
     .then(() => {
       if (!doc) {
