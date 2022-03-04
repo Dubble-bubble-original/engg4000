@@ -2,7 +2,7 @@ name: CD Pipeline
 on:
   push:
     branches:  
-    - 'master'
+    - 'BDO-90'
 
 jobs:
   test:
