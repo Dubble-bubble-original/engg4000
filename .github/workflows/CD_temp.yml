@@ -2,7 +2,9 @@ name: Temp CD Pipeline
 on:
   push:
     branches:  
-    - 'BDO-90'
+    - 'master'
+    - 'DBO-90'
+    - 'dbo-90'
 
 jobs:
   test:
