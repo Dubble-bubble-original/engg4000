@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: Temp CD Pipeline
 on:
   push:
     branches:  
