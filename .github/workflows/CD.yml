@@ -4,7 +4,6 @@ on:
     branches:  
     - 'master'
     - 'DBO-90'
-    - 'dbo-90'
 
 jobs:
   test:
