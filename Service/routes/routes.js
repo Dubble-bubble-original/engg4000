@@ -57,7 +57,7 @@ const emailLimiter = RATE_LIMIT({
 });
 
 const geocodeLimiter = RATE_LIMIT({
-  windowMs: 60 * 60 * 1000, // 1 hour
+  windowMs: 60 * 1000, // 1 minute
   max: 100, // Limit each IP to 100 geocode requests per window
   message: { message: 'Too Many Geocode Requests From This IP Address' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
