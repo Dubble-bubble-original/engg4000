@@ -93,7 +93,7 @@ function Post({postData}) {
       <Modal fullscreen show={avatarImageModal} onHide={() => setAvatarImageModal(false)}>
         <Modal.Header closeButton>{postData.author.name}</Modal.Header>
         <Modal.Body>
-          <img className="modal-image" src={postData.author.avatar_url} />
+          <img className="modal-image" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
         </Modal.Body>
       </Modal>
     </>
