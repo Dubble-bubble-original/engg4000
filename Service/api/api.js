@@ -554,7 +554,7 @@ exports.deleteFullUserPost = async (req, res) => {
   if (post.img_url) {
     // Get post image id
     const postImageID = UTILS.getImageID(post.img_url);
-    if (postImageID !== 'default_postImage.jpeg') {
+    if (postImageID !== 'default_postImage.png') {
       // Checking if Post Image Exists
       const postImageExists = await checkFile(postImageID);
 
@@ -772,31 +772,22 @@ exports.verifyImages = async (req, res) => {
       // Convert Image
       const avatarImageData = await UTILS.convert(avatarImage.filename);
 
-      // Remove the image from Tesor and Model memory
-      avatarImageData.dispose();
-
       // Call model to check image
       const avatarImageResults = await model.classify(avatarImageData);
 
       if (UTILS.checkImage(avatarImageResults)) {
-      // Delete Image
+        // Delete Image
         const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
         if (results === UTILS.Result.Error) {
           logger.error(INTERNAL_SERVER_ERROR_MSG);
         }
 
-        // Update avatar image
-        const query = { _id: post.author._id };
-        const body = {
-          upadte: {
-            avatar_url: `${BUCKET_URL}default_avatarImage.png`
-          }
-        };
-        await UTILS.updateUser(query, body);
+        await UTILS.updateUser(post.author._id, `${BUCKET_URL}default_avatarImage.png`);
       }
 
       // Delete avatar image from storage
       fs.promises.unlink(avatarImage.filename);
+      avatarImageData.dispose();
     }
 
     // Check Post Image
@@ -813,30 +804,22 @@ exports.verifyImages = async (req, res) => {
       // Call model to check image
       const postImageResults = await model.classify(postImageData);
 
-      // Remove the images from Tesor and Model memory
-      postImageData.dispose();
-
       // Delete post image if needed
       if (UTILS.checkImage(postImageResults)) {
-      // Delete Image
+        // Delete Image
         const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
         if (results === UTILS.Result.Error) {
           logger.error(INTERNAL_SERVER_ERROR_MSG);
         }
 
         // Update post image
-        const query = { _id: post._id };
-        const body = {
-          upadte: {
-            avatar_url: `${BUCKET_URL}default_postImage.jpeg`
-          }
-        };
-        await UTILS.updatePost(query, body);
+        await UTILS.updatePost(post._id, `${BUCKET_URL}default_postImage.png`);
       }
-    }
 
-    // Delete post image from storage
-    fs.promises.unlink(postImage.filename);
+      // Delete post image from storage
+      fs.promises.unlink(postImage.filename);
+      postImageData.dispose();
+    }
   }
   catch (err) {
     logger.error(err.message);

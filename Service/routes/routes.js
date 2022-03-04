@@ -174,7 +174,7 @@ if (ENV.NODE_ENV === 'dev') {
   // Check Images Endpoint
   ROUTER.post(
     '/verifyImage/:ak',
-    USE(API.verifyAuthToken),
+    // USE(API.verifyAuthToken),
     USE(API.verifyImages)
   );
 }

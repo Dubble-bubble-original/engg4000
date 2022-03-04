@@ -148,16 +148,16 @@ exports.checkImage = async (predictions) => {
 };
 
 // Update Post
-exports.updatePost = async (query, body) => {
-  UserPost.findOneAndUpdate(query, body, { new: true })
-    .select('-_id -access_key')
-    .exec()
+exports.updatePost = async (postId, newUrl) => {
+  UserPost.updateOne(
+    { _id: postId },
+    { $set: { img_url: newUrl } }
+  )
     .then((doc) => {
       if (!doc) {
-        logger.info('Post Image Not Updated');
+        logger.info('Post Not Updated');
         return Result.NotFound;
       }
-      logger.info('Post Image Updated');
       return Result.Success;
     })
     .catch((err) => {
@@ -167,14 +167,16 @@ exports.updatePost = async (query, body) => {
 };
 
 // Update User
-exports.updateUser = async (query, body) => {
-  User.findOneAndUpdate(query, body, { new: true })
-    .then(() => {
+exports.updateUser = async (userId, newUrl) => {
+  User.updateOne(
+    { _id: userId },
+    { $set: { avatar_url: newUrl } }
+  )
+    .then((doc) => {
       if (!doc) {
-        logger.info('Avatar Image Not Updated');
+        logger.info('User Not Updated');
         return Result.NotFound;
       }
-      logger.info('Avatar Image Updated');
       return Result.Success;
     })
     .catch((err) => {
