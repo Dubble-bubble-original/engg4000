@@ -192,8 +192,8 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
 
 // Call endpoint to check images
 export const checkImages = async (access_key) => {
-  return await requestWithToken(async() => {
-    const response = await axios ({
+  return requestWithToken(async() => {
+    const response = axios ({
       method: 'POST',
       url: serviceUrl + '/verifyImage/' + access_key,
       headers: {

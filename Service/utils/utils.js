@@ -139,50 +139,17 @@ exports.convert = async (img) => {
 
 // Returns true if the image has to be deleted
 exports.checkImage = async (predictions) => {
-  const neutral = predictions[0];
-  const prob = Number((neutral.probability * 100).toFixed(0));
-  if (prob >= 85) {
+  const results = {};
+  predictions.forEach((prediction) => {
+    const { className, probability } = prediction;
+    results[className] = Number((probability * 100).toFixed(0));
+  });
+
+  // Return true if images are good, false otherwise
+  if (results.Neutral + results.Sexy >= 85) {
     return true;
   }
   return false;
-};
-
-// Update Post
-exports.updatePost = async (postId, newUrl) => {
-  UserPost.updateOne(
-    { _id: postId },
-    { $set: { img_url: newUrl } }
-  )
-    .then((doc) => {
-      if (!doc) {
-        logger.info('Post Not Updated');
-        return Result.NotFound;
-      }
-      return Result.Success;
-    })
-    .catch((err) => {
-      logger.error(err.message);
-      return Result.Error;
-    });
-};
-
-// Update User
-exports.updateUser = async (userId, newUrl) => {
-  User.updateOne(
-    { _id: userId },
-    { $set: { avatar_url: newUrl } }
-  )
-    .then((doc) => {
-      if (!doc) {
-        logger.info('User Not Updated');
-        return Result.NotFound;
-      }
-      return Result.Success;
-    })
-    .catch((err) => {
-      logger.error(err.message);
-      return Result.Error;
-    });
 };
 
 // Get Image ID from Image URL
