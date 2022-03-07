@@ -179,7 +179,7 @@ if (ENV.NODE_ENV === 'dev') {
 }
 // Production API
 else if (ENV.NODE_ENV === 'prod') {
-  ROUTER.delete(
+  ROUTER.post(
     '/auth',
     authTokenLimiter,
     USE(API.createAuthToken)
