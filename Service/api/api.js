@@ -60,6 +60,8 @@ exports.createUserPost = (req, res) => {
   const postBody = UTILS.cleanString(req.body.body);
   const dateCreated = Date.now();
   const accessKey = uuidv4();
+  const isPostProfane = req.body.flagged
+  || UTILS.isStringProfane(req.body.title) || UTILS.isStringProfane(req.body.body);
   const uniqueObjectId = new ObjectId();
   const newUserPost = new UserPost({
     uid: uniqueObjectId,
@@ -72,6 +74,7 @@ exports.createUserPost = (req, res) => {
     location: req.body.location,
     true_location: req.body.true_location,
     location_string: req.body.location_string,
+    flagged: isPostProfane,
     access_key: accessKey
   });
 
@@ -662,6 +665,8 @@ exports.createFullUserPost = async (req, res) => {
     const postBody = UTILS.cleanString(post.body);
     const dateCreated = Date.now();
     const accessKey = uuidv4();
+    const isPostProfane = post.flagged
+    || UTILS.isStringProfane(post.title) || UTILS.isStringProfane(post.body);
     const uniqueObjectId = new ObjectId();
     const newUserPost = new UserPost({
       uid: uniqueObjectId,
@@ -673,6 +678,7 @@ exports.createFullUserPost = async (req, res) => {
       location: post.location,
       true_location: post.true_location,
       location_string: post.location_string,
+      flagged: isPostProfane,
       access_key: accessKey
     });
     if (pictureId) {

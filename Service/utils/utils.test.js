@@ -115,3 +115,22 @@ describe('cleanString', () => {
     expect(result).toEqual(expectedResult);
   });
 });
+
+// Tests for isStringProfane function
+describe('isStringProfane', () => {
+  test('check string containing bad words', () => {
+    const string = 'This Fuck String Shit is Damn clean hell now!';
+    const expectedResult = true;
+    const result = UTILS.isStringProfane(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('check string containing no bad words', () => {
+    const string = 'This String is clean!';
+    const expectedResult = false;
+    const result = UTILS.isStringProfane(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
