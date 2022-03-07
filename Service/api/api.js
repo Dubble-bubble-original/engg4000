@@ -60,8 +60,7 @@ exports.createUserPost = (req, res) => {
   const postBody = UTILS.cleanString(req.body.body);
   const dateCreated = Date.now();
   const accessKey = uuidv4();
-  const isPostProfane = req.body.flagged
-  || UTILS.isStringProfane(req.body.title) || UTILS.isStringProfane(req.body.body);
+  const isPostProfane = UTILS.isStringProfane(req.body.title) || UTILS.isStringProfane(req.body.body);
   const uniqueObjectId = new ObjectId();
   const newUserPost = new UserPost({
     uid: uniqueObjectId,
@@ -665,8 +664,7 @@ exports.createFullUserPost = async (req, res) => {
     const postBody = UTILS.cleanString(post.body);
     const dateCreated = Date.now();
     const accessKey = uuidv4();
-    const isPostProfane = post.flagged
-    || UTILS.isStringProfane(post.title) || UTILS.isStringProfane(post.body);
+    const isPostProfane = UTILS.isStringProfane(post.title) || UTILS.isStringProfane(post.body);
     const uniqueObjectId = new ObjectId();
     const newUserPost = new UserPost({
       uid: uniqueObjectId,
