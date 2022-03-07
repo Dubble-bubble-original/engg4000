@@ -99,6 +99,7 @@ exports.createUserPost = (req, res) => {
         location: newUserPost.location,
         true_location: newUserPost.true_location,
         location_string: newUserPost.location_string,
+        flagged: newUserPost.flagged,
         access_key: newUserPost.access_key
       }
     });
@@ -715,6 +716,7 @@ exports.createFullUserPost = async (req, res) => {
           location: newUserPost.location,
           true_location: newUserPost.true_location,
           location_string: newUserPost.location_string,
+          flagged: newUserPost.flagged,
           access_key: newUserPost.access_key
         }
       });

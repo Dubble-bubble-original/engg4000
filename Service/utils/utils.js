@@ -105,6 +105,12 @@ exports.deleteDBPost = async (postID) => (
 exports.isStringProfane = (string) => filter.isProfane(string);
 
 // Clean string of bad words
-exports.cleanString = (string) => filter.clean(string);
+exports.cleanString = (string) => {
+  if (string) {
+    return filter.clean(string);
+  }
+
+  return string;
+};
 
 exports.Result = Result;
