@@ -26,6 +26,9 @@ function Search() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingTimerId, setLoadingTimerId] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [error429Message, setError429Message] = useState(null);
+
 
   const searchPosts = () => {
     // Call getPost even if the tags haven't changed
@@ -49,13 +52,17 @@ function Search() {
   }
 
   const getPosts = async () => {
+    setIsError(false);
+    setError429Message(null);
+
     // Should not work if called without any tag selected
     if (searchTags.length === 0) return;
 
-    // Reset UI
+    // Reset UI on refresh
     if (page===1) {
       setShowResults(false);
       setNumResults(0);
+      setPosts([]);
     }
 
     // Add a minimum load time
@@ -64,7 +71,7 @@ function Search() {
 
     // Call API
     const result = await getPostsByTags(searchTags, page);
-    if (result) {
+    if (!result?.error) {
       // Success
       setNumResults(result.totalCount);
       if (page>1) addPosts(result.posts);
@@ -72,7 +79,8 @@ function Search() {
     }
     else {
       // Error occured
-      setPosts([]);
+      setIsError(true);
+      setError429Message(result?.message);
     }
 
     setShowResults(true);
@@ -126,7 +134,7 @@ function Search() {
         <Alert
           variant="danger"
           className="mb-0 mt-3"
-          hidden={tags.length}
+          hidden={tags.length} 
         >
           <MdErrorOutline/> You must select at least one tag.
         </Alert>
@@ -173,26 +181,34 @@ function Search() {
               </FRow>
             </Container>
 
-            <When condition={posts.length > 0}>
-              <TransitionGroup>
-                {
-                  posts.map((post) => 
-                    <CSSTransition
-                      key={post.uid}
-                      timeout={150}
-                      classNames="fade-in"
-                    >
-                      <Post postData={post}/>
-                    </CSSTransition>
-                  )
-                }
-              </TransitionGroup>
-              
-              <When condition={posts.length < numResults && !isPaginating}>
-                <CenterContainer>
-                  <Button onClick={loadMorePosts}>Load More</Button>
-                </CenterContainer>
-              </When>
+            <TransitionGroup>
+              {
+                posts.map((post) =>
+                  <CSSTransition
+                    key={post.uid}
+                    timeout={150}
+                    classNames="fade-in"
+                  >
+                    <Post postData={post}/>
+                  </CSSTransition>
+                )
+              }
+            </TransitionGroup>
+            
+            <When condition={isError && !isPaginating}>
+              <Container className="outer-container"><Alert
+                  variant="danger"
+                  className="mb-0"
+                >
+                  <MdErrorOutline/> {error429Message?error429Message:'Posts could not be retrieved. Please try again later.'}
+                </Alert>
+              </Container>
+            </When>
+            
+            <When condition={posts.length < numResults && !isPaginating}>
+              <CenterContainer>
+                <Button onClick={loadMorePosts}>Load More</Button>
+              </CenterContainer>
             </When>
           </div>
         </Fade>

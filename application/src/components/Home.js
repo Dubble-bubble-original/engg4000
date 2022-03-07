@@ -25,6 +25,7 @@ function Home() {
   const [loadingTimerId, setLoadingTimerId] = useState(null);
   const [lastDate, setLastDate] = useState(null);
   const [isError, setIsError] = useState(false);
+  const [error429Message, setError429Message] = useState(null);
 
   const refreshPosts = () => {
     // Call getPost even if the lastDate hasn't changed
@@ -34,23 +35,32 @@ function Home() {
   }
 
   const loadMorePosts = () => {
-    // Update the last date (which will trigger getPosts)
+    // Call getpost even if lastDate hasn't changed
     const lastPost = posts[posts.length-1];
-    setLastDate(lastPost.date_created);
+    if (lastDate === lastPost.date_created) getPosts();
+    // Else update the last date (which will trigger getPosts)
+    else setLastDate(lastPost.date_created);
   }
 
   const getPosts = async () => {
     // Reset
     setIsError(false);
-    setNumResults(0);
+    setError429Message(null);
 
+    // Reset UI on refresh
+    if (lastDate === null) {
+      setShowResults(false);
+      setNumResults(0);
+      setPosts([]);
+    }
+    
     // Add a minimum load time
     if (lastDate) fakeLoading(setIsPaginating);
     else fakeLoading(setIsLoading);
 
     // Call API
     let result = await getRecentPosts(lastDate);
-    if (result) {
+    if (!result?.error) {
       // Success
       setNumResults(result.totalCount);
       if (lastDate) addPosts(result.posts);
@@ -59,6 +69,7 @@ function Home() {
     else {
       // Error occured
       setIsError(true);
+      setError429Message(result.message);
     }
 
     setShowResults(true);
@@ -130,7 +141,7 @@ function Home() {
                 variant="danger"
                 className="mb-0"
               >
-                <MdErrorOutline/> Recent posts could not be retrieved. Please try again later.
+                <MdErrorOutline/> {error429Message?error429Message:'Recent posts could not be retrieved. Please try again later.'}
               </Alert>
             </Container>
           </When>
