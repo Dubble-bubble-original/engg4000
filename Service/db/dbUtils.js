@@ -3,11 +3,13 @@ require('dotenv').config();
 const ENV = process.env;
 
 module.exports.connectTest = async (name) => {
+  // eslint-disable-next-line max-len
   const testConnectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${name}?retryWrites=true&w=majority`;
   await mongoose.connect(testConnectionString);
 };
 
 module.exports.connectDatabase = async () => {
+  // eslint-disable-next-line max-len
   const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
   await mongoose.connect(connectionString);
 };
