@@ -738,3 +738,28 @@ exports.sendAKEmail = async (req, res) => {
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
 };
+
+exports.bulkDelete = async (req, res) => {
+  // Bulk Delete Users
+  User.deleteMany()
+    .exec()
+    .then(() => {
+      logger.info('Users deleted');
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
+    });
+
+  // Bulk Delete Posts
+  UserPost.deleteMany()
+    .exec()
+    .then(() => {
+      logger.info('Posts deleted');
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
+    });
+  return res.status(200).send({ message: 'Posts Bulk Deleted Successfully' });
+};

@@ -6,7 +6,7 @@ name: CI Pipeline
 # Get .env variables from our repository's secrets
 env:
   NODE_ENV: dev
-  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_NAME: ${{ secrets.DB_CI_NAME }}
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASS: ${{ secrets.DB_PASS }}
   AWS_REGION: ${{ secrets.AWS_REGION }}

@@ -19,5 +19,8 @@ function fn() {
     // customize
   }
 
+  //Clears the DB before performing tests
+  karate.callSingle('classpath:utils/bulkDelete.feature', config);
+
   return config;
 }

@@ -170,10 +170,16 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.verifyAuthToken),
     USE(API.sendAKEmail)
   );
+
+  ROUTER.delete(
+    '/bulkdelete',
+    USE(API.verifyAuthToken),
+    USE(API.bulkDelete)
+  );
 }
 // Production API
 else if (ENV.NODE_ENV === 'prod') {
-  ROUTER.post(
+  ROUTER.delete(
     '/auth',
     authTokenLimiter,
     USE(API.createAuthToken)
