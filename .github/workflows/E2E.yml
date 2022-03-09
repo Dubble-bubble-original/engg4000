@@ -40,4 +40,4 @@ jobs:
       - name: Run Karate API Tests
         run: |
           cd Automation
-          mvn test -Dtest=UiTests -Dkarate.env="prod"
+          mvn test -Dtest="UiTests" -Dkarate.env="prod"
