@@ -16,7 +16,7 @@ function fn() {
   } else if (env == 'ci') {
     // customize
   } else if (env == 'prod') {
-    // customize
+    config.frontendUrl = 'https://notasocial.ca';
   }
 
   return config;
