@@ -9,10 +9,6 @@ on:
   schedule:
     # Run daily at noon UTC or 8:00AM Atlantic Standard Time
     - cron:  '0 12 * * *'
-  # TODO: Remove this before merging  
-  push:
-    branches:    
-      - 'dbo-64'
 
 jobs:
   E2ETests:
