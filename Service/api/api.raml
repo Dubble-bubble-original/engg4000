@@ -192,8 +192,8 @@ types:
           application/json:
             example: |
               {
-                posts: [UserPost],
-                totalCount: 72
+                "posts": [Userpost],
+                "totalCount": 72
               }
       500:
         body:
@@ -214,8 +214,8 @@ types:
           application/json:
             example: |
               {
-                posts: [UserPost],
-                totalCount: 72
+                "posts": [UserPost],
+                "totalCount": 72
               }
       500:
         body:
@@ -347,6 +347,14 @@ types:
               {
                 "message": "Missing User"
               }
+      403:
+        description: "Missing or invalid captcha token in the request header."
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Missing or Invalid Captcha Token"
+              }
       500:
         body:
           application/json:
@@ -364,42 +372,42 @@ types:
               examples:
                 fullSuccess: |
                   {
-                    status:
+                    "status":
                     {
-                      message: "Post Deleted Successfully"
-                    }
-                    post: UserPost
+                      "message": "Post Deleted Successfully"
+                    },
+                    "post": UserPost
                   }
                 partialSuccess: |
                   {
-                    status:
+                    "status":
                     {
-                      user: "No User Provided" || "User Not Found"
-                      avatar: "Avatar Image Not Found"
-                      postImg: "Post Image Not Found"
+                      "user": "No User Provided" || "User Not Found",
+                      "avatar": "Avatar Image Not Found",
+                      "postImg": "Post Image Not Found"
                     }
-                    post: UserPost
+                    "post": UserPost
                   }
         400:
           body:
             application/json:
               example: |
                 {
-                  message: "Invalid Post ID Provided"
+                  "message": "Invalid Post ID Provided"
                 }
         404:
           body:
             application/json:
               example: |
                 {
-                  message: "User Post Not Found"
+                  "message": "User Post Not Found"
                 }
         500:
           body:
             application/json:
               example:
                 {
-                  message: "An Unknown Error Occurred"
+                  "message": "An Unknown Error Occurred"
                 }
               
 /image:
@@ -464,22 +472,83 @@ types:
 /sendakemail:
   post:
     description: "Sends an email with an access-key"
-    example: "{"post_title": "Example title", "author_name": "John Doe", "to_email": "example@gmail.com","access_key": "f2646eff-0f9c-45e6-a877-fe0c3502e8cd"}"
+    body:
+      application/json:
+        example: {"post_title": "Example title", "author_name": "John Doe", "to_email": "example@gmail.com","access_key": "f2646eff-0f9c-45e6-a877-fe0c3502e8cd"}
     responses:
       200:
         body:
           application/json:
             example: |
-            {
-              "message": "Email Sent Successfully"
-            }
+              {
+                "message": "Email Sent Successfully"
+              }
       500:
         body:
           application/json:
             example: |
+              {
+                "message": "An Unknown Error Occurred"
+              }
+
+/captcha:
+  /create:
+    post:
+      description: "Generates a new captcha challenge"
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "slider": {
+                    "data": [12,34,1],
+                    "type": "Buffer"
+                  },
+                  "background":
+                  {
+                    "data": [5,21,22],
+                    "type": "Buffer"
+                  }
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
+  /verify:
+    post:
+      description: "Verifies the result of a captcha challenge"
+      body:
+        application/json:
+          example: |
             {
-              "message": "An Unknown Error Occurred"
+              "response": 123,
+              "trail": 
+              {
+                "x": [27,12,78,2]
+                "y": [1,6,21,68]
+              }
             }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "result": "success",
+                  "token": "22NHCFFVFvSozbOmIMPyu60TCdMjPcy0wKBXNnm6NRQ"
+                }
+              
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "message": "An Unknown Error Occurred"
+                }
 
 /bulkdelete:
   delete:

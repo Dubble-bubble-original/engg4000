@@ -8,6 +8,9 @@
 
 /* Classes */
 
+.avatar-column {
+    width: 90px;
+}
 .avatar {
     width: 90px;
     height: 90px;
@@ -86,6 +89,9 @@
         width: 80px;
         height: 80px;
     }
+    .avatar-column {
+        width: 80px;
+    }
 }
 
 /* For screens that are 576px or less */
@@ -99,6 +105,9 @@
         /* Reduce avatar size on smaller screens (even more) */
         width: 70px;
         height: 70px;
+    }
+    .avatar-column {
+        width: 70px;
     }
 }
 
