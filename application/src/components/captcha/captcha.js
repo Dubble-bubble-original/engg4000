@@ -14,6 +14,7 @@ function Captcha(props) {
       create={createCaptcha}
       verify={verifyCaptcha}
       callback={props.captchaSuccess}
+      onError={props.captchaError}
       refObject={props.refObject}
     />
   );
@@ -21,6 +22,7 @@ function Captcha(props) {
 
 Captcha.propTypes = {
   captchaSuccess: PropTypes.func.isRequired,
+  captchaError: PropTypes.func.isRequired,
   refObject: PropTypes.object
 }
 

@@ -66,6 +66,7 @@ function Create(props) {
   const [picture, setPicture] = useState(null);
   const [termsAgree, setTermsAgree] = useState(false);
   const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaErrorMsg, setCaptchaErrorMsg] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [created, setCreated] = useState(false);
   const [accessKey, setAccessKey] = useState('');
@@ -123,6 +124,15 @@ function Create(props) {
 
   const getImageURL = (image) => {
     return image ? URL.createObjectURL(image) : null;
+  }
+
+  const captchaError = (error) => {
+    setCaptchaErrorMsg(error);
+    setCaptchaToken(null);
+  }
+  const captchaSuccess = (token) => {
+    setCaptchaErrorMsg(null);
+    setCaptchaToken(token);
   }
 
   const preventSubmit = (event) => {
@@ -254,6 +264,7 @@ function Create(props) {
     setPicture(null);
     setTermsAgree(false);
     setCaptchaToken(null);
+    setCaptchaErrorMsg(null);
     setShowConfirmationModal(false);
     setCreated(false);
     setAccessKey('');
@@ -419,7 +430,14 @@ function Create(props) {
                   setAgree={setTermsAgree}
                 />
                 <div className="mt-3" hidden={!termsAgree}>
-                  <Captcha captchaSuccess={setCaptchaToken} refObject={captchaRef}/>
+                  <Captcha captchaSuccess={captchaSuccess} captchaError={captchaError} refObject={captchaRef}/>
+                  <Alert
+                    variant="danger"
+                    className="mb-0 mt-3"
+                    hidden={!captchaErrorMsg}
+                  >
+                    <MdErrorOutline/> {captchaErrorMsg}
+                  </Alert>
                 </div>
                 <Button
                   className="mt-3"

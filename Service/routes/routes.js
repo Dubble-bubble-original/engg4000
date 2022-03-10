@@ -59,7 +59,7 @@ const emailLimiter = RATE_LIMIT({
 const captchaLimiter = RATE_LIMIT({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 100, // Limit each IP to 100 captcha requests per window
-  message: { message: 'Too Many Auth requests From This IP Address' },
+  message: { message: 'Too Many Captcha requests From This IP Address', errorCode: 4 },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });

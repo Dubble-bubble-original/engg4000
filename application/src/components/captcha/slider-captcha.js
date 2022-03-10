@@ -32,6 +32,7 @@ const SliderCaptcha = ({
   callback,
   create,
   verify,
+  onError,
   text,
   refObject
 }) => {
@@ -41,7 +42,11 @@ const SliderCaptcha = ({
     new Promise((resolve) => {
       fetchVerification(verify)(response, trail)
         .then((verification) => {
-          if (
+          if (verification?.error) {
+            onError(verification?.message);
+            resolve(false);
+          }
+          else if (
             !verification.result ||
             verification.result !== 'success' ||
             !verification.token
@@ -62,6 +67,7 @@ const SliderCaptcha = ({
       <Anchor
         text={text}
         fetchCaptcha={fetchCaptcha(create)}
+        onError={onError}
         submitResponse={submitResponse}
         verified={verified}
       />
@@ -71,6 +77,7 @@ const SliderCaptcha = ({
 
 SliderCaptcha.propTypes = {
   callback: PropTypes.func,
+  onError: PropTypes.func,
   create: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   verify: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   text: PropTypes.shape({

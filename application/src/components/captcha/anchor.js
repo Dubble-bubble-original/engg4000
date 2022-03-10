@@ -8,6 +8,7 @@ const Anchor = ({
   fetchCaptcha,
   submitResponse,
   verified,
+  onError
 }) => {
   const [open, setOpen] = useState(false);
   const handleClose = () => { setOpen(false); };
@@ -18,6 +19,10 @@ const Anchor = ({
     } else if (e.key === 'Escape') {
       setOpen(false);
     }
+  };
+  const handleError = (error) => {
+    setOpen(false);
+    onError(error);
   };
   return (
     <div>
@@ -45,6 +50,7 @@ const Anchor = ({
           <Card
             fetchCaptcha={fetchCaptcha}
             submitResponse={submitResponse}
+            onError={handleError}
             text={text}
           />
         </div>
@@ -56,6 +62,7 @@ const Anchor = ({
 Anchor.propTypes = {
   fetchCaptcha: PropTypes.func.isRequired,
   submitResponse: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
   text: PropTypes.shape({
     anchor: PropTypes.string,
     challenge: PropTypes.string,
