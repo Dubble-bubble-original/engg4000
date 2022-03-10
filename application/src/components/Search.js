@@ -134,12 +134,14 @@ function Search() {
         <Alert
           variant="danger"
           className="mb-0 mt-3"
-          hidden={tags.length} 
+          hidden={tags.length}
+          data-testid="no-tags-alert"
         >
           <MdErrorOutline/> You must select at least one tag.
         </Alert>
         <Button 
           className="mt-3"
+          data-testid="search-button"
           disabled={!tags.length}
           onClick={searchPosts}
         >

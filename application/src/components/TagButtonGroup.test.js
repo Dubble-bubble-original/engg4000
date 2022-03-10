@@ -29,7 +29,7 @@ describe('TagButtonGroup Component', () => {
     }
   });
 
-  test('Sanpshot test for tagList', () => {
-    expect(screen.getAllByTestId('tags')).toMatchSnapshot();
+  test('Sanpshot test for tagList', async () => {
+    expect(await screen.getAllByPlaceholderText('tags')).toMatchSnapshot();
   });
 });

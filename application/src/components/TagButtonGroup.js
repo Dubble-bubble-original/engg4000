@@ -88,7 +88,8 @@ function TagButtonGroup(props) {
                 value={tag}
                 key={tag}
                 id={'tgb-btn-'+tag}
-                data-testid="tags"
+                data-testid={tag}
+                placeholder="tags"
               >
                 {tag}
               </ToggleButton>
