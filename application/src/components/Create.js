@@ -84,6 +84,7 @@ function Create(props) {
     general: 'Post could not be created. Please try again later.',
     captcha: 'Puzzle verification failed. Please try again.'
   }
+  const emailError = 'Email could not be sent.';
 
   useEffect(() => {
     // Update the tags error message based on number of tags selected
@@ -199,7 +200,7 @@ function Create(props) {
 
     // Show feedback
     if (!result?.error) setEmailResult('sent');
-    else setEmailResult('error');
+    else setEmailResult(result?.message ?? emailError);
   }
 
   useEffect(() => {
@@ -478,7 +479,7 @@ function Create(props) {
                 </Then>
                 <Else>
                   <Alert variant="danger">
-                    <MdErrorOutline/> Email could not be sent.
+                    <MdErrorOutline/> {emailResult}
                   </Alert>
                 </Else>
               </If>
