@@ -1,10 +1,13 @@
 const WINSTON = require('winston');
 const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 const cors = require('cors');
 const EXPRESS = require('express');
+const session = require('express-session');
 const APP = EXPRESS();
 const nsfw = require('nsfwjs');
 const printServiceBanner = require('./banner/banner');
+const db = require('./db/dbUtils');
 
 // Print service banner
 printServiceBanner();
@@ -16,9 +19,21 @@ const ENV = process.env;
 // API Middleware
 APP.use(EXPRESS.json({ limit: '2mb' }));
 APP.use(EXPRESS.urlencoded({ limit: '2mb', extended: true }));
+APP.use(session({
+  secret: ENV.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 5 * 60 * 1000 // 5 minutes
+  },
+  store: new MongoStore({
+    mongoUrl: db.connectionString
+  })
+}));
 
 // options for cross-origin resource sharing
 const corsOptions = {
+  credentials: true, // Needed to receive cookies properly from frontend
   origin: ENV.FRONTEND_URL
 };
 
@@ -60,7 +75,6 @@ APP.use(function(err, req, res, next) {
 });
 
 // DB Connection
-const db = require('./db/dbUtils');
 db.connectDatabase();
 const dbConnection = mongoose.connection;
 
