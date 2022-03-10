@@ -141,8 +141,8 @@ function Create(props) {
     let imgResult = null;
     if (avatarImg || picture) {
       imgResult = await postImages(avatarImg, picture);
-      if (!imgResult) {
-        setCreateErrorMsg(createError.general);
+      if (imgResult?.error) {
+        setCreateErrorMsg(imgResult?.message ?? createError.general);
         return;
       }
     }
@@ -165,20 +165,22 @@ function Create(props) {
     }
 
     // Show feedback
-    if (result.status == 403) {
-      // Invalid captcha token
-      captchaRef.current.reset();
-      setCaptchaToken(null);
-      setError(createError.captcha);
-    }
-    else if (result) {
+    if (!result?.error) {
       // Success
       setAccessKey(result.post.access_key);
       setCreated(true);
     }
     else {
-      // General error
-      setError(createError.general);
+      if (result?.status == 403) {
+        // Invalid captcha token
+        captchaRef.current.reset();
+        setCaptchaToken(null);
+        setError(createError.captcha);
+      }
+      else {
+        // General error
+        setError(result?.message ?? createError.general);
+      }
     }
   }
 
@@ -196,7 +198,7 @@ function Create(props) {
     const result = await sendAccessKeyEmail(accessKey, email, name, title);
 
     // Show feedback
-    if (result) setEmailResult('sent');
+    if (!result?.error) setEmailResult('sent');
     else setEmailResult('error');
   }
 
