@@ -1,6 +1,9 @@
 import axios from 'axios';
 import logger from '../logger/logger';
 
+// Use credentials for Axios (needed to send cookies needed for express-session)
+axios.defaults.withCredentials = true
+
 // Auth Token
 let authToken;
 
@@ -14,6 +17,16 @@ const MAX_RETRY_LIMIT = 2;
 // Get the service url from the environment file
 const serviceUrl = ENV.REACT_APP_SERVICE_URL;
 
+// Corresponding 429 Error Message
+const error429Message = [
+  'You have returned to this site too many times this hour. Please try again later.',
+  'You have created, deleted, or published too many posts this hour. Please try again later.',
+  'You have loaded user posts too many times this hour. Please try again later.',
+  'You have sent out too many emails this hour. Please try again later.',
+  'You have attempted too many puzzles this hour. Please try again later.',
+  'You have selected too many locations during the last 60 seconds. Please try again later.'
+];
+
 // Get Auth token
 export const getAuthToken = async () => {
   try {
@@ -24,6 +37,13 @@ export const getAuthToken = async () => {
     authToken = response.data.token;
   } catch(error) {
     logger.warn(error);
+
+    if(error?.response?.status === 429) {
+      return ({
+        error: true,
+        message: error429Message[error?.response?.data?.errorCode],
+      });
+    }
   }
 }
 
@@ -155,7 +175,7 @@ export const postImages = async (avatar, picture) => {
 }
 
 // Create a user and user post
-export const createFullPost = async (avatarId, pictureId, user, post) => {
+export const createFullPost = async (avatarId, pictureId, user, post, captchaToken) => {
   return await requestWithToken(async() => {
     const response = await axios({
       method: 'POST',
@@ -165,6 +185,40 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
         pictureId,
         user,
         post
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'token': authToken,
+        'captcha-token': captchaToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Create captcha
+export const createCaptcha = async () => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/captcha/create',
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Verify captcha
+export const verifyCaptcha = async (resp, trail) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/captcha/verify',
+      data: {
+        response: resp,
+        trail: trail
       },
       headers: {
         'Content-Type': 'application/json',
@@ -196,20 +250,54 @@ export const sendAccessKeyEmail = async (access_key, to_email, author_name, post
   });
 }
 
+// Geocode position based on lat/lng
+export const geocode = async (lat, lng) => {
+  return await requestWithToken(async() => {
+    const latlng = lat+','+lng;
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/geocode/' + latlng,
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
 const requestWithToken = async (request) => {
   for (let i=0; i<MAX_RETRY_LIMIT; i++) {
     try {
       // Make the given request
       return await request();
     } catch(error) {
+      if(error?.response?.status === 429) {
+        logger.warn(error);
+        return ({
+          error: true,
+          message: error429Message[error?.response?.data?.errorCode],
+        });
+      }
       if(error?.response?.status === 401) {
         // Get New Auth Token and retry
-        await getAuthToken();
+        const response = await getAuthToken();
+        if (response?.error) {
+          return response;
+        }
+      }
+      else if (error?.response?.status === 403) {
+        return ({
+          error: true,
+          status: 403
+        });
       }
       else {
         // Don't retry if a different error occurs
         logger.warn(error);
-        return null;
+        return ({
+          error: true,
+          message: null,
+        });
       }
     }
   }

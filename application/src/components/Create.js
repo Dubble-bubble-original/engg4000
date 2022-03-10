@@ -14,6 +14,7 @@ import TagButtonGroup from './TagButtonGroup';
 import Post from './post/Post';
 import ConfirmationModal from './ConfirmationModal';
 import CopyButton from './CopyButton';
+import Captcha from './captcha';
 import { TermsLink, TermsCheckbox } from './terms/Terms';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -55,19 +56,22 @@ function Create(props) {
   const [position, setPosition] = useState(null);
   const [oldPosition, setOldPosition] = useState(null);
   const [locationString, setLocationString] = useState('');
-  const [isTruePosition, setIsTruePosition] = useState(null);
+  const [isTruePosition, setIsTruePosition] = useState(false);
+  const [positionErrorMsg, setPositionErrorMsg] = useState(null);
   const [avatarImg, setAvatarImg] = useState(null);
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [tags, setTags] = useState([]);
-  const [invalidTagsMsg, setInvalidTagsMsg] = useState();
+  const [invalidTagsMsg, setInvalidTagsMsg] = useState('');
   const [picture, setPicture] = useState(null);
   const [termsAgree, setTermsAgree] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaErrorMsg, setCaptchaErrorMsg] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [created, setCreated] = useState(false);
   const [accessKey, setAccessKey] = useState('');
-  const [isCreateError, setIsCreateError] = useState(false);
+  const [createErrorMsg, setCreateErrorMsg] = useState('');
   const [email, setEmail] = useState('');
   const [emailResult, setEmailResult] = useState(null);
   const [emailLoading, setEmailLoading] = useState(false);
@@ -76,7 +80,13 @@ function Create(props) {
   const pictureFileInputRef = useRef(null);
   const errorFeedbackRef = useRef(null);
   const emailFormRef = useRef(null);
+  const captchaRef = useRef({});
   const MAX_TAGS = 5;
+  const createError = {
+    general: 'Post could not be created. Please try again later.',
+    captcha: 'Puzzle verification failed. Please try again.'
+  }
+  const emailError = 'Email could not be sent.';
 
   useEffect(() => {
     // Update the tags error message based on number of tags selected
@@ -117,6 +127,15 @@ function Create(props) {
     return image ? URL.createObjectURL(image) : null;
   }
 
+  const captchaError = (error) => {
+    setCaptchaErrorMsg(error);
+    setCaptchaToken(null);
+  }
+  const captchaSuccess = (token) => {
+    setCaptchaErrorMsg(null);
+    setCaptchaToken(token);
+  }
+
   const preventSubmit = (event) => {
     // Prevent default form submission
     event.preventDefault();
@@ -126,7 +145,7 @@ function Create(props) {
   const openModal = () => {
     setShowConfirmationModal(true);
     // Reset create error if was set
-    setIsCreateError(false);
+    setCreateErrorMsg('');
   }
 
   const createPost = async () => {
@@ -134,8 +153,8 @@ function Create(props) {
     let imgResult = null;
     if (avatarImg || picture) {
       imgResult = await postImages(avatarImg, picture);
-      if (!imgResult) {
-        setIsCreateError(true);
+      if (imgResult?.error) {
+        setCreateErrorMsg(imgResult?.message ?? createError.general);
         return;
       }
     }
@@ -148,19 +167,32 @@ function Create(props) {
     delete post.author;
 
     // Create post
-    const result = await createFullPost(avatarId, pictureId, user, post);
+    const result = await createFullPost(avatarId, pictureId, user, post, captchaToken);
+    
+    const setError = (msg) => {
+      setCreateErrorMsg(msg);
+      // Delete images (if any)
+      if (avatarId) deleteImage(avatarId);
+      if (pictureId) deleteImage(pictureId);
+    }
 
     // Show feedback
-    if (result) {
+    if (!result?.error) {
+      // Success
       setAccessKey(result.post.access_key);
       setCreated(true);
     }
     else {
-      setIsCreateError(true);
-
-      // Delete images (if any)
-      if (avatarId) deleteImage(avatarId);
-      if (pictureId) deleteImage(pictureId);
+      if (result?.status == 403) {
+        // Invalid captcha token
+        captchaRef.current.reset();
+        setCaptchaToken(null);
+        setError(createError.captcha);
+      }
+      else {
+        // General error
+        setError(result?.message ?? createError.general);
+      }
     }
   }
 
@@ -178,8 +210,8 @@ function Create(props) {
     const result = await sendAccessKeyEmail(accessKey, email, name, title);
 
     // Show feedback
-    if (result) setEmailResult('sent');
-    else setEmailResult('error');
+    if (!result?.error) setEmailResult('sent');
+    else setEmailResult(result?.message ?? emailError);
   }
 
   useEffect(() => {
@@ -192,13 +224,13 @@ function Create(props) {
   }, [emailLoading]);
 
   useEffect(() => {
-    if (isCreateError) {
-      // Scroll to the error 0.5s after it appears
+    // Scroll to the error 0.5s after it appears
+    if (createErrorMsg) {
       const timeoutID = setTimeout(() => errorFeedbackRef.current.scrollIntoView(true), 500);
       // Stop the timer if the component unmounts
       return () => clearTimeout(timeoutID);
     }
-  }, [isCreateError]);
+  }, [createErrorMsg]);
 
   const GEOCODE_UPDATE_TIME = 800;
   useEffect(() => {
@@ -206,8 +238,8 @@ function Create(props) {
     const loadTime = GEOCODE_UPDATE_TIME + Math.floor(Math.random()*400)-200;
     // Update locationString after a delay (if needed)
     const timeoutID = setTimeout(() => {
-      if (positionChanged()) {
-        geocodePosition(position, (locStr) => {
+      if (positionChanged() && position !== null) {
+        geocodePosition(position, setPositionErrorMsg, (locStr) => {
           setLocationString(locStr);
           setOldPosition(position);
         });
@@ -224,6 +256,10 @@ function Create(props) {
   const resetPage = () => {
     // Reset all state variables to default values
     setPosition(null);
+    setOldPosition(null);
+    setLocationString('');
+    setIsTruePosition(false);
+    setPositionErrorMsg('');
     setAvatarImg(null);
     setName('');
     setTitle('');
@@ -232,10 +268,12 @@ function Create(props) {
     setInvalidTagsMsg();
     setPicture(null);
     setTermsAgree(false);
+    setCaptchaToken(null);
+    setCaptchaErrorMsg(null);
     setShowConfirmationModal(false);
     setCreated(false);
     setAccessKey('');
-    setIsCreateError(false);
+    setCreateErrorMsg('');
     setEmail('');
     setEmailResult(null);
     setEmailLoading(false);
@@ -268,9 +306,9 @@ function Create(props) {
               <Alert
                 variant="danger"
                 className="mb-0 mt-3"
-                hidden={position !== null}
+                hidden={position !== null && !positionErrorMsg}
               >
-                <MdErrorOutline/> You must select a location.
+                <MdErrorOutline/> {position === null ? 'You must select a location.' : positionErrorMsg}
               </Alert>
             </Section>
 
@@ -396,9 +434,19 @@ function Create(props) {
                   agree={termsAgree}
                   setAgree={setTermsAgree}
                 />
+                <div className="mt-3" hidden={!termsAgree}>
+                  <Captcha captchaSuccess={captchaSuccess} captchaError={captchaError} refObject={captchaRef}/>
+                  <Alert
+                    variant="danger"
+                    className="mb-0 mt-3"
+                    hidden={!captchaErrorMsg}
+                  >
+                    <MdErrorOutline/> {captchaErrorMsg}
+                  </Alert>
+                </div>
                 <Button
                   className="mt-3"
-                  disabled={!termsAgree || !isPostValid()}
+                  disabled={!termsAgree || !captchaToken || !isPostValid()}
                   onClick={openModal}
                 >
                   Publish
@@ -454,7 +502,7 @@ function Create(props) {
                 </Then>
                 <Else>
                   <Alert variant="danger">
-                    <MdErrorOutline/> Email could not be sent.
+                    <MdErrorOutline/> {emailResult}
                   </Alert>
                 </Else>
               </If>
@@ -464,10 +512,10 @@ function Create(props) {
         </Else>
       </If>
 
-      <When condition={isCreateError}>
+      <When condition={createErrorMsg}>
         <Container className="outer-container" ref={errorFeedbackRef}>
           <Alert variant="danger" className="mb-0">
-            <MdErrorOutline/> Post could not be created. Please try again later.
+            <MdErrorOutline/> {createErrorMsg}
           </Alert>
         </Container>
       </When>

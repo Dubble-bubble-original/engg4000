@@ -17,11 +17,13 @@ function Delete() {
   const [postData, setPostData] = useState(null);
   const [searchResult, setSearchResult] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [error429Message, setError429Message] = useState(null);
 
   const handleSubmit = (event) => {
     // Clear previous search result
     setSearchResult(null);
     setPostData(null);
+    setError429Message(null);
 
     // Apply validation CSS on submit
     setValidated(true);
@@ -39,8 +41,11 @@ function Delete() {
     const result = await getPostByAccessKey(accessKey);
 
     // Show feedback based on result
-    if (!result || !result.author) {
+    if (result?.error || !result.author) {
       setSearchResult('not-found');
+      if (result?.error) {
+        setError429Message(result?.message)
+      }
     }
     else {
       setSearchResult('found');
@@ -52,8 +57,9 @@ function Delete() {
     const result = await deletePostByID(postData._id);
 
     // Show feedback based on result
-    if (!result) {
+    if (result?.error) {
       setSearchResult('not-deleted');
+      setError429Message(result?.message)
     }
     else {
       setSearchResult('deleted');
@@ -110,7 +116,11 @@ function Delete() {
                 <Row>
                   <Col>
                     <Alert variant="danger" className="mb-0 mt-3" dismissible onClose={() => setSearchResult('found')}>
-                      <MdErrorOutline/> Post could not be deleted. Please try again later.
+                      <MdErrorOutline/> {
+                          (error429Message)
+                          ? error429Message
+                          :'Post could not be deleted. Please try again later.'
+                        }
                     </Alert>
                   </Col>
                 </Row>
@@ -127,7 +137,11 @@ function Delete() {
         <Case condition={searchResult === 'not-found'}>
           <Container className="outer-container" id="post-not-found">
             <div className="h4 red">Post not found <MdErrorOutline/></div>
-            <div>The access code you entered does not match any existing post.</div>
+            <div>{
+              (error429Message)
+              ? error429Message
+              :'The access code you entered does not match any existing post.'}
+            </div>
           </Container>
         </Case>
 
