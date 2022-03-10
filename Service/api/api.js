@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable max-len */
 // Packages
 const axios = require('axios');
 const uuidv4 = require('uuid').v4;
@@ -538,19 +536,17 @@ exports.deleteFullUserPost = async (req, res) => {
     if (post.author.avatar_url) {
       // Get avatar image id
       const avatarID = UTILS.getImageID(post.author.avatar_url);
-      if (avatarID !== 'default_avatarImage.png') {
-        // Checking if Avatar Image Exists
-        const avatarExists = await checkFile(avatarID);
+      // Checking if Avatar Image Exists
+      const avatarExists = await checkFile(avatarID);
 
-        // Delete avatar image if it exists
-        let avatarImg = {};
-        if (avatarExists) {
-          avatarImg = UTILS.deleteS3Image(avatarID);
-        }
-        if (avatarImg === UTILS.Result.Error || !avatarExists) {
-          status.avatar = 'Avatar Image Not Found';
-          fullyDeleted = false;
-        }
+      // Delete avatar image if it exists
+      let avatarImg = {};
+      if (avatarExists) {
+        avatarImg = UTILS.deleteS3Image(avatarID);
+      }
+      if (avatarImg === UTILS.Result.Error || !avatarExists) {
+        status.avatar = 'Avatar Image Not Found';
+        fullyDeleted = false;
       }
     }
   }
@@ -559,19 +555,17 @@ exports.deleteFullUserPost = async (req, res) => {
   if (post.img_url) {
     // Get post image id
     const postImageID = UTILS.getImageID(post.img_url);
-    if (postImageID !== 'default_postImage.png') {
-      // Checking if Post Image Exists
-      const postImageExists = await checkFile(postImageID);
+    // Checking if Post Image Exists
+    const postImageExists = await checkFile(postImageID);
 
-      // Deleting post image if it exists
-      let postImg = {};
-      if (postImageExists) {
-        postImg = UTILS.deleteS3Image(postImageID);
-      }
-      if (postImg === UTILS.Result.Error || !postImageExists) {
-        status.postImg = 'Post Image Not Found';
-        fullyDeleted = false;
-      }
+    // Deleting post image if it exists
+    let postImg = {};
+    if (postImageExists) {
+      postImg = UTILS.deleteS3Image(postImageID);
+    }
+    if (postImg === UTILS.Result.Error || !postImageExists) {
+      status.postImg = 'Post Image Not Found';
+      fullyDeleted = false;
     }
   }
 

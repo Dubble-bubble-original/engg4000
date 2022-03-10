@@ -132,7 +132,9 @@ exports.convert = async (img) => {
   const values = new Int32Array(numPixels * numChannels);
 
   for (let i = 0; i < numPixels; i++) {
-    for (let c = 0; c < numChannels; ++c) values[i * numChannels + c] = image.data[i * 4 + c];
+    for (let c = 0; c < numChannels; ++c) {
+      values[i * numChannels + c] = image.data[i * 4 + c];
+    }
   }
 
   return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
@@ -152,9 +154,6 @@ exports.checkImage = async (predictions) => {
   }
   return false;
 };
-
-// Get Image ID from Image URL
-exports.getImageID = (imgURL) => imgURL.substring(imgURL.lastIndexOf('/') + 1);
 
 // Geocoding format extraction
 exports.extractGeocodeResult = (results) => {
