@@ -2,13 +2,15 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const ENV = process.env;
 
+const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
+module.exports.connectionString = connectionString;
+
 module.exports.connectTest = async (name) => {
   const testConnectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${name}?retryWrites=true&w=majority`;
   await mongoose.connect(testConnectionString);
 };
 
 module.exports.connectDatabase = async () => {
-  const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
   await mongoose.connect(connectionString);
 };
 

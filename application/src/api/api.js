@@ -1,6 +1,9 @@
 import axios from 'axios';
 import logger from '../logger/logger';
 
+// Use credentials for Axios (needed to send cookies needed for express-session)
+axios.defaults.withCredentials = true
+
 // Auth Token
 let authToken;
 
@@ -19,7 +22,8 @@ const error429Message = [
   'You have returned to this site too many times this hour. Please try again later.',
   'You have created, deleted, or published too many posts this hour. Please try again later.',
   'You have loaded user posts too many times this hour. Please try again later.',
-  'You have sent out too many emails this hour. Please try again later.'
+  'You have sent out too many emails this hour. Please try again later.',
+  'You have attempted too many puzzles this hour. Please try again later.'
 ];
 
 // Get Auth token
@@ -170,7 +174,7 @@ export const postImages = async (avatar, picture) => {
 }
 
 // Create a user and user post
-export const createFullPost = async (avatarId, pictureId, user, post) => {
+export const createFullPost = async (avatarId, pictureId, user, post, captchaToken) => {
   return await requestWithToken(async() => {
     const response = await axios({
       method: 'POST',
@@ -180,6 +184,40 @@ export const createFullPost = async (avatarId, pictureId, user, post) => {
         pictureId,
         user,
         post
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'token': authToken,
+        'captcha-token': captchaToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Create captcha
+export const createCaptcha = async () => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/captcha/create',
+      headers: {
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Verify captcha
+export const verifyCaptcha = async (resp, trail) => {
+  return await requestWithToken(async() => {
+    const response = await axios({
+      method: 'POST',
+      url: serviceUrl + '/captcha/verify',
+      data: {
+        response: resp,
+        trail: trail
       },
       headers: {
         'Content-Type': 'application/json',
@@ -230,6 +268,12 @@ const requestWithToken = async (request) => {
         if (response?.error) {
           return response;
         }
+      }
+      else if (error?.response?.status === 403) {
+        return ({
+          error: true,
+          status: 403
+        });
       }
       else {
         // Don't retry if a different error occurs

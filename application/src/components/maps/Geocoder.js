@@ -7,6 +7,7 @@ const DEFAULT_LOCATION_STRING = 'Unknown Location';
 // Get a location_string given lat/lng position
 const geocodePosition = (pos, callback) => {
   axios.get(GEOCODE_API, {
+    withCredentials: false,
     params: { 
       latlng: pos.lat+','+pos.lng,
       language: 'en',
