@@ -1,4 +1,5 @@
 // Packages
+const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 
@@ -21,6 +22,7 @@ const POST_LIMIT_DEFAULT = 15;
 const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
+const GEOCODE_API = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -779,4 +781,37 @@ exports.verifyCaptchaToken = async (req, res, next) => {
     return res.status(403).send({ message: 'Missing or Invalid Captcha Token' });
   }
   return next();
+};
+
+exports.geocodePosition = async (req, res) => {
+  const coordinates = req.params.latlng;
+
+  // Helper function when error occurs
+  const fail = () => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+
+  // Make API call to Google
+  axios.get(GEOCODE_API, {
+    params: {
+      latlng: coordinates,
+      language: 'en',
+      result_type: 'country|administrative_area_level_1|locality',
+      key: process.env.GEO_API_KEY
+    }
+  })
+    .then((response) => {
+      const { status } = response.data;
+      if (status === 'OK') {
+        const locationString = UTILS.extractGeocodeResult(response.data.results);
+        if (locationString === null) return fail();
+        return res.status(200).json({ locationString });
+      }
+      // Return failure for all other status:
+      // OVER_QUERY_LIMIT, ZERO_RESULTS, REQUEST_DENIED, INVALID_REQUEST, UNKNOWN_ERROR
+      logger.error(`Geocoding failed. ${status}: ${response.data.error_message}`);
+      return fail();
+    })
+    .catch((e) => {
+      logger.error(`Geocoding error: ${e.message}`);
+      return fail();
+    });
 };

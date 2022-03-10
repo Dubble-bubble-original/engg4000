@@ -23,7 +23,8 @@ const error429Message = [
   'You have created, deleted, or published too many posts this hour. Please try again later.',
   'You have loaded user posts too many times this hour. Please try again later.',
   'You have sent out too many emails this hour. Please try again later.',
-  'You have attempted too many puzzles this hour. Please try again later.'
+  'You have attempted too many puzzles this hour. Please try again later.',
+  'You have selected too many locations during the last 60 seconds. Please try again later.'
 ];
 
 // Get Auth token
@@ -242,6 +243,21 @@ export const sendAccessKeyEmail = async (access_key, to_email, author_name, post
       },
       headers: {
         'Content-Type': 'application/json',
+        'token': authToken
+      }
+    });
+    return response.data;
+  });
+}
+
+// Geocode position based on lat/lng
+export const geocode = async (lat, lng) => {
+  return await requestWithToken(async() => {
+    const latlng = lat+','+lng;
+    const response = await axios({
+      method: 'GET',
+      url: serviceUrl + '/geocode/' + latlng,
+      headers: {
         'token': authToken
       }
     });

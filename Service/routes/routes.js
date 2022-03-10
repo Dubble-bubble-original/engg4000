@@ -64,6 +64,14 @@ const captchaLimiter = RATE_LIMIT({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const geocodeLimiter = RATE_LIMIT({
+  windowMs: 60 * 1000, // 1 minute
+  max: 100, // Limit each IP to 100 geocode requests per window
+  message: { message: 'Too Many Geocode Requests From This IP Address', errorCode: 5 },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 // Development API
 if (ENV.NODE_ENV === 'dev') {
   ROUTER.post(
@@ -191,6 +199,13 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.verifyAuthToken),
     USE(API.verifyCaptcha)
   );
+
+  // Google API endpoints
+  ROUTER.get(
+    '/geocode/:latlng',
+    USE(API.verifyAuthToken),
+    USE(API.geocodePosition)
+  );
 }
 // Production API
 else if (ENV.NODE_ENV === 'prod') {
@@ -274,6 +289,14 @@ else if (ENV.NODE_ENV === 'prod') {
     emailLimiter,
     USE(API.verifyAuthToken),
     USE(API.sendAKEmail)
+  );
+
+  // Google API endpoints
+  ROUTER.get(
+    '/geocode/:latlng',
+    geocodeLimiter,
+    USE(API.verifyAuthToken),
+    USE(API.geocodePosition)
   );
 }
 
