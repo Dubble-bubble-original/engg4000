@@ -762,7 +762,7 @@ exports.verifyImages = async (req, res) => {
   try {
     // Check Avatar Image
     if (post.author.avatar_url) {
-    // Download Avatar Image
+      // Download Avatar Image
       const avatarImage = await download.image({
         url: post.author.avatar_url,
         dest: './model'
@@ -789,7 +789,7 @@ exports.verifyImages = async (req, res) => {
 
     // Check Post Image
     if (post.img_url) {
-    // Download post image
+      // Download post image
       const postImage = await download.image({
         url: post.img_url,
         dest: './model'
