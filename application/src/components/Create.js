@@ -56,7 +56,8 @@ function Create(props) {
   const [position, setPosition] = useState(null);
   const [oldPosition, setOldPosition] = useState(null);
   const [locationString, setLocationString] = useState('');
-  const [isTruePosition, setIsTruePosition] = useState(null);
+  const [isTruePosition, setIsTruePosition] = useState(false);
+  const [positionErrorMsg, setPositionErrorMsg] = useState(null);
   const [avatarImg, setAvatarImg] = useState(null);
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
@@ -238,7 +239,7 @@ function Create(props) {
     // Update locationString after a delay (if needed)
     const timeoutID = setTimeout(() => {
       if (positionChanged() && position !== null) {
-        geocodePosition(position, (locStr) => {
+        geocodePosition(position, setPositionErrorMsg, (locStr) => {
           setLocationString(locStr);
           setOldPosition(position);
         });
@@ -255,6 +256,10 @@ function Create(props) {
   const resetPage = () => {
     // Reset all state variables to default values
     setPosition(null);
+    setOldPosition(null);
+    setLocationString('');
+    setIsTruePosition(false);
+    setPositionErrorMsg('');
     setAvatarImg(null);
     setName('');
     setTitle('');
@@ -301,9 +306,9 @@ function Create(props) {
               <Alert
                 variant="danger"
                 className="mb-0 mt-3"
-                hidden={position !== null}
+                hidden={position !== null && !positionErrorMsg}
               >
-                <MdErrorOutline/> You must select a location.
+                <MdErrorOutline/> {position === null ? 'You must select a location.' : positionErrorMsg}
               </Alert>
             </Section>
 

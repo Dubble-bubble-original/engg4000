@@ -23,7 +23,8 @@ const error429Message = [
   'You have created, deleted, or published too many posts this hour. Please try again later.',
   'You have loaded user posts too many times this hour. Please try again later.',
   'You have sent out too many emails this hour. Please try again later.',
-  'You have attempted too many puzzles this hour. Please try again later.'
+  'You have attempted too many puzzles this hour. Please try again later.',
+  'You have selected too many locations during the last 60 seconds. Please try again later.'
 ];
 
 // Get Auth token
