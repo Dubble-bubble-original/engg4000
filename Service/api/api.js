@@ -1,6 +1,10 @@
 // Packages
+const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
+
+// Captcha
+const sliderCaptcha = require('@slider-captcha/core');
 
 // Utils
 const UTILS = require('../utils/utils');
@@ -18,6 +22,7 @@ const POST_LIMIT_DEFAULT = 15;
 const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
+const GEOCODE_API = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -736,5 +741,77 @@ exports.sendAKEmail = async (req, res) => {
     .catch((err) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.createCaptcha = async (req, res) => {
+  sliderCaptcha.create({
+    distort: true,
+    rotate: true
+  })
+    .then(function ({ data, solution }) {
+      req.session.captcha = solution;
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.verifyCaptcha = async (req, res) => {
+  sliderCaptcha.verify(req.session.captcha, req.body)
+    .then(function (verification) {
+      if (verification.result === 'success') {
+        req.session.captchaToken = verification.token;
+      }
+      res.status(200).send(verification);
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    });
+};
+
+exports.verifyCaptchaToken = async (req, res, next) => {
+  // Request must include a valid captcha token for this session
+  const captchaToken = req.header('captcha-token');
+  if (!captchaToken || captchaToken !== req.session.captchaToken) {
+    logger.info('Missing or Invalid Captcha Token');
+    return res.status(403).send({ message: 'Missing or Invalid Captcha Token' });
+  }
+  return next();
+};
+
+exports.geocodePosition = async (req, res) => {
+  const coordinates = req.params.latlng;
+
+  // Helper function when error occurs
+  const fail = () => res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+
+  // Make API call to Google
+  axios.get(GEOCODE_API, {
+    params: {
+      latlng: coordinates,
+      language: 'en',
+      result_type: 'country|administrative_area_level_1|locality',
+      key: process.env.GEO_API_KEY
+    }
+  })
+    .then((response) => {
+      const { status } = response.data;
+      if (status === 'OK') {
+        const locationString = UTILS.extractGeocodeResult(response.data.results);
+        if (locationString === null) return fail();
+        return res.status(200).json({ locationString });
+      }
+      // Return failure for all other status:
+      // OVER_QUERY_LIMIT, ZERO_RESULTS, REQUEST_DENIED, INVALID_REQUEST, UNKNOWN_ERROR
+      logger.error(`Geocoding failed. ${status}: ${response.data.error_message}`);
+      return fail();
+    })
+    .catch((e) => {
+      logger.error(`Geocoding error: ${e.message}`);
+      return fail();
     });
 };

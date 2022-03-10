@@ -47,7 +47,7 @@ function Post({postData}) {
     <>
       <Container className="outer-container">
         <FRow>
-          <FCol>
+          <FCol className="avatar-column">
             <button className="image-button avatar clickable hover-outline" onClick={() => setAvatarImageModal(true)}>
               <img className="avatar" data-testid="avatar-image" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
             </button>

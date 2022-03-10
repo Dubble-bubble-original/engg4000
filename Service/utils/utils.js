@@ -10,6 +10,7 @@ const { uploadFile, deleteFile } = require('../aws/aws');
 // Return Responses
 const Result = { Success: 1, NotFound: 2, Error: 3 };
 Object.freeze(Result);
+exports.Result = Result;
 
 exports.removeStaleTokens = (token) => {
   // Clear the stale token
@@ -98,4 +99,41 @@ exports.deleteDBPost = async (postID) => (
     })
 );
 
-exports.Result = Result;
+// Geocoding format extraction
+exports.extractGeocodeResult = (results) => {
+  // Extract the country, province, city (if possible)
+  let country; let province; let city;
+  const foundAll = () => country && province && city;
+  for (let i = results.length - 1; i >= 0 && !foundAll(); i--) {
+    const components = results[i].address_components;
+    for (let j = 0; j < components.length && !foundAll(); j++) {
+      const component = components[j];
+      if (!country && component.types.includes('country')) {
+        country = component;
+      }
+      if (!province && component.types.includes('administrative_area_level_1')) {
+        province = component;
+      }
+      if (!city && component.types.includes('locality')) {
+        city = component;
+      }
+    }
+  }
+
+  // Build the response based on the received components
+  let locationString = null;
+  if (country) {
+    locationString = country.long_name;
+    if (province) {
+      if (city) {
+        // If city found, use short name for province
+        locationString = `${city.long_name}, ${province.short_name}, ${locationString}`;
+      }
+      else {
+        // Else use long name for province
+        locationString = `${province.long_name}, ${locationString}`;
+      }
+    }
+  }
+  return locationString;
+};
