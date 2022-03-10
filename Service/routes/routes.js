@@ -56,10 +56,18 @@ const emailLimiter = RATE_LIMIT({
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
+const captchaLimiter = RATE_LIMIT({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 100, // Limit each IP to 100 captcha requests per window
+  message: { message: 'Too Many Captcha requests From This IP Address', errorCode: 4 },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
+
 const geocodeLimiter = RATE_LIMIT({
   windowMs: 60 * 1000, // 1 minute
   max: 100, // Limit each IP to 100 geocode requests per window
-  message: { message: 'Too Many Geocode Requests From This IP Address' },
+  message: { message: 'Too Many Geocode Requests From This IP Address', errorCode: 5 },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
@@ -179,6 +187,19 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.sendAKEmail)
   );
 
+  // Captcha endpoints
+  ROUTER.get(
+    '/captcha/create',
+    USE(API.verifyAuthToken),
+    USE(API.createCaptcha)
+  );
+
+  ROUTER.post(
+    '/captcha/verify',
+    USE(API.verifyAuthToken),
+    USE(API.verifyCaptcha)
+  );
+
   // Google API endpoints
   ROUTER.get(
     '/geocode/:latlng',
@@ -199,6 +220,7 @@ else if (ENV.NODE_ENV === 'prod') {
     '/post',
     createDeletePostLimiter,
     USE(API.verifyAuthToken),
+    USE(API.verifyCaptchaToken),
     USE(API.createFullUserPost)
   );
 
@@ -244,6 +266,21 @@ else if (ENV.NODE_ENV === 'prod') {
     createDeletePostLimiter,
     USE(API.verifyAuthToken),
     USE(API.deleteImage)
+  );
+
+  // Captcha endpoints
+  ROUTER.get(
+    '/captcha/create',
+    captchaLimiter,
+    USE(API.verifyAuthToken),
+    USE(API.createCaptcha)
+  );
+
+  ROUTER.post(
+    '/captcha/verify',
+    captchaLimiter,
+    USE(API.verifyAuthToken),
+    USE(API.verifyCaptcha)
   );
 
   // Email endpoints
