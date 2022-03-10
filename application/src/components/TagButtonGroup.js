@@ -67,7 +67,7 @@ function TagButtonGroup(props) {
         <FormControl
           type="text"
           value={tagFilter}
-          name="filter-input-field"
+          id="filter-input-field"
           onChange={(e)=> {setTagFilter(e.target.value)}}
         />
       </InputGroup>
@@ -89,8 +89,7 @@ function TagButtonGroup(props) {
                 value={tag}
                 key={tag}
                 id={'tgb-btn-'+tag}
-                data-testid={tag}
-                placeholder="tags"
+                data-testid="tags"
               >
                 {tag}
               </ToggleButton>

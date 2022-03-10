@@ -30,6 +30,6 @@ describe('TagButtonGroup Component', () => {
   });
 
   test('Sanpshot test for tagList', async () => {
-    expect(await screen.getAllByPlaceholderText('tags')).toMatchSnapshot();
+    expect(screen.getAllByTestId('tags')).toMatchSnapshot();
   });
 });
