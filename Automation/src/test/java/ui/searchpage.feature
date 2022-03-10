@@ -5,30 +5,64 @@ Feature: Navbar component automated tests
     * configure driver = { type: 'chrome' }
 
   Scenario: Enter Search page
-    # Enter Search Page
+    # Enter website
     Given driver frontendUrl
     When click('input[data-testid=agree-checkbox]')
     And click('button[data-testid=enter-btn]')
     Then waitFor('nav[data-testid=navbar]')
-    And click('a[data-testid=nav-search-btn]')
+
+    # MOve to search page
+    When click('a[data-testid=nav-search-btn]')
     Then waitFor('div[data-testid=search-page]')
 
   Scenario: Search Button Disabled
+    # Enter website
     Given driver frontendUrl
     When click('input[data-testid=agree-checkbox]')
     And click('button[data-testid=enter-btn]')
     Then waitFor('nav[data-testid=navbar]')
-    And click('a[data-testid=nav-search-btn]')
+
+    # Enter search page and check to see if the search button is disabled
+    When click('a[data-testid=nav-search-btn]')
     Then waitFor('div[data-testid=search-page]')
-    Then match enabled('button[data-testid=search-button]') == false
-    Then match text('div[data-testid=no-tags-alert]') == ' You must select at least one tag.'
+    And match enabled('button[data-testid=search-button]') == false
+    And match text('div[data-testid=no-tags-alert]') == ' You must select at least one tag.'
 
   Scenario: Search Button Enabled
+    # Enter Website
     Given driver frontendUrl
     When click('input[data-testid=agree-checkbox]')
     And click('button[data-testid=enter-btn]')
     Then waitFor('nav[data-testid=navbar]')
-    And click('a[data-testid=nav-search-btn]')
+
+    # Enter search page
+    When click('a[data-testid=nav-search-btn]')
     Then waitFor('div[data-testid=tag-group]')
-    And click('input[data-testid=fall]')
+
+    # Select a tag
+    When click('label[data-testid=fall]')
     Then match enabled('button[data-testid=search-button]') == true
+
+  Scenario: Click search button after selecting some tags
+    # Enter Website
+    Given driver frontendUrl
+    When click('input[data-testid=agree-checkbox]')
+    And click('button[data-testid=enter-btn]')
+    Then waitFor('nav[data-testid=navbar]')
+
+    # Enter search page
+    When click('a[data-testid=nav-search-btn]')
+    Then waitFor('div[data-testid=tag-group]')
+
+    # Select some tags
+    When click('label[data-testid=fall]')
+    And click('label[data-testid=food]')
+    And click('label[data-testid=other]')
+    Then match enabled('button[data-testid=search-button]') == true
+
+    # Click the search button
+    When click('button[data-testid=search-button]')
+    Then waitFor('div[data-testid=selcted-tags]')
+    And match text('button[data-testid=selected-btn-fall]') == 'fall'
+    And match text('button[data-testid=selected-btn-food]') == 'food'
+    And match text('button[data-testid=selected-btn-other]') == 'other'

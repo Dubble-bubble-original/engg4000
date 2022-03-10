@@ -67,6 +67,7 @@ function TagButtonGroup(props) {
         <FormControl
           type="text"
           value={tagFilter}
+          name="filter-input-field"
           onChange={(e)=> {setTagFilter(e.target.value)}}
         />
       </InputGroup>
