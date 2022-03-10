@@ -193,7 +193,7 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.verifyAuthToken),
     USE(API.verifyImages)
   );
-  
+
   // Captcha endpoints
   ROUTER.get(
     '/captcha/create',
@@ -304,7 +304,7 @@ else if (ENV.NODE_ENV === 'prod') {
     USE(API.verifyAuthToken),
     USE(API.verifyImages)
   );
-  
+
   // Google API endpoints
   ROUTER.get(
     '/geocode/:latlng',

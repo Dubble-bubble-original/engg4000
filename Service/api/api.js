@@ -827,7 +827,7 @@ exports.verifyImages = async (req, res) => {
   }
 
   return res.status(200).send({ message: 'Images Verifired Successfully' });
-}
+};
 
 exports.createCaptcha = async (req, res) => {
   sliderCaptcha.create({
