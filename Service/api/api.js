@@ -774,7 +774,7 @@ exports.verifyImages = async (req, res) => {
       // Call model to check image
       const avatarImageResults = await model.classify(avatarImageData);
 
-      if (!UTILS.checkImage(avatarImageResults)) {
+      if (UTILS.checkImage(avatarImageResults)) {
         // Delete Image
         const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
         if (results === UTILS.Result.Error) {
@@ -802,7 +802,7 @@ exports.verifyImages = async (req, res) => {
       const postImageResults = await model.classify(postImageData);
 
       // Delete post image if needed
-      if (!UTILS.checkImage(postImageResults)) {
+      if (UTILS.checkImage(postImageResults)) {
         // Delete Image
         const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
         if (results === UTILS.Result.Error) {

@@ -141,15 +141,15 @@ exports.convert = async (img) => {
 };
 
 // Returns true if the image has to be deleted
-exports.checkImage = async (predictions) => {
+exports.checkImage = (predictions) => {
   const results = {};
   predictions.forEach((prediction) => {
     const { className, probability } = prediction;
     results[className] = Number((probability * 100).toFixed(0));
   });
 
-  // Return true if images are good, false otherwise
-  if (results.Neutral + results.Sexy >= 85) {
+  // Return true if image needs to be deleted
+  if (results.Neutral + results.Sexy < 85) {
     return true;
   }
   return false;

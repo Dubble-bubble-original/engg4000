@@ -6,6 +6,7 @@ const EXPRESS = require('express');
 const session = require('express-session');
 const APP = EXPRESS();
 const nsfw = require('nsfwjs');
+const fs = require('fs');
 const printServiceBanner = require('./banner/banner');
 const db = require('./db/dbUtils');
 
@@ -15,6 +16,13 @@ printServiceBanner();
 // Get environment
 require('dotenv').config();
 const ENV = process.env;
+
+// Create a temp directory to store model images
+if (!fs.existsSync('./model')) {
+  fs.mkdirSync('./model', {
+    recursive: true
+  });
+}
 
 // API Middleware
 APP.use(EXPRESS.json({ limit: '2mb' }));
