@@ -193,5 +193,3 @@ exports.extractGeocodeResult = (results) => {
   }
   return locationString;
 };
-
-exports.Result = Result;
