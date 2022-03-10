@@ -57,7 +57,7 @@ const emailLimiter = RATE_LIMIT({
 });
 
 // Development API
-if (ENV.NODE_ENV === 'dev') {
+if (ENV.NODE_ENV === 'dev' || ENV.NODE_ENV === 'ci') {
   ROUTER.post(
     '/auth',
     USE(API.createAuthToken)
