@@ -88,6 +88,13 @@ Feature: User post endpoints tests
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
 
+    # Call delete user endpoint
+    Given path 'user/' + author_id
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Deleted Successfully'
+
   # Search userposts
 
   Scenario: Try to get posts with no auth token provided
