@@ -166,7 +166,7 @@ function Search() {
               <FRow>
                 <FCol>Tags:</FCol>
                 <FCol className="w-100">
-                  <div className="tag-container" data-testid="selcted-tags">
+                  <div className="tag-container" data-testid="selected-tags">
                     {
                       searchTags.sort().map(tag =>
                         <Button

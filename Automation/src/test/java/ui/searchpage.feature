@@ -4,17 +4,6 @@ Feature: Navbar component automated tests
   Background:
     * configure driver = { type: 'chrome' }
 
-  Scenario: Enter Search page
-    # Enter website
-    Given driver frontendUrl
-    When click('input[data-testid=agree-checkbox]')
-    And click('button[data-testid=enter-btn]')
-    Then waitFor('nav[data-testid=navbar]')
-
-    # MOve to search page
-    When click('a[data-testid=nav-search-btn]')
-    Then waitFor('div[data-testid=search-page]')
-
   Scenario: Search Button Disabled
     # Enter website
     Given driver frontendUrl
@@ -27,21 +16,6 @@ Feature: Navbar component automated tests
     Then waitFor('div[data-testid=search-page]')
     And match enabled('button[data-testid=search-button]') == false
     And match text('div[data-testid=no-tags-alert]') == ' You must select at least one tag.'
-
-  Scenario: Search Button Enabled
-    # Enter Website
-    Given driver frontendUrl
-    When click('input[data-testid=agree-checkbox]')
-    And click('button[data-testid=enter-btn]')
-    Then waitFor('nav[data-testid=navbar]')
-
-    # Enter search page
-    When click('a[data-testid=nav-search-btn]')
-    Then waitFor('div[data-testid=tag-group]')
-
-    # Select a tag
-    When click('#tgb-btn-fall')
-    Then match enabled('button[data-testid=search-button]') == true
 
   Scenario: Click search button after selecting some tags
     # Enter Website
@@ -62,7 +36,7 @@ Feature: Navbar component automated tests
 
     # Click the search button
     When click('button[data-testid=search-button]')
-    Then waitFor('div[data-testid=selcted-tags]')
+    Then waitFor('div[data-testid=selected-tags]')
     And match text('button[data-testid=selected-btn-fall]') == 'fall'
     And match text('button[data-testid=selected-btn-food]') == 'food'
     And match text('button[data-testid=selected-btn-other]') == 'other'
@@ -84,8 +58,13 @@ Feature: Navbar component automated tests
     And click('#tgb-btn-seasonal')
     And match enabled('button[data-testid=search-button]') == true
 
+    # Makes sure that the filter hides the non matching tags
+    Then match exists('#fall') == false
+    And match exists('#food') == false
+    And match exists('#other') == false
+
     # Click the search button
     When click('button[data-testid=search-button]')
-    Then waitFor('div[data-testid=selcted-tags]')
+    Then waitFor('div[data-testid=selected-tags]')
     And match text('button[data-testid=selected-btn-desert]') == 'desert'
     And match text('button[data-testid=selected-btn-seasonal]') == 'seasonal'
