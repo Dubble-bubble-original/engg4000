@@ -73,7 +73,7 @@ const geocodeLimiter = RATE_LIMIT({
 });
 
 // Development API
-if (ENV.NODE_ENV === 'dev' || ENV.NODE_ENV === 'ci') {
+if (ENV.NODE_ENV === 'dev') {
   ROUTER.post(
     '/auth',
     USE(API.createAuthToken)
