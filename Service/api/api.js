@@ -767,7 +767,7 @@ exports.bulkDelete = async (req, res) => {
       return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
     });
   return res.status(200).send({ message: 'Posts Bulk Deleted Successfully' });
-}
+};
 
 exports.createCaptcha = async (req, res) => {
   sliderCaptcha.create({
