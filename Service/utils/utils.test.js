@@ -96,3 +96,57 @@ describe('getImageID', () => {
     expect(result).toEqual(expectedResult);
   });
 });
+
+// Tests for cleanString function
+describe('cleanString', () => {
+  test('clean string containing bad words', () => {
+    const string = 'This Fuck String Shit is Damn clean hell now!';
+    const expectedResult = 'This **** String **** is **** clean **** now!';
+    const result = UTILS.cleanString(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('clean string containing no bad words', () => {
+    const string = 'This String is clean!';
+    const expectedResult = 'This String is clean!';
+    const result = UTILS.cleanString(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('clean null string', () => {
+    const string = null;
+    const expectedResult = null;
+    const result = UTILS.cleanString(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+// Tests for isStringProfane function
+describe('isStringProfane', () => {
+  test('check string containing bad words', () => {
+    const string = 'This Fuck String Shit is Damn clean hell now!';
+    const expectedResult = true;
+    const result = UTILS.isStringProfane(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('check string containing no bad words', () => {
+    const string = 'This String is clean!';
+    const expectedResult = false;
+    const result = UTILS.isStringProfane(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('check null string', () => {
+    const string = null;
+    const expectedResult = false;
+    const result = UTILS.isStringProfane(string);
+
+    expect(result).toEqual(expectedResult);
+  });
+});

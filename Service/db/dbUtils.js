@@ -6,11 +6,17 @@ const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.p
 module.exports.connectionString = connectionString;
 
 module.exports.connectTest = async (name) => {
+  // eslint-disable-next-line max-len
   const testConnectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${name}?retryWrites=true&w=majority`;
   await mongoose.connect(testConnectionString);
 };
 
 module.exports.connectDatabase = async () => {
+<<<<<<< HEAD
+=======
+  // eslint-disable-next-line max-len
+  const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
+>>>>>>> 6f603b5598fe6502919f58412f4cee23296d947b
   await mongoose.connect(connectionString);
 };
 
