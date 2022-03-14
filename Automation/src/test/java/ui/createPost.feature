@@ -2,8 +2,9 @@
 Feature: Creating a post and then deleting it.
 
     Background:
+      # My attempt at auto-enabling geolocation upon browser start up.
+      # The browser was still asking for gerolation even with this line of code
       * configure driver = { type: 'chrome', showDriverLog: true , addOptions: [ 'enable-geolocation' ]}
-      ##* configure driverTarget = { docker: 'ptrthomas/karate-chrome', showDriverLog: true , addOptions: [ 'enable-geolocation' ]}
     
     Scenario: Creating a post then deleting it
       # Enter website
