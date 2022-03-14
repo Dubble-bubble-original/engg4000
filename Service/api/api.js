@@ -829,6 +829,11 @@ exports.verifyImages = async (req, res) => {
       fs.promises.unlink(postImage.filename);
       postImageData.dispose();
     }
+
+    // If any image was removed flag the post
+    if (imageRemoved) {
+      await UTILS.updatePost({ _id: post._id });
+    }
   }
   catch (err) {
     logger.error(err.message);

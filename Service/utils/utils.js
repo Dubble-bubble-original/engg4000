@@ -124,6 +124,29 @@ exports.getPost = async (accessKey) => (
     })
 );
 
+// Update Post
+exports.updatePost = async (query) => {
+  const body = {
+    flagged: true
+  };
+
+  UserPost.findOneAndUpdate(query, body, { new: true })
+    .select('-_id -access_key')
+    .exec()
+    .then((doc) => {
+      if (!doc) {
+        logger.info('Post Image Not Updated');
+        return Result.NotFound;
+      }
+      logger.info('Post Image Updated');
+      return Result.Success;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return Result.Error;
+    });
+};
+
 // Convert the image to UInt8 Byte array
 exports.convert = async (img) => {
   // Decoded image in UInt8 Byte array
