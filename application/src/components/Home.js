@@ -15,24 +15,6 @@ import PlaceholderAvatar from '../resources/images/placeholder-avatar.png';
 // API
 import { getRecentPosts } from '../api/api.js';
 
-// Temp post
-const postData = {
-  author: {
-    name: 'Sahil'
-  },
-  body: 'Post Bod er uh35hj35tyhgbw4t53yh3t564v ghgn uie rhgrf u3hf ghp3f qergh3 fcgh iuweagdfucyvaqwegrfyuig qreuy3ogf qi8erw7fgt 78qerloiagfvdasfhjk,gvbipqw;agvbcuiyadghpf upiwerq fu ghfuifpuidewbhnfui uhf ewh   howiefh iweo9duhf p weuiofh wehodf 9owerhfdic8ohgeroi8lSW(HF 9WEH F EFWEDFHIWE FNDUWERBF PI;GDEW UFcgv  wiGf pb wif bhnjn oasjerngiohnrtfgbuvinsfrtujivbn wfruijbhvuisdfb vuiwerghnv bauoedzshpr gfy',
-  tags: ['fall'],
-  title: 'Post Title',
-  date_created: '2022-02-17T16:08:10.565+00:00',
-  location: {
-    lat: 0,
-    lng: 0
-  },
-  location_string: 'Frdericton, NB',
-  flagged: true,
-  img_url: PlaceholderAvatar,
-}
-
 // Home component for the application
 function Home() {
 
@@ -88,7 +70,6 @@ function Home() {
     }
     else {
       // Error occured
-      setPosts([postData]);
       setIsError(true);
       setError429Message(result.message);
     }
