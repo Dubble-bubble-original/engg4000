@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const ENV = process.env;
 
+// eslint-disable-next-line max-len
 const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
 module.exports.connectionString = connectionString;
 
@@ -12,11 +13,6 @@ module.exports.connectTest = async (name) => {
 };
 
 module.exports.connectDatabase = async () => {
-<<<<<<< HEAD
-=======
-  // eslint-disable-next-line max-len
-  const connectionString = `mongodb+srv://${ENV.DB_USER}:${ENV.DB_PASS}@cluster0.pa1un.mongodb.net/${ENV.DB_NAME}?retryWrites=true&w=majority`;
->>>>>>> 6f603b5598fe6502919f58412f4cee23296d947b
   await mongoose.connect(connectionString);
 };
 
