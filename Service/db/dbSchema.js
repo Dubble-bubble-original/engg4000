@@ -23,6 +23,7 @@ const userPostSchema = new Schema({
   },
   location_string: { type: String, required: true },
   true_location: { type: Boolean, required: true },
+  flagged: { type: Boolean, required: true },
   access_key: { type: String, required: true, unique: true }
 });
 const UserPost = mongoose.model('UserPost', userPostSchema, 'UserPost');

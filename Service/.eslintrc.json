@@ -21,7 +21,8 @@
         "no-plusplus": ["error", {
             "allowForLoopAfterthoughts": true
         }],
-        "consistent-return": [ "off" ]
+        "consistent-return": [ "off" ],
+        "max-len": ["error", { "code": 120 }]
     },
     "parserOptions": {
         // Required for certain syntax usages

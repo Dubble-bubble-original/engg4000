@@ -26,6 +26,7 @@ describe('CRUD User Collection Tests', () => {
     },
     location_string: 'New Brunswick, Canada',
     true_location: true,
+    flagged: false,
     access_key: '7f3a187f-115b-455d-892b-d8465e3167ea',
     uid: new ObjectId()
   });

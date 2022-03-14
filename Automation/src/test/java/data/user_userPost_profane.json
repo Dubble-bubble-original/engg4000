@@ -1,0 +1,18 @@
+{
+    "avatarId": "elmo.gif",
+    "pictureId": "elmo.gif",
+    "post": {
+        "tags": ["nature", "hiking", "fall"],
+        "title": "Gorgeous Fucking Trail!",
+        "body": "Went hiking in a shit trail in Cape Breton with the damn family.",
+        "location": {
+            "lat": 0,
+            "lng": 0
+        },
+        "true_location": true,
+        "location_string": "New Brunswick, Canada"
+    },
+    "user": {
+        "name": "John Fucking Doe"
+    }
+}
