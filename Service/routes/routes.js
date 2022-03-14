@@ -193,6 +193,12 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.sendAKEmail)
   );
 
+  ROUTER.delete(
+    '/bulkdelete',
+    USE(API.verifyAuthToken),
+    USE(API.bulkDelete)
+  );
+
   // Captcha endpoints
   ROUTER.get(
     '/captcha/create',

@@ -14,10 +14,15 @@ function fn() {
     config.baseUrl = 'http://localhost:3001';
     config.frontendUrl = 'http://localhost:3000';
   } else if (env == 'ci') {
-    // customize
+    //Clears the DB before performing tests
+    config.baseUrl = 'http://localhost:3001';
+    config.frontendUrl = 'http://localhost:3000';
+    karate.callSingle('classpath:utils/bulkDelete.feature', config);
   } else if (env == 'prod') {
     // customize
   }
+
+  
 
   return config;
 }
