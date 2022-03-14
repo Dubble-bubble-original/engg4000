@@ -10,8 +10,6 @@ import Post from './post/Post';
 import { FRow, FCol, CenterContainer } from './Containers';
 import LoadingSpinner from './LoadingSpinner';
 
-import PlaceholderAvatar from '../resources/images/placeholder-avatar.png';
-
 // API
 import { getRecentPosts } from '../api/api.js';
 
