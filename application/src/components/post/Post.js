@@ -1,6 +1,5 @@
 // React
-import { Container, Button, Modal, Alert } from 'react-bootstrap';
-import ToolTip from '../tooltip/ToolTip';
+import { Container, Button, Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { When } from 'react-if';
@@ -13,7 +12,7 @@ import './post.css';
 import StaticMap from '../maps/StaticMap';
 import { FRow, FCol } from '../Containers';
 import PlaceholderAvatar from '../../resources/images/placeholder-avatar.png';
-import { MdErrorOutline, MdOutlineCheckCircle } from 'react-icons/md';
+import { MdErrorOutline } from 'react-icons/md';
 
 // Show placeholder image if avatar image fails
 function handleAvatarImgError(e) {
@@ -49,26 +48,6 @@ function Post({postData}) {
     <>
       <Container className="outer-container">
         <FRow>
-          {/* <FCol className="avatar-column">
-            <button className="image-button avatar clickable hover-outline" onClick={() => setAvatarImageModal(true)}>
-              <img className="avatar" data-testid="avatar-image" src={postData.author.avatar_url ?? PlaceholderAvatar} onError={handleAvatarImgError} />
-            </button>
-            <div className="user-name text-center">{postData.author.name}</div>
-
-            <ToolTip text="Simple ToolTip aserh qerg">
-              <MdErrorOutline size={25} color='blue'/>
-            </ToolTip>
-
-            <div className='flagged' data-tooltip='Error'>
-              <MdErrorOutline size={25} color='red'/>
-            </div>
-
-            <div className='error-tooltip'>
-              <div className='toltip'>This post has been marked for explicit content</div>
-              <span className='error-symbol'><MdErrorOutline size={50} className='aleat-symbol'/></span>
-            </div>
-          </FCol> */}
-
           <FCol className="avatar-column">
             <div>
               <button className="image-button avatar clickable hover-outline" onClick={() => setAvatarImageModal(true)}>
@@ -77,18 +56,12 @@ function Post({postData}) {
               <div className="user-name text-center">{postData.author.name}</div>
             </div>
 
-            {/* <ToolTip text="Simple ToolTip aserh qerg">
-              <MdErrorOutline size={25} color='blue'/>
-            </ToolTip>
-
-            <div className='flagged' data-tooltip='Error'>
-              <MdErrorOutline size={25} color='red'/>
-            </div> */}
-
-            <div className='error-tooltip'>
-              <div className='toltip'>This post has been marked for explicit content</div>
-              <span className='error-symbol'><MdErrorOutline size={50} className='aleat-symbol'/></span>
-            </div>
+            <When condition={postData.flagged}>
+              <div className='flagged'>
+                <div className='custom-tooltip'>This post has been marked for explicit content</div>
+                <span className='symbol'><MdErrorOutline size={50} className='aleat-symbol'/></span>
+              </div>
+            </When>
           </FCol>
 
           <FCol className="post-body" data-testid="post-body">

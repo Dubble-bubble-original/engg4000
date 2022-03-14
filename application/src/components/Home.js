@@ -29,8 +29,8 @@ const postData = {
     lng: 0
   },
   location_string: 'Frdericton, NB',
-  flagged: true
-  // img_url: PlaceholderAvatar,
+  flagged: true,
+  img_url: PlaceholderAvatar,
 }
 
 // Home component for the application
