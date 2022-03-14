@@ -63,20 +63,24 @@ exports.createUserPost = (req, res) => {
     return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
+  const postTitle = UTILS.cleanString(req.body.title);
+  const postBody = UTILS.cleanString(req.body.body);
   const dateCreated = Date.now();
   const accessKey = uuidv4();
+  const isPostProfane = UTILS.isStringProfane(req.body.title) || UTILS.isStringProfane(req.body.body);
   const uniqueObjectId = new ObjectId();
   const newUserPost = new UserPost({
     uid: uniqueObjectId,
     author: req.body.author,
-    body: req.body.body,
+    body: postBody,
     tags: req.body.tags,
-    title: req.body.title,
+    title: postTitle,
     img_url: req.body.img_url,
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
     location_string: req.body.location_string,
+    flagged: isPostProfane,
     access_key: accessKey
   });
 
@@ -102,6 +106,7 @@ exports.createUserPost = (req, res) => {
         location: newUserPost.location,
         true_location: newUserPost.true_location,
         location_string: newUserPost.location_string,
+        flagged: newUserPost.flagged,
         access_key: newUserPost.access_key
       }
     });
@@ -371,8 +376,9 @@ exports.createUser = (req, res) => {
     return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
+  const userName = UTILS.cleanString(req.body.name);
   const newUser = new User({
-    name: req.body.name,
+    name: userName,
     avatar_url: req.body.avatar_url
   });
 
@@ -643,8 +649,9 @@ exports.createFullUserPost = async (req, res) => {
   } = req.body;
 
   // Create user with uploaded avatar
+  const userName = UTILS.cleanString(user.name);
   const newUser = new User({
-    name: user.name
+    name: userName
   });
   if (avatarId) {
     newUser.avatar_url = BUCKET_URL + avatarId;
@@ -661,19 +668,23 @@ exports.createFullUserPost = async (req, res) => {
     }
 
     // Create post with new user id and uploaded post picture
+    const postTitle = UTILS.cleanString(post.title);
+    const postBody = UTILS.cleanString(post.body);
     const dateCreated = Date.now();
     const accessKey = uuidv4();
+    const isPostProfane = UTILS.isStringProfane(post.title) || UTILS.isStringProfane(post.body);
     const uniqueObjectId = new ObjectId();
     const newUserPost = new UserPost({
       uid: uniqueObjectId,
       author: newUser._id,
-      body: post.body,
+      body: postBody,
       tags: post.tags,
-      title: post.title,
+      title: postTitle,
       date_created: dateCreated,
       location: post.location,
       true_location: post.true_location,
       location_string: post.location_string,
+      flagged: isPostProfane,
       access_key: accessKey
     });
     if (pictureId) {
@@ -712,6 +723,7 @@ exports.createFullUserPost = async (req, res) => {
           location: newUserPost.location,
           true_location: newUserPost.true_location,
           location_string: newUserPost.location_string,
+          flagged: newUserPost.flagged,
           access_key: newUserPost.access_key
         }
       });

@@ -3,6 +3,9 @@ const fs = require('fs');
 const imageDecoder = require('image-decode');
 const tf = require('@tensorflow/tfjs-node');
 
+const Filter = require('bad-words');
+const filter = new Filter();
+
 // DB
 const { UserPost, User } = require('../db/dbSchema');
 
@@ -193,3 +196,17 @@ exports.extractGeocodeResult = (results) => {
   }
   return locationString;
 };
+
+// Determine if string contains bad words
+exports.isStringProfane = (string) => filter.isProfane(string);
+
+// Clean string of bad words
+exports.cleanString = (string) => {
+  if (string) {
+    return filter.clean(string);
+  }
+
+  return string;
+};
+
+exports.Result = Result;
