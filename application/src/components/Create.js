@@ -324,6 +324,7 @@ function Create(props) {
                       type="text"
                       placeholder="What do people call you?"
                       value={name}
+                      data-testid="name-input"
                       onChange={(e)=> {setName(e.target.value)}}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -358,6 +359,7 @@ function Create(props) {
                     type="text"
                     placeholder="Give a title to your post"
                     value={title}
+                    data-testid="title-input"
                     onChange={(e)=> {setTitle(e.target.value)}}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -374,6 +376,7 @@ function Create(props) {
                   rows={6}
                   placeholder="Share your thoughts!"
                   value={body}
+                  data-testid="body-input"
                   onChange={(e)=> {setBody(e.target.value)}}
                 />
                 <Form.Control.Feedback type="invalid">

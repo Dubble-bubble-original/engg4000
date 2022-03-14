@@ -30,4 +30,4 @@ Feature: Creating a post and then deleting it.
       Then input('textarea[data-testid=body-input]', 'karate body')
 
       # Select Tags
-      #Then exists('div[role="alert"]') == true
+      Then click('label[data-testid=tags]')
