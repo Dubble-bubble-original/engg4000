@@ -26,6 +26,7 @@
     "@aws-sdk/credential-provider-node": "^3.48.0",
     "@slider-captcha/core": "^1.0.1",
     "aws-sdk": "^2.1029.0",
+    "bad-words": "^3.0.4",
     "axios": "^0.21.4",
     "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
