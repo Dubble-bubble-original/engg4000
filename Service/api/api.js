@@ -760,6 +760,7 @@ exports.sendAKEmail = async (req, res) => {
 
 exports.verifyImages = async (req, res) => {
   const accessKey = req.params.ak;
+  let imageRemoved = false;
 
   const post = await UTILS.getPost(accessKey);
 
@@ -788,6 +789,7 @@ exports.verifyImages = async (req, res) => {
 
       if (UTILS.checkImage(avatarImageResults)) {
         // Delete Image
+        imageRemoved = true;
         const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
         if (results === UTILS.Result.Error) {
           logger.error(INTERNAL_SERVER_ERROR_MSG);
@@ -816,6 +818,7 @@ exports.verifyImages = async (req, res) => {
       // Delete post image if needed
       if (UTILS.checkImage(postImageResults)) {
         // Delete Image
+        imageRemoved = true;
         const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
         if (results === UTILS.Result.Error) {
           logger.error(INTERNAL_SERVER_ERROR_MSG);
@@ -832,7 +835,9 @@ exports.verifyImages = async (req, res) => {
     return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
-  return res.status(200).send({ message: 'Images Verifired Successfully' });
+  const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
+
+  return res.status(200).send({ message: statusMessage });
 };
 
 exports.createCaptcha = async (req, res) => {

@@ -152,7 +152,7 @@ exports.checkImage = (predictions) => {
   });
 
   // Return true if image needs to be deleted
-  if (results.Neutral + results.Sexy < 85) {
+  if (results.Neutral + results.Sexy < (results.Drawing + results.Porn + results.Hentai)) {
     return true;
   }
   return false;
