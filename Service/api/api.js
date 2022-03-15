@@ -832,7 +832,7 @@ exports.verifyImages = async (req, res) => {
 
     // If any image was removed flag the post
     if (imageRemoved) {
-      await UTILS.updatePost({ _id: post._id });
+      await UTILS.setPostExplicitFlag({ _id: post._id });
     }
   }
   catch (err) {

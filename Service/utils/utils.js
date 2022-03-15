@@ -125,7 +125,7 @@ exports.getPost = async (accessKey) => (
 );
 
 // Update Post
-exports.updatePost = async (query) => {
+exports.setPostExplicitFlag = async (query) => {
   const body = {
     flagged: true
   };
@@ -135,10 +135,10 @@ exports.updatePost = async (query) => {
     .exec()
     .then((doc) => {
       if (!doc) {
-        logger.info('Post Image Not Updated');
+        logger.info('Post not found (and flagged)');
         return Result.NotFound;
       }
-      logger.info('Post Image Updated');
+      logger.info('Post flagged successfully');
       return Result.Success;
     })
     .catch((err) => {
