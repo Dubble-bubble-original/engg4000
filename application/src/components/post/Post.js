@@ -59,7 +59,7 @@ function Post({postData}) {
             <When condition={postData.flagged}>
               <div className='flagged' data-testid='post-flagged'>
                 <div className='custom-tooltip'>This post has been marked for explicit content</div>
-                <span className='symbol'><MdErrorOutline size={50} className='aleat-symbol'/></span>
+                <span className='symbol'><MdErrorOutline size={50} className='alert-symbol'/></span>
               </div>
             </When>
           </FCol>

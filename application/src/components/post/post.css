@@ -42,7 +42,7 @@
 .flagged .custom-tooltip {
     position: absolute;
     left: 0px;
-    width: 900%;
+    width: max-content;
     background: #fff;
     box-shadow: 0 10px 10px rgba(0,0,0,0.3);
     padding: 10px 18px;
@@ -52,7 +52,7 @@
     transition: all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
 }
 
-.aleat-symbol {
+.alert-symbol {
     color: var(--bs-primary);
 }
 
@@ -71,7 +71,7 @@
     background: var(--bs-primary);
 }
 
-.flagged:hover .symbol .aleat-symbol {
+.flagged:hover .symbol .alert-symbol {
     color: #fff;
 }
 
@@ -169,7 +169,7 @@
 
     .flagged .custom-tooltip {
         /* Reduce tooltip text size */
-        width: 500%;
+        width: 250px;
     }
 }
 
