@@ -14,23 +14,26 @@ function NavLinks(props) {
   // Handler to call closePopup() if it was given when clicking a link
   const navigate = useNavigate();
 
-  function clickHandler() {
-    if (props.closePopup) props.closePopup();
+  function clickHandler(content) {
+    navigate('/main/'+ content);
+    props.setContent(content);
+  }
 
-    navigate('/main/'+props.content);
+  function clickHandlerTC() {
+    if (props.closePopup) props.closePopup();
   }
 
   return (
     <IconContext.Provider value={{color:'var(--bs-primary)'}}>
       <Nav className="me-auto">
-          <Nav.Link data-testid="nav-home-btn" onClick={() => clickHandler(props.setContent('home'))} className={props.content === 'home' ? 'active' : ''}>Home <MdHome/></Nav.Link>
-          <Nav.Link data-testid="nav-search-btn" onClick={() => clickHandler(props.setContent('search'))} className={props.content === 'search' ? 'active' : ''}>Search <MdSearch/></Nav.Link>
-          <Nav.Link data-testid="nav-create-btn" onClick={() => clickHandler(props.setContent('create'))} className={props.content === 'create' ? 'active' : ''}>Create <MdAddLocation/></Nav.Link>
+          <Nav.Link data-testid="nav-home-btn" onClick={() => clickHandler('home')} className={props.content === 'home' ? 'active' : ''}>Home <MdHome/></Nav.Link>
+          <Nav.Link data-testid="nav-search-btn" onClick={() => clickHandler('search')} className={props.content === 'search' ? 'active' : ''}>Search <MdSearch/></Nav.Link>
+          <Nav.Link data-testid="nav-create-btn" onClick={() => clickHandler('create')} className={props.content === 'create' ? 'active' : ''}>Create <MdAddLocation/></Nav.Link>
       </Nav>
       <Nav className="justify-content-end">
         <NavDropdown align="end" title={<MdMoreHoriz/>} id="basic-nav-dropdown" data-testid="nav-dropdown">
-          <NavDropdown.Item data-testid="nav-terms-conditions-btn" onClick={() => clickHandler(props.setShowTerms(true))}>Terms and Conditions</NavDropdown.Item>
-          <NavDropdown.Item data-testid="nav-delete-btn" onClick={() => clickHandler(props.setContent('delete'))}>Delete a post</NavDropdown.Item>
+          <NavDropdown.Item data-testid="nav-terms-conditions-btn" onClick={() => clickHandlerTC(props.setShowTerms(true))}>Terms and Conditions</NavDropdown.Item>
+          <NavDropdown.Item data-testid="nav-delete-btn" onClick={() => clickHandler('delete')}>Delete a post</NavDropdown.Item>
         </NavDropdown>
       </Nav>
     </IconContext.Provider>
