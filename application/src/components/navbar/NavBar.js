@@ -8,6 +8,7 @@ import { IconContext } from 'react-icons';
 import { MdHome, MdSearch, MdAddLocation, MdMoreHoriz } from 'react-icons/md';
 import Logo from '../../resources/images/nota-logo-no-text.png';
 import { FRow } from '../Containers'
+import { useNavigate } from 'react-router-dom';
 
 function NavLinks(props) {
   // Handler to call closePopup() if it was given when clicking a link
@@ -33,10 +34,16 @@ function NavLinks(props) {
 }
 
 function NavBar(props) {
+  const navigate = useNavigate();
 
   // Function to close the offcanvas popup
   function closePopup() {
     document.querySelector('body > .offcanvas-backdrop').click();
+  }
+
+  function redirectToHome() {
+    props.setContent('home');
+    navigate('/main/home');
   }
 
   return (
@@ -47,7 +54,8 @@ function NavBar(props) {
             src={Logo}
             alt="Nota logo"
             className="clickable"
-            onClick={() => props.setContent('home')}
+            href="/main/home"
+            onClick={redirectToHome}
           />
         </Navbar.Brand>
 
