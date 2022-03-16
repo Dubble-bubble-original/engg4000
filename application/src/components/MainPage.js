@@ -1,10 +1,5 @@
 // React
 import { useState } from 'react';
-import Home from './Home';
-import Search from './Search';
-import Create from './Create';
-import Delete from './Delete';
-import { Route, Routes } from 'react-router-dom';
 
 // Resources
 import './components.scss';
@@ -12,6 +7,16 @@ import './components.scss';
 // Components
 import NavBar from './navbar/NavBar';
 import { TermsModal } from './terms/Terms';
+import Home from './Home';
+import Search from './Search';
+import Create from './Create';
+import Delete from './Delete';
+
+//React Router
+import { Route, Routes, Navigate } from 'react-router-dom';
+
+// Global State
+import {useGlobalState} from './globalState';
 
 // Homepage component for the application
 function MainPage() {
@@ -19,6 +24,14 @@ function MainPage() {
   // State variables
   const [content, setContent] = useState('home');
   const [showTerms, setShowTerms] = useState(false);
+
+  if('false' === useGlobalState('termsChecked')[0]){
+    return (
+      <div>
+        <Navigate redirect to="/"/>
+      </div>
+    )
+  }
 
   return (
     <div>

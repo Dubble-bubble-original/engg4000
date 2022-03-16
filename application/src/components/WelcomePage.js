@@ -13,6 +13,9 @@ import { getAuthToken } from '../api/api';
 // Components
 import { TermsModal, TermsLink, TermsCheckbox } from './terms/Terms';
 
+// Global State
+import {setGlobalState} from './globalState';
+
 function WelcomePage(props) {
   // State variables
   const [agree, setAgree] = useState(false);
@@ -23,6 +26,7 @@ function WelcomePage(props) {
     if (agree == true) {
       // Generate Auth Token
       await getAuthToken();
+      setGlobalState('termsChecked', agree);
       props.setPage('homePage');
     }
   }
