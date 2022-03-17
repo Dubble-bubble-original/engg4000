@@ -21,7 +21,7 @@ let postData = {
   title: 'Unit Tests',
   img_url: PostImage,
   date_created: '2021-11-20T17:31:03.914+00:00',
-  // date_created: Date.now(),
+  flagged: false,
   location: {
     lat: 45.963589,
     lng: -66.643112
@@ -89,5 +89,16 @@ describe('Post Component', () => {
     // Check for tags
     let tagContainer = screen.getByTestId('tags');
     expect(tagContainer).toMatchSnapshot();
+  });
+
+  test('check to see that the tooltip is disabled when the post is not flagged', () => {
+    render(<Post postData={postData} />)
+    expect(screen.queryByTestId('post-flagged')).not.toBeInTheDocument();
+  });
+
+  test('check to see that the tooltip is enabled when the post is flagged', () => {
+    postData.flagged = true;
+    render(<Post postData={postData} />)
+    expect(screen.queryByTestId('post-flagged')).toBeInTheDocument();
   });
 });
