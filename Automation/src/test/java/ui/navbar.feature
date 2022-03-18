@@ -24,7 +24,7 @@ Feature: Navbar component automated tests
     # Navigate to create page
     When click('a[data-testid=nav-create-btn]')
     Then waitFor('div[data-testid=create-page]')
-    And match text('div[data-testid=create-title]') == 'Follow these steps to create a new post'
+    And match text('div[data-testid=create-page]') == 'Follow the steps below to create a new post'
 
     # Navigate to delete page
     When click('a[id=basic-nav-dropdown]')
