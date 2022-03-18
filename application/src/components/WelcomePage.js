@@ -29,8 +29,8 @@ function WelcomePage() {
     if (agree == true) {
       // Generate Auth Token
       await getAuthToken();
-      setGlobalState('termsChecked', agree);
       
+      setGlobalState('termsChecked', agree);
       navigate('/main/home');
     }
   }
