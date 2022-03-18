@@ -549,3 +549,22 @@ types:
                 {
                   "message": "An Unknown Error Occurred"
                 }
+
+/bulkdelete:
+  delete:
+    description: "Deletes all user posts and users from the data base"
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+            {
+              "message": "Posts Bulk Deleted Successfully"
+            }
+      500:
+        body:
+          application/json:
+            example: |
+            {
+              "message": "An Unknown Error Occurred"
+            }
