@@ -18,7 +18,8 @@ function handleAvatarImgError(e) {
   if (e.target.src != PlaceholderAvatar) e.target.src = PlaceholderAvatar;
 }
 
-function Post({postData}) {
+function Post(props) {
+  const {postData} = props;
   const [imgURL, setImgURL] = useState(null);
 
   // Show no image if post picture fails
@@ -45,7 +46,10 @@ function Post({postData}) {
 
   return (
     <>
-      <Container className="outer-container">
+      <Container 
+        className="outer-container" 
+        data-testid={props['data-testid']??null}
+      >
         <FRow>
           <FCol className="avatar-column">
             <button className="image-button avatar clickable hover-outline" onClick={() => setAvatarImageModal(true)}>
@@ -116,7 +120,8 @@ Post.propTypes = {
       lng: PropTypes.number,
     }),
     location_string: PropTypes.string
-  })
+  }),
+  'data-testid': PropTypes.string
 }
 
 export default Post;
