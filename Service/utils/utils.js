@@ -152,5 +152,3 @@ exports.cleanString = (string) => {
 
   return string;
 };
-
-exports.Result = Result;
