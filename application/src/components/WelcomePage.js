@@ -1,7 +1,9 @@
 // React
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import PropTypes from 'prop-types'
+
+// Router
+import { useNavigate } from 'react-router-dom';
 
 // Stylesheet
 import './components.scss';
@@ -16,10 +18,11 @@ import { TermsModal, TermsLink, TermsCheckbox } from './terms/Terms';
 // Global State
 import {setGlobalState} from './globalState';
 
-function WelcomePage(props) {
+function WelcomePage() {
   // State variables
   const [agree, setAgree] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  const navigate = useNavigate();
 
   // Handler function for the welcome button
   const enterButtonHandler = async () => {
@@ -27,7 +30,8 @@ function WelcomePage(props) {
       // Generate Auth Token
       await getAuthToken();
       setGlobalState('termsChecked', agree);
-      props.setPage('homePage');
+      
+      navigate('/main/home');
     }
   }
 
@@ -47,10 +51,6 @@ function WelcomePage(props) {
       <TermsModal show={showTerms} setShow={setShowTerms} />
     </div>
   );
-}
-
-WelcomePage.propTypes = {
-  setPage: PropTypes.func
 }
 
 export default WelcomePage;
