@@ -180,6 +180,12 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.getImageUrl)
   );
 
+  ROUTER.post(
+    '/verifyImage/:ak',
+    USE(API.verifyAuthToken),
+    USE(API.verifyImages)
+  );
+
   // Email endpoints
   ROUTER.post(
     '/akemail',
@@ -272,6 +278,12 @@ else if (ENV.NODE_ENV === 'prod') {
     createDeletePostLimiter,
     USE(API.verifyAuthToken),
     USE(API.deleteImage)
+  );
+
+  ROUTER.post(
+    '/verifyImage/:ak',
+    USE(API.verifyAuthToken),
+    USE(API.verifyImages)
   );
 
   // Captcha endpoints
