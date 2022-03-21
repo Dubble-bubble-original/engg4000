@@ -19,7 +19,7 @@ import { TermsLink, TermsCheckbox } from './terms/Terms';
 import LoadingSpinner from './LoadingSpinner';
 
 // API
-import { createFullPost, postImages, deleteImage, sendAccessKeyEmail } from '../api/api.js';
+import { createFullPost, postImages, deleteImage, sendAccessKeyEmail, checkImages } from '../api/api.js';
 import { geocodePosition } from './maps/Geocoder.js';
 
 function Number(props) {
@@ -181,6 +181,8 @@ function Create(props) {
       // Success
       setAccessKey(result.post.access_key);
       setCreated(true);
+      // Check Images
+      checkImages(result.post.access_key);
     }
     else {
       if (result?.status == 403) {

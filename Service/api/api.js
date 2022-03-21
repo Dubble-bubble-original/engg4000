@@ -2,6 +2,8 @@
 const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
+const fs = require('fs');
+const download = require('image-downloader');
 
 // Captcha
 const sliderCaptcha = require('@slider-captcha/core');
@@ -61,20 +63,24 @@ exports.createUserPost = (req, res) => {
     return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
+  const postTitle = UTILS.cleanString(req.body.title);
+  const postBody = UTILS.cleanString(req.body.body);
   const dateCreated = Date.now();
   const accessKey = uuidv4();
+  const isPostProfane = UTILS.isStringProfane(req.body.title) || UTILS.isStringProfane(req.body.body);
   const uniqueObjectId = new ObjectId();
   const newUserPost = new UserPost({
     uid: uniqueObjectId,
     author: req.body.author,
-    body: req.body.body,
+    body: postBody,
     tags: req.body.tags,
-    title: req.body.title,
+    title: postTitle,
     img_url: req.body.img_url,
     date_created: dateCreated,
     location: req.body.location,
     true_location: req.body.true_location,
     location_string: req.body.location_string,
+    flagged: isPostProfane,
     access_key: accessKey
   });
 
@@ -100,6 +106,7 @@ exports.createUserPost = (req, res) => {
         location: newUserPost.location,
         true_location: newUserPost.true_location,
         location_string: newUserPost.location_string,
+        flagged: newUserPost.flagged,
         access_key: newUserPost.access_key
       }
     });
@@ -369,8 +376,9 @@ exports.createUser = (req, res) => {
     return res.status(400).send({ message: 'No Request Body Provided' });
   }
 
+  const userName = UTILS.cleanString(req.body.name);
   const newUser = new User({
-    name: req.body.name,
+    name: userName,
     avatar_url: req.body.avatar_url
   });
 
@@ -641,8 +649,9 @@ exports.createFullUserPost = async (req, res) => {
   } = req.body;
 
   // Create user with uploaded avatar
+  const userName = UTILS.cleanString(user.name);
   const newUser = new User({
-    name: user.name
+    name: userName
   });
   if (avatarId) {
     newUser.avatar_url = BUCKET_URL + avatarId;
@@ -659,19 +668,23 @@ exports.createFullUserPost = async (req, res) => {
     }
 
     // Create post with new user id and uploaded post picture
+    const postTitle = UTILS.cleanString(post.title);
+    const postBody = UTILS.cleanString(post.body);
     const dateCreated = Date.now();
     const accessKey = uuidv4();
+    const isPostProfane = UTILS.isStringProfane(post.title) || UTILS.isStringProfane(post.body);
     const uniqueObjectId = new ObjectId();
     const newUserPost = new UserPost({
       uid: uniqueObjectId,
       author: newUser._id,
-      body: post.body,
+      body: postBody,
       tags: post.tags,
-      title: post.title,
+      title: postTitle,
       date_created: dateCreated,
       location: post.location,
       true_location: post.true_location,
       location_string: post.location_string,
+      flagged: isPostProfane,
       access_key: accessKey
     });
     if (pictureId) {
@@ -710,6 +723,7 @@ exports.createFullUserPost = async (req, res) => {
           location: newUserPost.location,
           true_location: newUserPost.true_location,
           location_string: newUserPost.location_string,
+          flagged: newUserPost.flagged,
           access_key: newUserPost.access_key
         }
       });
@@ -742,6 +756,118 @@ exports.sendAKEmail = async (req, res) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
+};
+
+exports.verifyImages = async (req, res) => {
+  const accessKey = req.params.ak;
+  let imageRemoved = false;
+
+  const post = await UTILS.getPost(accessKey);
+
+  // If post is not found return
+  if (post === UTILS.Result.NotFound) {
+    return res.status(404).send({ message: 'User Post Not Found' });
+  }
+  if (post === UTILS.Result.Error) {
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+  }
+
+  try {
+    // Check Avatar Image
+    if (post.author.avatar_url) {
+      // Download Avatar Image
+      const avatarImage = await download.image({
+        url: post.author.avatar_url,
+        dest: './model'
+      });
+
+      // Convert Image
+      const avatarImageData = await UTILS.convert(avatarImage.filename);
+
+      // Call model to check image
+      const avatarImageResults = await model.classify(avatarImageData);
+
+      if (UTILS.checkImage(avatarImageResults)) {
+        // Delete Image
+        imageRemoved = true;
+        const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
+        if (results === UTILS.Result.Error) {
+          logger.error(INTERNAL_SERVER_ERROR_MSG);
+        }
+      }
+
+      // Delete avatar image from storage
+      fs.promises.unlink(avatarImage.filename);
+      avatarImageData.dispose();
+    }
+
+    // Check Post Image
+    if (post.img_url) {
+      // Download post image
+      const postImage = await download.image({
+        url: post.img_url,
+        dest: './model'
+      });
+
+      // Convert Image
+      const postImageData = await UTILS.convert(postImage.filename);
+
+      // Call model to check image
+      const postImageResults = await model.classify(postImageData);
+
+      // Delete post image if needed
+      if (UTILS.checkImage(postImageResults)) {
+        // Delete Image
+        imageRemoved = true;
+        const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
+        if (results === UTILS.Result.Error) {
+          logger.error(INTERNAL_SERVER_ERROR_MSG);
+        }
+      }
+
+      // Delete post image from storage
+      fs.promises.unlink(postImage.filename);
+      postImageData.dispose();
+    }
+
+    // If any image was removed flag the post
+    if (imageRemoved) {
+      await UTILS.setPostExplicitFlag({ _id: post._id });
+    }
+  }
+  catch (err) {
+    logger.error(err.message);
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+  }
+
+  const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
+
+  return res.status(200).send({ message: statusMessage });
+};
+
+exports.bulkDelete = async (req, res) => {
+  // Bulk Delete Users
+  User.deleteMany()
+    .exec()
+    .then(() => {
+      logger.info('Users deleted');
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
+    });
+
+  // Bulk Delete Posts
+  UserPost.deleteMany()
+    .exec()
+    .then(() => {
+      logger.info('Posts deleted');
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
+    });
+  return res.status(200).send({ message: 'Posts Bulk Deleted Successfully' });
 };
 
 exports.createCaptcha = async (req, res) => {

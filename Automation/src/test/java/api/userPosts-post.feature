@@ -41,6 +41,48 @@ Feature: User post endpoints tests
 
   # Create, get, update, delete user post
 
+  Scenario: Create and delete a userPost with profanities
+    # Call create user endpoint
+    Given path 'user'
+    And header token = auth_token
+    And request read('../data/user_profane.json')
+    When method post
+    Then status 201
+    And match response.user.name == 'John ******* Doe'
+    * def author_id = response.user._id
+    * def author_name = response.user.name
+
+    # Call create user post endpoint
+    Given path 'userpost'
+    And header token = auth_token
+    * def postData = read('../data/userPost_profane.json')
+    * set postData.author = author_id
+    And request postData
+    When method post
+    Then status 201
+    And match response.post.flagged == true
+    And match response.post.title == 'Gorgeous ******* Trail!'
+    And match response.post.body == 'Went hiking in a **** trail in Cape Breton with the **** family.'
+    * def post_access_key = response.post.access_key
+
+    # Call get user post endpoint
+    Given path 'userpost/' + post_access_key
+    And header token = auth_token
+    When method get
+    Then status 200
+    And match response.access_key == post_access_key
+    And match response.author._id == author_id
+    And match response.author.name == author_name
+    And match response.uid == '#present'
+    * def post_id = response._id
+
+    # Call delete user post endpoint
+    Given path 'userpost/' + post_id
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Post Deleted Successfully'
+
   Scenario: Create, get, update, and delete a userPost
     # Call create user endpoint
     Given path 'user'
@@ -59,6 +101,7 @@ Feature: User post endpoints tests
     And request postData
     When method post
     Then status 201
+    And match response.post.flagged == false
     * def post_access_key = response.post.access_key
 
     # Call get user post endpoint
@@ -87,6 +130,13 @@ Feature: User post endpoints tests
     When method delete
     Then status 200
     And match response.message == 'User Post Deleted Successfully'
+
+    # Call delete user endpoint
+    Given path 'user/' + author_id
+    And header token = auth_token
+    When method delete
+    Then status 200
+    And match response.message == 'User Deleted Successfully'
 
   # Search userposts
 
@@ -335,10 +385,10 @@ Feature: User post endpoints tests
     When method post
     Then status 201
     And match response.post !contains { img_url: '#notnull' }
+    And match response.post._id == '#notpresent'
+    And match response.post.author._id == '#notpresent'
+    And match response.post.uid == '#present'
     * def access_key = response.post.access_key
-    * match response.post._id == '#notpresent'
-    * match response.post.author._id == '#notpresent'
-    * match response.post.uid == '#present'
 
     # Delete the created post
     * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
@@ -350,11 +400,11 @@ Feature: User post endpoints tests
     And request read('../data/user_userPost_missingAvatarId.json')
     When method post
     Then status 201
-    * match response.post.author !contains { avatar_url: '#notnull' }
+    And match response.post.author !contains { avatar_url: '#notnull' }
+    And match response.post._id == '#notpresent'
+    And match response.post.author._id == '#notpresent'
+    And match response.post.uid == '#present'
     * def access_key = response.post.access_key
-    * match response.post._id == '#notpresent'
-    * match response.post.author._id == '#notpresent'
-    * match response.post.uid == '#present'
 
     # Delete the created post
     * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
@@ -366,10 +416,29 @@ Feature: User post endpoints tests
     And request read('../data/user_userPost.json')
     When method post
     Then status 201
-    * match response.post._id == '#notpresent'
-    * match response.post.author._id == '#notpresent'
-    * match response.post.uid == '#present'
+    And match response.post._id == '#notpresent'
+    And match response.post.author._id == '#notpresent'
+    And match response.post.uid == '#present'
     * def access_key = response.post.access_key
+
+    # Delete the created post
+    * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }
+
+  Scenario: Try to create a user and user post with profanities
+    # Call create user post endpoint
+    Given path 'post'
+    And header token = auth_token
+    And request read('../data/user_userPost_profane.json')
+    When method post
+    Then status 201
+    And match response.post.flagged == true
+    And match response.post.title == 'Gorgeous ******* Trail!'
+    And match response.post.body == 'Went hiking in a **** trail in Cape Breton with the **** family.'
+    And match response.post.author.name == 'John ******* Doe'
+    And match response.post._id == '#notpresent'
+    And match response.post.author._id == '#notpresent'
+    And match response.post.uid == '#present'
+    And def access_key = response.post.access_key
 
     # Delete the created post
     * call read('classpath:utils/deletePost.feature') { access_key: '#(access_key)' }

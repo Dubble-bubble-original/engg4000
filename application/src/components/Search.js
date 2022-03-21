@@ -134,12 +134,14 @@ function Search() {
         <Alert
           variant="danger"
           className="mb-0 mt-3"
-          hidden={tags.length} 
+          hidden={tags.length}
+          data-testid="no-tags-alert"
         >
           <MdErrorOutline/> You must select at least one tag.
         </Alert>
         <Button 
           className="mt-3"
+          data-testid="search-button"
           disabled={!tags.length}
           onClick={searchPosts}
         >
@@ -164,13 +166,14 @@ function Search() {
               <FRow>
                 <FCol>Tags:</FCol>
                 <FCol className="w-100">
-                  <div className="tag-container">
+                  <div className="tag-container" data-testid="selected-tags">
                     {
                       searchTags.sort().map(tag =>
                         <Button
                           variant="outline-primary"
                           className="tag"
                           key={tag}
+                          data-testid={'selected-btn-'+tag}
                         >
                           {tag}
                         </Button>

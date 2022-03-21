@@ -180,11 +180,23 @@ if (ENV.NODE_ENV === 'dev') {
     USE(API.getImageUrl)
   );
 
+  ROUTER.post(
+    '/verifyImage/:ak',
+    USE(API.verifyAuthToken),
+    USE(API.verifyImages)
+  );
+
   // Email endpoints
   ROUTER.post(
     '/akemail',
     USE(API.verifyAuthToken),
     USE(API.sendAKEmail)
+  );
+
+  ROUTER.delete(
+    '/bulkdelete',
+    USE(API.verifyAuthToken),
+    USE(API.bulkDelete)
   );
 
   // Captcha endpoints
@@ -266,6 +278,12 @@ else if (ENV.NODE_ENV === 'prod') {
     createDeletePostLimiter,
     USE(API.verifyAuthToken),
     USE(API.deleteImage)
+  );
+
+  ROUTER.post(
+    '/verifyImage/:ak',
+    USE(API.verifyAuthToken),
+    USE(API.verifyImages)
   );
 
   // Captcha endpoints
