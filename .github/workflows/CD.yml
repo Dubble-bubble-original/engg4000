@@ -2,7 +2,7 @@ name: CD Pipeline
 on:
   push:
     branches:  
-    - 'dbo-76-fix'
+    - 'master'
 
 jobs:
   test:
