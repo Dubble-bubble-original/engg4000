@@ -16,7 +16,7 @@ import { getAuthToken } from '../api/api';
 import { TermsModal, TermsLink, TermsCheckbox } from './terms/Terms';
 
 // Global State
-import {setGlobalState} from './globalState';
+import {dispatch} from './globalState';
 
 function WelcomePage() {
   // State variables
@@ -30,8 +30,8 @@ function WelcomePage() {
       // Generate Auth Token
       await getAuthToken();
       
-      setGlobalState('termsChecked', agree);
-      navigate('/main/home');
+      dispatch({ type: 'setChecked' });
+      navigate('/home');
     }
   }
 

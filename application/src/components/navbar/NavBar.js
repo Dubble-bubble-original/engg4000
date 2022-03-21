@@ -15,7 +15,7 @@ function NavLinks(props) {
   const navigate = useNavigate();
 
   function clickHandler(content) {
-    navigate('/main/'+ content);
+    navigate('/'+ content);
     props.setContent(content);
   }
 
@@ -50,7 +50,7 @@ function NavBar(props) {
 
   function redirectToHome() {
     props.setContent('home');
-    navigate('/main/home');
+    navigate('/home');
   }
 
   return (
@@ -61,7 +61,7 @@ function NavBar(props) {
             src={Logo}
             alt="Nota logo"
             className="clickable"
-            href="/main/home"
+            href="/home"
             onClick={redirectToHome}
           />
         </Navbar.Brand>

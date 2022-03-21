@@ -1,8 +1,31 @@
-import {createGlobalState} from 'react-hooks-global-state';
+import { createStore } from 'react-hooks-global-state';
 
-// Global state for terms & conditions checkbox
-const {setGlobalState, useGlobalState} = createGlobalState({
-    termsChecked: 'false',
-  });
+const persistenceKey = process.env.PERSISTENCE_KEY;
+
+const firstState = {
+  termsChecked: 'false',
+};
+
+const initialStringFromStorage = localStorage.getItem(persistenceKey)
+const initialState = initialStringFromStorage === null
+	? firstState
+	: JSON.parse(initialStringFromStorage)
+
+const myReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'setChecked': return {
+      ...state,
+      termsChecked: true,
+    };
+    default: return state;
+  }
+};
+
+const persistentReducer = (state, action) => {
+	const mutated = myReducer(state, action)
+	localStorage.setItem(persistenceKey, JSON.stringify(mutated))
+	return mutated;
+}
+
+export const { GlobalStateProvider, dispatch, useGlobalState } = createStore(persistentReducer, initialState)
   
-export { setGlobalState, useGlobalState };
