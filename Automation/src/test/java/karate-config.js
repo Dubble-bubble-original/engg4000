@@ -19,7 +19,7 @@ function fn() {
     config.frontendUrl = 'http://localhost:3000';
     karate.callSingle('classpath:utils/bulkDelete.feature', config);
   } else if (env == 'prod') {
-    // customize
+    config.frontendUrl = 'https://notasocial.ca';
   }
 
   

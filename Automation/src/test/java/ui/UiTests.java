@@ -10,7 +10,7 @@ class UiTests {
 
     @Test
     void testParallel() {
-        Results results = Runner.path("classpath:ui").parallel(5);
+        Results results = Runner.path("classpath:ui").parallel(1);
         assertEquals(0, results.getFailCount(), results.getErrorMessages());
     }
 
