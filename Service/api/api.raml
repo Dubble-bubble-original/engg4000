@@ -568,3 +568,41 @@ types:
             {
               "message": "An Unknown Error Occurred"
             }
+
+/verifyImage:
+  /{ak}:
+    post:
+    description: "Check the images for the recently created post"
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+            imagesFound: |
+            {
+              "status":
+              {
+                "message": "Successfully removed explicit images"
+              },
+            }
+            imagesNoTFound: |
+            {
+              "status":
+              {
+                "message": "No explicit images found"
+              }
+            }
+      404:
+        body:
+          application/json:
+            example: |
+            {
+              "message": "User Post Not Found"
+            }
+      500:
+        body:
+          application/json:
+            example: |
+            {
+              "message": "An Unknown Error Occurred"
+            }

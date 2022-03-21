@@ -1,5 +1,7 @@
 // Packages
 const fs = require('fs');
+const imageDecoder = require('image-decode');
+const tf = require('@tensorflow/tfjs-node');
 
 const Filter = require('bad-words');
 const filter = new Filter();
@@ -101,6 +103,83 @@ exports.deleteDBPost = async (postID) => (
       return Result.Error;
     })
 );
+
+// Get Post
+exports.getPost = async (accessKey) => (
+  UserPost.findOne({ access_key: accessKey })
+    .populate({
+      path: 'author'
+    })
+    .exec()
+    .then((doc) => {
+      if (!doc) {
+        logger.info('User Post Not Found');
+        return Result.NotFound;
+      }
+      return doc;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return Result.Error;
+    })
+);
+
+// Update Post
+exports.setPostExplicitFlag = async (query) => {
+  const body = {
+    flagged: true
+  };
+
+  UserPost.findOneAndUpdate(query, body, { new: true })
+    .select('-_id -access_key')
+    .exec()
+    .then((doc) => {
+      if (!doc) {
+        logger.info('Post not found (and flagged)');
+        return Result.NotFound;
+      }
+      logger.info('Post flagged successfully');
+      return Result.Success;
+    })
+    .catch((err) => {
+      logger.error(err.message);
+      return Result.Error;
+    });
+};
+
+// Convert the image to UInt8 Byte array
+exports.convert = async (img) => {
+  // Decoded image in UInt8 Byte array
+  const imgData = await fs.readFileSync(img);
+  const image = await imageDecoder(imgData);
+
+  const numChannels = 3;
+  const numPixels = image.width * image.height;
+  const values = new Int32Array(numPixels * numChannels);
+
+  for (let i = 0; i < numPixels; i++) {
+    for (let c = 0; c < numChannels; ++c) {
+      values[i * numChannels + c] = image.data[i * 4 + c];
+    }
+  }
+
+  return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
+};
+
+// Returns true if the image has to be deleted
+exports.checkImage = (predictions) => {
+  const results = {};
+  predictions.forEach((prediction) => {
+    const { className, probability } = prediction;
+    results[className] = Number((probability * 100).toFixed(0));
+  });
+
+  // Return true if image needs to be deleted
+  if (results.Neutral + results.Sexy < (results.Drawing + results.Porn + results.Hentai)) {
+    return true;
+  }
+  return false;
+};
 
 // Geocoding format extraction
 exports.extractGeocodeResult = (results) => {
