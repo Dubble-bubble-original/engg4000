@@ -2,6 +2,8 @@
 const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
+const fs = require('fs');
+const download = require('image-downloader');
 
 // Captcha
 const sliderCaptcha = require('@slider-captcha/core');
@@ -754,6 +756,93 @@ exports.sendAKEmail = async (req, res) => {
       logger.error(err.message);
       return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
     });
+};
+
+exports.verifyImages = async (req, res) => {
+  const accessKey = req.params.ak;
+  let imageRemoved = false;
+
+  const post = await UTILS.getPost(accessKey);
+
+  // If post is not found return
+  if (post === UTILS.Result.NotFound) {
+    return res.status(404).send({ message: 'User Post Not Found' });
+  }
+  if (post === UTILS.Result.Error) {
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+  }
+
+  try {
+    // Check Avatar Image
+    if (post.author.avatar_url) {
+      // Download Avatar Image
+      const avatarImage = await download.image({
+        url: post.author.avatar_url,
+        dest: './model'
+      });
+
+      // Convert Image
+      const avatarImageData = await UTILS.convert(avatarImage.filename);
+
+      // Call model to check image
+      const avatarImageResults = await model.classify(avatarImageData);
+
+      if (UTILS.checkImage(avatarImageResults)) {
+        // Delete Image
+        imageRemoved = true;
+        const results = UTILS.deleteS3Image(UTILS.getImageID(post.author.avatar_url));
+        if (results === UTILS.Result.Error) {
+          logger.error(INTERNAL_SERVER_ERROR_MSG);
+        }
+      }
+
+      // Delete avatar image from storage
+      fs.promises.unlink(avatarImage.filename);
+      avatarImageData.dispose();
+    }
+
+    // Check Post Image
+    if (post.img_url) {
+      // Download post image
+      const postImage = await download.image({
+        url: post.img_url,
+        dest: './model'
+      });
+
+      // Convert Image
+      const postImageData = await UTILS.convert(postImage.filename);
+
+      // Call model to check image
+      const postImageResults = await model.classify(postImageData);
+
+      // Delete post image if needed
+      if (UTILS.checkImage(postImageResults)) {
+        // Delete Image
+        imageRemoved = true;
+        const results = UTILS.deleteS3Image(UTILS.getImageID(post.img_url));
+        if (results === UTILS.Result.Error) {
+          logger.error(INTERNAL_SERVER_ERROR_MSG);
+        }
+      }
+
+      // Delete post image from storage
+      fs.promises.unlink(postImage.filename);
+      postImageData.dispose();
+    }
+
+    // If any image was removed flag the post
+    if (imageRemoved) {
+      await UTILS.setPostExplicitFlag({ _id: post._id });
+    }
+  }
+  catch (err) {
+    logger.error(err.message);
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+  }
+
+  const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
+
+  return res.status(200).send({ message: statusMessage });
 };
 
 exports.bulkDelete = async (req, res) => {
