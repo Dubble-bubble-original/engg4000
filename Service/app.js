@@ -5,6 +5,8 @@ const cors = require('cors');
 const EXPRESS = require('express');
 const session = require('express-session');
 const APP = EXPRESS();
+const nsfw = require('nsfwjs');
+const fs = require('fs');
 const printServiceBanner = require('./banner/banner');
 const db = require('./db/dbUtils');
 
@@ -14,6 +16,13 @@ printServiceBanner();
 // Get environment
 require('dotenv').config();
 const ENV = process.env;
+
+// Create a temp directory to store model images
+if (!fs.existsSync('./model')) {
+  fs.mkdirSync('./model', {
+    recursive: true
+  });
+}
 
 // API Middleware
 APP.use(EXPRESS.json({ limit: '2mb' }));
@@ -34,6 +43,11 @@ APP.use(session({
 const corsOptions = {
   credentials: true, // Needed to receive cookies properly from frontend
   origin: ENV.FRONTEND_URL
+};
+
+// nsfw model
+const loadModel = async () => {
+  global.model = await nsfw.load();
 };
 
 // Allow the app to use CORS with the defined routes in routes.js
@@ -87,6 +101,9 @@ global.auth_tokens = new Map();
 
 // Start listening
 const PORT = ENV.PORT || 3001;
-APP.listen(PORT, () => {
-  logger.info(`Service running on port ${PORT}`);
+// Keep the model in memory, make sure it's loaded only once
+loadModel().finally(() => {
+  APP.listen(PORT, () => {
+    logger.info(`Service running on port ${PORT}`);
+  });
 });

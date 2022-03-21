@@ -38,6 +38,7 @@ TermsModal.propTypes = {
 function TermsLink(props) {
   return (
     <a
+      data-testid="terms-conditions-link"
       className="clickable"
       onClick={() => props.setShowTerms(true)}
     >
