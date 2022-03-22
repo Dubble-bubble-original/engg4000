@@ -16,16 +16,16 @@ import Delete from './Delete';
 import { Route, Routes, Navigate } from 'react-router-dom';
 
 // Global State
-import {useGlobalState} from './globalState';
+import { useGlobalState } from './globalState';
 
 // Homepage component for the application
 function MainPage() {
 
   // State variables
-  const [content, setContent] = useState('home');
   const [showTerms, setShowTerms] = useState(false);
 
-  if('false' === useGlobalState('termsChecked')[0]){
+  const termsChecked = useGlobalState('termsChecked')[0];
+  if(!termsChecked) {
     return (
       <div>
         <Navigate redirect to="/"/>
@@ -35,7 +35,7 @@ function MainPage() {
 
   return (
     <div>
-      <NavBar content={content} setContent={setContent} setShowTerms={setShowTerms} />
+      <NavBar setShowTerms={setShowTerms} />
       <TermsModal show={showTerms} setShow={setShowTerms} />
       <Routes>
         <Route path="/home" element={<Home/>}/>
@@ -43,7 +43,6 @@ function MainPage() {
         <Route path="/create" element={<Create/>}/>
         <Route path="/delete" element={<Delete/>}/>
       </Routes>
-
     </div>
   )
 }

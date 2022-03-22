@@ -10,16 +10,16 @@ const App = () => {
   return (
     <div >
       <Routes>
-      <Route exact path="/" element={
-        <Navigate to='/welcome'/>
-      }></Route>
-      <Route path="/*" element={
+        <Route exact path="/" element={
+          <Navigate to='/welcome'/>
+        }/>
+        <Route path="/*" element={
           <div className="App" id="main-page">
             <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
               <MainPage />
             </LoadScript>
           </div>
-        }></Route>
+        }/>
         <Route exact path="/welcome" element={
           <div className="App" id="welcome-page">
             <WelcomePage />

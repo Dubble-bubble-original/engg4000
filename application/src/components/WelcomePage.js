@@ -16,13 +16,16 @@ import { getAuthToken } from '../api/api';
 import { TermsModal, TermsLink, TermsCheckbox } from './terms/Terms';
 
 // Global State
-import {dispatch} from './globalState';
+import { dispatch, useGlobalState } from './globalState';
 
 function WelcomePage() {
-  // State variables
-  const [agree, setAgree] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
+  // Router variables
   const navigate = useNavigate();
+  const termsChecked = useGlobalState('termsChecked')[0];
+
+  // State variables
+  const [agree, setAgree] = useState(termsChecked);
+  const [showTerms, setShowTerms] = useState(false);
 
   // Handler function for the welcome button
   const enterButtonHandler = async () => {

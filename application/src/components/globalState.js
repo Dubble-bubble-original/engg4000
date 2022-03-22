@@ -1,9 +1,9 @@
 import { createStore } from 'react-hooks-global-state';
 
-const persistenceKey = process.env.PERSISTENCE_KEY;
+const persistenceKey = 'notasocial';
 
 const firstState = {
-  termsChecked: 'false',
+  termsChecked: false,
 };
 
 const initialStringFromStorage = localStorage.getItem(persistenceKey)
