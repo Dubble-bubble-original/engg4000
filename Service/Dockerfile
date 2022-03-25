@@ -3,8 +3,8 @@ FROM node:14.17.0-alpine as alpine
 WORKDIR /app
 
 COPY package.json .
-RUN npm install @tensorflow/tfjs-node -g
 RUN npm install --no-optional -f
+RUN npm install --save @tensorflow/tfjs-node@1.2.3 -g
 RUN npm install pm2 -g
 COPY . .
 
