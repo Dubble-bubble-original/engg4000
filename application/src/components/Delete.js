@@ -78,6 +78,7 @@ function Delete() {
             <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
               <Col style={{maxWidth: '400px'}} className="flex-grow-1">
                 <Form.Control 
+                  data-testid="access-key"
                   required
                   type="text"
                   /* Example: f01466b4-478a-4f8f-ae8c-cae5fd40a6e5 */
@@ -92,7 +93,7 @@ function Delete() {
                 </Form.Control.Feedback>
               </Col>
               <Col xs="auto" sm="auto">
-                <Button type="submit">Search</Button>
+                <Button type="submit" data-testid="search">Search</Button>
               </Col>
             </Row>
           </Form.Group>
@@ -108,7 +109,7 @@ function Delete() {
                 <div>The post is shown below.</div>
               </Col>
               <Col xs="auto">
-                <Button onClick={() => {setShowConfirmationModal(true)}}>Delete Post</Button>
+                <Button onClick={() => {setShowConfirmationModal(true)}} data-testid="delete-post">Delete Post</Button>
               </Col>
             </Row>
             <If condition={searchResult === 'not-deleted'}>
@@ -129,7 +130,7 @@ function Delete() {
           </Container>
           <If condition={postData}>
             <Then>
-              <Post postData={postData} />
+              <Post postData={postData} data-testid="delete-preview"/>
             </Then>
           </If>
         </Case>
@@ -146,8 +147,13 @@ function Delete() {
         </Case>
 
         <Case condition={searchResult === 'deleted'}>
-          <Container className="outer-container">
-            <Alert variant="success" className="mb-0" dismissible onClose={() => setSearchResult(null)}>
+          <Container className="outer-container" data-testid="feedback-section">
+            <Alert 
+              data-testid="feedback-success"
+              variant="success"
+              className="mb-0"
+              dismissible onClose={() => setSearchResult(null)}
+            >
               <MdOutlineCheckCircle/> Post deleted successfully.
             </Alert>
           </Container>

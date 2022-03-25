@@ -39,7 +39,7 @@ function ConfirmationModal(props) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={cancel}>{props.cancelString}</Button>
-        <Button variant="primary" onClick={accept}>{props.acceptString}</Button>
+        <Button data-testid="accept" variant="primary" onClick={accept}>{props.acceptString}</Button>
       </Modal.Footer>
     </Modal>
   );
