@@ -20,7 +20,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 // API
 import { createFullPost, postImages, deleteImage, sendAccessKeyEmail, checkImages } from '../api/api.js';
-import { geocodePosition } from './maps/Geocoder.js';
+import { geocodePosition, DEFAULT_LOCATION_STRING } from './maps/Geocoder.js';
 
 function Number(props) {
   return (
@@ -118,9 +118,14 @@ function Create(props) {
       img_url: getImageURL(picture),
       date_created: new Date().toISOString(),
       location: position,
-      location_string: locationString,
+      location_string: getLocationString(),
       true_location: isTruePosition
     };
+  }
+
+  const getLocationString = () => {
+    // Return default if location string is not defined or empty
+    return locationString ? locationString : DEFAULT_LOCATION_STRING;
   }
 
   const getImageURL = (image) => {
@@ -134,6 +139,11 @@ function Create(props) {
   const captchaSuccess = (token) => {
     setCaptchaErrorMsg(null);
     setCaptchaToken(token);
+  }
+  const isCaptchaValid = () => {
+    // Ignore the captcha requirement in dev (required for our UI test)
+    if (process.env.NODE_ENV === 'development') return true;
+    else return captchaToken;
   }
 
   const preventSubmit = (event) => {
@@ -293,7 +303,7 @@ function Create(props) {
 
             <Section num="1" title="Location">
               <div>Show us the location of your adventure!</div>
-              <div className="mt-3 mb-3" style={{width:'100%', height:'350px'}}>
+              <div className="mt-3 mb-3" style={{width:'100%', height:'350px'}} data-testid="location-picker-map">
                 <LocationPickerMap onPositionChange={setPosition} setIsTruePosition={setIsTruePosition} />
               </div>
               <InputGroup hidden={position === null}>
@@ -306,6 +316,7 @@ function Create(props) {
                 </InputGroup.Text>
               </InputGroup>
               <Alert
+                data-testid="location-error"
                 variant="danger"
                 className="mb-0 mt-3"
                 hidden={position !== null && !positionErrorMsg}
@@ -326,6 +337,7 @@ function Create(props) {
                       type="text"
                       placeholder="What do people call you?"
                       value={name}
+                      data-testid="name-input"
                       onChange={(e)=> {setName(e.target.value)}}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -360,6 +372,7 @@ function Create(props) {
                     type="text"
                     placeholder="Give a title to your post"
                     value={title}
+                    data-testid="title-input"
                     onChange={(e)=> {setTitle(e.target.value)}}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -376,6 +389,7 @@ function Create(props) {
                   rows={6}
                   placeholder="Share your thoughts!"
                   value={body}
+                  data-testid="body-input"
                   onChange={(e)=> {setBody(e.target.value)}}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -389,6 +403,7 @@ function Create(props) {
               <Form.Group className="mt-3">
                 <TagButtonGroup tags={tags} setTags={setTags}/>
                 <Alert
+                  data-testid="tags-error"
                   variant="danger"
                   className="mb-0 mt-3"
                   hidden={!invalidTagsMsg}
@@ -419,6 +434,7 @@ function Create(props) {
             <Section num="6" title="Preview">
               <div>See how your post will look before you publish!</div>
               <Alert
+                data-testid="preview-error"
                 variant="danger"
                 className="mb-0 mt-3"
                 hidden={isPostValid()}
@@ -428,7 +444,7 @@ function Create(props) {
             </Section>
 
             <When condition={isPostValid()}>
-              <Post postData={getPostData()}/>
+              <Post postData={getPostData()} data-testid="preview-post"/>
 
               <Section num="7" title="Publish">
                 <div className="mb-3">By publishing this post you are agreeing to our <TermsLink setShowTerms={props.setShowTerms}/>.</div>
@@ -447,8 +463,9 @@ function Create(props) {
                   </Alert>
                 </div>
                 <Button
+                  data-testid="publish"
                   className="mt-3"
-                  disabled={!termsAgree || !captchaToken || !isPostValid()}
+                  disabled={!termsAgree || !isCaptchaValid() || !isPostValid()}
                   onClick={openModal}
                 >
                   Publish
@@ -459,11 +476,11 @@ function Create(props) {
           </Form>
         </Then>
         <Else>
-          <Container className="outer-container">
-            <Alert variant="success">
+          <Container className="outer-container" data-testid="feedback-section">
+            <Alert variant="success" data-testid="feedback-success">
               <MdOutlineCheckCircle/> Post created successfully.
             </Alert>
-            <div><b>Access code:</b> {accessKey} <CopyButton value={accessKey}/></div>
+            <div><b>Access code:</b> <span data-testid="access-key">{accessKey}</span> <CopyButton value={accessKey}/></div>
             <Form.Text>
               This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!<br/>
               <br/>

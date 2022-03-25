@@ -25,5 +25,6 @@ const geocodePosition = (pos, setErrorMsg, callback) => {
 }
 
 export {
-  geocodePosition
+  geocodePosition,
+  DEFAULT_LOCATION_STRING
 };
