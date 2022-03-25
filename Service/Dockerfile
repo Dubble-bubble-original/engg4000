@@ -1,7 +1,5 @@
 FROM node:14.17.0-alpine as alpine
 
-RUN npm install @tensorflow/tfjs @tensorflow/tfjs-node
-
 WORKDIR /app
 
 COPY package.json .
