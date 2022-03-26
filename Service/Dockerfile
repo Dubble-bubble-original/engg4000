@@ -1,6 +1,7 @@
 FROM node:14.17.0-buster-slim
 
 WORKDIR /app
+RUN mkdir /model
 
 COPY package.json .
 RUN npm install --no-optional -f
