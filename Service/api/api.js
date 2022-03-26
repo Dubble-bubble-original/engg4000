@@ -769,7 +769,7 @@ exports.verifyImages = async (req, res) => {
     return res.status(404).send({ message: 'User Post Not Found' });
   }
   if (post === UTILS.Result.Error) {
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG, test: '1' });
   }
 
   try {
@@ -837,7 +837,7 @@ exports.verifyImages = async (req, res) => {
   }
   catch (err) {
     logger.error(err.message);
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG, test: err.message });
   }
 
   const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
