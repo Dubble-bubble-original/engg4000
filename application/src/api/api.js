@@ -229,19 +229,19 @@ export const verifyCaptcha = async (resp, trail) => {
   });
 }
 
-// Call endpoint to check images
-export const checkImages = async (access_key) => {
-  return requestWithToken(async() => {
-    const response = axios ({
-      method: 'POST',
-      url: serviceUrl + '/verifyImage/' + access_key,
-      headers: {
-        'token': authToken
-      }
-    });
-    return response;
-  })
-}
+// // Call endpoint to check images
+// export const checkImages = async (access_key) => {
+//   return requestWithToken(async() => {
+//     const response = axios ({
+//       method: 'POST',
+//       url: serviceUrl + '/verifyImage/' + access_key,
+//       headers: {
+//         'token': authToken
+//       }
+//     });
+//     return response;
+//   })
+// }
 
 // Send email with access key
 export const sendAccessKeyEmail = async (access_key, to_email, author_name, post_title) => {
