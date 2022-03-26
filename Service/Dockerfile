@@ -1,4 +1,7 @@
-FROM debian:sid
+FROM node:14.17.0-alpine as alpine
+
+RUN apk update
+RUN apk install libc6-compat
 
 WORKDIR /app
 
