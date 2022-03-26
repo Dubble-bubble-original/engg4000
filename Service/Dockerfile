@@ -1,4 +1,4 @@
-FROM node:14.17.0-alpine as alpine
+FROM debian:sid
 
 WORKDIR /app
 
