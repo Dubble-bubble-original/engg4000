@@ -3,6 +3,7 @@ on:
   push:
     branches:  
     - 'master'
+    - 'working-version'
 
 jobs:
   test:
