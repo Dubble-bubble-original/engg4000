@@ -8,8 +8,12 @@ import { IconContext } from 'react-icons';
 import { MdHome, MdSearch, MdAddLocation, MdMoreHoriz } from 'react-icons/md';
 import Logo from '../../resources/images/nota-logo-no-text.png';
 import { FRow } from '../Containers'
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function NavLinks(props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // Handler to call closePopup() if it was given when clicking a link
   function clickHandler() {
     if (props.closePopup) props.closePopup();
@@ -18,14 +22,14 @@ function NavLinks(props) {
   return (
     <IconContext.Provider value={{color:'var(--bs-primary)'}}>
       <Nav className="me-auto">
-          <Nav.Link data-testid="nav-home-btn" onClick={() => clickHandler(props.setContent('home'))} className={props.content === 'home' ? 'active' : ''}>Home <MdHome/></Nav.Link>
-          <Nav.Link data-testid="nav-search-btn" onClick={() => clickHandler(props.setContent('search'))} className={props.content === 'search' ? 'active' : ''}>Search <MdSearch/></Nav.Link>
-          <Nav.Link data-testid="nav-create-btn" onClick={() => clickHandler(props.setContent('create'))} className={props.content === 'create' ? 'active' : ''}>Create <MdAddLocation/></Nav.Link>
+          <Nav.Link data-testid="nav-home-btn" onClick={() => clickHandler(navigate('/home'))} className={location.pathname.includes('home') ? 'active' : ''}>Home <MdHome/></Nav.Link>
+          <Nav.Link data-testid="nav-search-btn" onClick={() => clickHandler(navigate('search'))} className={location.pathname.includes('search') ? 'active' : ''}>Search <MdSearch/></Nav.Link>
+          <Nav.Link data-testid="nav-create-btn" onClick={() => clickHandler(navigate('create'))} className={location.pathname.includes('create') ? 'active' : ''}>Create <MdAddLocation/></Nav.Link>
       </Nav>
       <Nav className="justify-content-end">
         <NavDropdown align="end" title={<MdMoreHoriz/>} id="basic-nav-dropdown" data-testid="nav-dropdown">
           <NavDropdown.Item data-testid="nav-terms-conditions-btn" onClick={() => clickHandler(props.setShowTerms(true))}>Terms and Conditions</NavDropdown.Item>
-          <NavDropdown.Item data-testid="nav-delete-btn" onClick={() => clickHandler(props.setContent('delete'))}>Delete a post</NavDropdown.Item>
+          <NavDropdown.Item data-testid="nav-delete-btn" onClick={() => clickHandler(navigate('delete'))}>Delete a post</NavDropdown.Item>
         </NavDropdown>
       </Nav>
     </IconContext.Provider>
@@ -33,10 +37,15 @@ function NavLinks(props) {
 }
 
 function NavBar(props) {
+  const navigate = useNavigate();
 
   // Function to close the offcanvas popup
   function closePopup() {
     document.querySelector('body > .offcanvas-backdrop').click();
+  }
+
+  function redirectToHome() {
+    navigate('/home');
   }
 
   return (
@@ -47,7 +56,7 @@ function NavBar(props) {
             src={Logo}
             alt="Nota logo"
             className="clickable"
-            onClick={() => props.setContent('home')}
+            onClick={redirectToHome}
           />
         </Navbar.Brand>
 
@@ -72,15 +81,11 @@ function NavBar(props) {
 }
 
 NavLinks.propTypes = {
-  content: PropTypes.string,
-  setContent: PropTypes.func,
   setShowTerms: PropTypes.func,
   closePopup: PropTypes.func
 }
 
 NavBar.propTypes = {
-  content: PropTypes.string,
-  setContent: PropTypes.func,
   setShowTerms: PropTypes.func
 }
 
