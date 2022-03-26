@@ -5,7 +5,7 @@ const cors = require('cors');
 const EXPRESS = require('express');
 const session = require('express-session');
 const APP = EXPRESS();
-const nsfw = require('nsfwjs');
+// const nsfw = require('nsfwjs');
 const fs = require('fs');
 const printServiceBanner = require('./banner/banner');
 const db = require('./db/dbUtils');
@@ -45,10 +45,10 @@ const corsOptions = {
   origin: ENV.FRONTEND_URL
 };
 
-// nsfw model
-const loadModel = async () => {
-  global.model = await nsfw.load();
-};
+// // nsfw model
+// const loadModel = async () => {
+//   global.model = await nsfw.load();
+// };
 
 // Allow the app to use CORS with the defined routes in routes.js
 APP.use(cors(corsOptions), require('./routes/routes'));
@@ -101,9 +101,13 @@ global.auth_tokens = new Map();
 
 // Start listening
 const PORT = ENV.PORT || 3001;
-// Keep the model in memory, make sure it's loaded only once
-loadModel().finally(() => {
-  APP.listen(PORT, () => {
-    logger.info(`Service running on port ${PORT}`);
-  });
+// // Keep the model in memory, make sure it's loaded only once
+// loadModel().finally(() => {
+//   APP.listen(PORT, () => {
+//     logger.info(`Service running on port ${PORT}`);
+//   });
+// });
+
+APP.listen(PORT, () => {
+  logger.info(`Service running on port ${PORT}`);
 });
