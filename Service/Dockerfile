@@ -11,7 +11,7 @@ RUN apk add --update alpine-sdk
 
 COPY package.json .
 RUN npm install node-gyp
-RUN npm install
+RUN npm install --no-optional -f
 RUN npm install pm2 -g
 
 EXPOSE 3001
