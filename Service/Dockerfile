@@ -1,18 +1,16 @@
-FROM node:14.17.0-buster-slim
-
-COPY . .
-
-RUN apt-get update && \ 
-    apt-get install -y build-essential \
-    wget \
-    python3 \
-    make \
-    gcc \ 
-    libc6-dev 
+FROM node:14.17.0-alpine
 
 WORKDIR /app
 
+RUN apk add --no-cache python && \
+    python -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip install --upgrade pip setuptools && \
+    rm -r /root/.cache
+RUN apk add --update alpine-sdk
+
 COPY package.json .
+RUN npm install node-gyp
 RUN npm install
 RUN npm install pm2 -g
 
