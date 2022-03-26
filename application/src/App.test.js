@@ -1,6 +1,7 @@
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
+import { HashRouter as Router } from 'react-router-dom'
 
 // Clear the setup before each test
 afterEach(cleanup);
@@ -10,7 +11,7 @@ let checkBox = null, welcomeButton = null;
 describe('Welcome Page', () => {
 
   beforeEach(() => {
-    render(<App />);
+    render(<Router ><App /></Router>);
     checkBox = screen.getByTestId('agree-checkbox');
     welcomeButton = screen.getByTestId('enter-btn');
   })

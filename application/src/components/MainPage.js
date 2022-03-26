@@ -1,35 +1,48 @@
 // React
 import { useState } from 'react';
-import { Switch, Case, Default } from 'react-if';
 
 // Resources
 import './components.scss';
 
 // Components
 import NavBar from './navbar/NavBar';
+import { TermsModal } from './terms/Terms';
 import Home from './Home';
 import Search from './Search';
 import Create from './Create';
 import Delete from './Delete';
-import { TermsModal } from './terms/Terms';
+
+//React Router
+import { Route, Routes, Navigate } from 'react-router-dom';
+
+// Global State
+import { useGlobalState } from './globalState';
 
 // Homepage component for the application
 function MainPage() {
 
   // State variables
-  const [content, setContent] = useState('home');
   const [showTerms, setShowTerms] = useState(false);
+
+  const termsChecked = useGlobalState('termsChecked')[0];
+  if(!termsChecked) {
+    return (
+      <div>
+        <Navigate redirect to="/"/>
+      </div>
+    )
+  }
 
   return (
     <div>
-      <NavBar content={content} setContent={setContent} setShowTerms={setShowTerms} />
-      <Switch>
-        <Case condition={content === 'search'}><Search/></Case>
-        <Case condition={content === 'create'}><Create setShowTerms={setShowTerms}/></Case>
-        <Case condition={content === 'delete'}><Delete/></Case>
-        <Default><Home/></Default>
-      </Switch>
+      <NavBar setShowTerms={setShowTerms} />
       <TermsModal show={showTerms} setShow={setShowTerms} />
+      <Routes>
+        <Route path="/home" element={<Home/>}/>
+        <Route path="/search" element={<Search/>}/>
+        <Route path="/create" element={<Create/>}/>
+        <Route path="/delete" element={<Delete/>}/>
+      </Routes>
     </div>
   )
 }
