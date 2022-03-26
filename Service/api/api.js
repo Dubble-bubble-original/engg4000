@@ -3,6 +3,7 @@ const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
+const path = require('path');
 const download = require('image-downloader');
 
 // Captcha
@@ -778,7 +779,7 @@ exports.verifyImages = async (req, res) => {
       // Download Avatar Image
       const avatarImage = await download.image({
         url: post.author.avatar_url,
-        dest: './model'
+        dest: path.join(__dirname, './model')
       });
 
       // Convert Image
@@ -806,7 +807,7 @@ exports.verifyImages = async (req, res) => {
       // Download post image
       const postImage = await download.image({
         url: post.img_url,
-        dest: './model'
+        dest: path.join(__dirname, './model')
       });
 
       // Convert Image
@@ -837,7 +838,7 @@ exports.verifyImages = async (req, res) => {
   }
   catch (err) {
     logger.error(err.message);
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG, test: err.message });
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG, test: err.message, postImage });
   }
 
   const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
