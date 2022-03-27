@@ -10,7 +10,7 @@ RUN apk add --no-cache python && \
     pip install --upgrade pip setuptools && \
     rm -r /root/.cache
 
-RUN npm install node-gyp
+COPY package.json .
 RUN npm install --no-optional -f
 RUN npm install pm2 -g
 COPY . .
