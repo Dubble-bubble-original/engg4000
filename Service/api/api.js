@@ -838,7 +838,7 @@ exports.verifyImages = async (req, res) => {
   }
   catch (err) {
     logger.error(err.message);
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG, test: err.message, postImage });
+    return res.status(500).send({ message: err.message });
   }
 
   const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
