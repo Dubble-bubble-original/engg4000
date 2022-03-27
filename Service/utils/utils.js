@@ -150,6 +150,8 @@ exports.setPostExplicitFlag = async (query) => {
 // Convert the image to UInt8 Byte array
 exports.convert = async (img) => {
   // Decoded image in UInt8 Byte array
+  // eslint-disable-next-line no-console
+  console.log('Image Path -: ', img);
   const imgData = await fs.readFileSync(img);
   const image = await imageDecoder(imgData);
 
