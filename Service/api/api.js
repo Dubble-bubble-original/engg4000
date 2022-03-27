@@ -3,6 +3,7 @@ const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
+const { dirname } = require('path');
 const download = require('image-downloader');
 
 // Captcha
@@ -25,6 +26,7 @@ const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
 const GEOCODE_API = 'https://maps.googleapis.com/maps/api/geocode/json';
+const APP_DIR = dirname(require.main.filename);
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -778,7 +780,7 @@ exports.verifyImages = async (req, res) => {
       // Download Avatar Image
       const avatarImage = await download.image({
         url: post.author.avatar_url,
-        dest: './model'
+        dest: `${APP_DIR}/model`
       });
 
       // Convert Image
@@ -804,14 +806,9 @@ exports.verifyImages = async (req, res) => {
     // Check Post Image
     if (post.img_url) {
       // Download post image
-      // const file = fs.createWriteStream(path.join(__dirname, './model'));
-      // const request = await https.get(post.img_url, function(response) {
-      //   response.pipe(file);
-      // });
-
       const postImage = await download.image({
         url: post.img_url,
-        dest: './model'
+        dest: `${APP_DIR}/model`
       });
 
       // Convert Image
