@@ -6,6 +6,7 @@ const EXPRESS = require('express');
 const session = require('express-session');
 const APP = EXPRESS();
 const nsfw = require('nsfwjs');
+const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 const printServiceBanner = require('./banner/banner');
 const db = require('./db/dbUtils');
@@ -45,6 +46,10 @@ const corsOptions = {
   origin: ENV.FRONTEND_URL
 };
 
+if (ENV.NODE_ENV !== 'dev') {
+  // enable production mode
+  tf.enableProdMode();
+}
 // nsfw model
 const loadModel = async () => {
   global.model = await nsfw.load();
