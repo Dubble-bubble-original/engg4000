@@ -1,18 +1,20 @@
-FROM node:14.17.0-alpine
+FROM node:14.17.0-buster-slim
 
 WORKDIR /app
 
-COPY . /app
-RUN apk add --update alpine-sdk
-RUN apk add --no-cache python && \
-    python -m ensurepip && \
-    rm -r /usr/lib/python*/ensurepip && \
-    pip install --upgrade pip setuptools && \
-    rm -r /root/.cache
+COPY . .
 
-COPY package.json .
+RUN apt-get update && \ 
+    apt-get install -y build-essential \
+    wget \
+    python3 \
+    make \
+    gcc \ 
+    libc6-dev 
+
 RUN npm install --no-optional -f
 RUN npm install pm2 -g
+
 COPY . .
 
 EXPOSE 3001
