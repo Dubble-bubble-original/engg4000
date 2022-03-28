@@ -771,7 +771,7 @@ exports.verifyImages = async (req, res) => {
     return res.status(404).send({ message: 'User Post Not Found' });
   }
   if (post === UTILS.Result.Error) {
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG, test: '1' });
+    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
   }
 
   try {
