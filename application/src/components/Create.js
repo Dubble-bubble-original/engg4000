@@ -70,6 +70,7 @@ function Create(props) {
   const [captchaErrorMsg, setCaptchaErrorMsg] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [created, setCreated] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [accessKey, setAccessKey] = useState('');
   const [createErrorMsg, setCreateErrorMsg] = useState('');
   const [email, setEmail] = useState('');
@@ -159,6 +160,8 @@ function Create(props) {
   }
 
   const createPost = async () => {
+    setIsPublishing(true);
+
     // Upload images (if any)
     let imgResult = null;
     if (avatarImg || picture) {
@@ -191,6 +194,7 @@ function Create(props) {
       // Success
       setAccessKey(result.post.access_key);
       setCreated(true);
+      setIsPublishing(false);
       // Check Images
       checkImages(result.post.access_key);
     }
@@ -465,7 +469,7 @@ function Create(props) {
                 <Button
                   data-testid="publish"
                   className="mt-3"
-                  disabled={!termsAgree || !isCaptchaValid() || !isPostValid()}
+                  disabled={!termsAgree || !isCaptchaValid() || !isPostValid() || isPublishing}
                   onClick={openModal}
                 >
                   Publish
