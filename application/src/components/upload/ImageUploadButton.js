@@ -40,7 +40,7 @@ function ImageUploadButton(props) {
 
   const checkFileSize = (inputElement, file) => {
     if (file.size > MAX_FILE_SIZE) {
-      setInvalidFileMsg('File must not be larger than 15 MB');
+      setInvalidFileMsg('File must not be larger than 5 MB');
       clearFileUpload();
       return false;
     }
