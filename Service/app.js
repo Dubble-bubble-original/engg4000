@@ -7,6 +7,7 @@ const session = require('express-session');
 const APP = EXPRESS();
 const nsfw = require('nsfwjs');
 const fs = require('fs');
+const bodyParser = require('body-parser');
 const printServiceBanner = require('./banner/banner');
 const db = require('./db/dbUtils');
 
@@ -25,8 +26,15 @@ if (!fs.existsSync('./model')) {
 }
 
 // API Middleware
-APP.use(EXPRESS.json({ limit: '2mb' }));
-APP.use(EXPRESS.urlencoded({ limit: '2mb', extended: true }));
+APP.use(bodyParser.urlencoded({
+  extended: true,
+  limit: '30mb',
+  parameterLimit: 100000
+}));
+APP.use(bodyParser.json({
+  limit: '2mb',
+  parameterLimit: 100000
+}));
 APP.use(session({
   secret: ENV.SESSION_SECRET,
   resave: false,
