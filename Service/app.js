@@ -28,7 +28,7 @@ if (!fs.existsSync('./model')) {
 // API Middleware
 APP.use(bodyParser.urlencoded({
   extended: true,
-  limit: '30mb',
+  limit: '12mb',
   parameterLimit: 100000
 }));
 APP.use(bodyParser.json({
