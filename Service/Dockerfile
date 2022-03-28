@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["pm2", "start", "app.js"]
+CMD ["pm2-runtime", "start", "app.js"]
