@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["pm2-runtime", "app.js", "--max-memory-restart", "300M"]
+CMD ["pm2", "start", "app.js"]
