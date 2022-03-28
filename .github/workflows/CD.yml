@@ -20,7 +20,7 @@ jobs:
       - name: Build Images
         run: |
           docker build --build-arg API_KEY=${{ secrets.API_KEY }} --build-arg SERVICE_URL=${{ secrets.SERVICE_URL }} -t ${{ secrets.DOCKER_USERNAME }}/engg4000-client ./application
-          docker build --build-arg NODE_OPTIONS=--max-old-space-size=1000000000 \ --memory=1000000000M \ --memory-swap=-1 -t ${{ secrets.DOCKER_USERNAME }}/engg4000-api ./Service
+          docker build --build-arg NODE_OPTIONS=--max-old-space-size=1000000000 -t ${{ secrets.DOCKER_USERNAME }}/engg4000-api ./Service
           docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx ./nginx
       
       - name: List images
