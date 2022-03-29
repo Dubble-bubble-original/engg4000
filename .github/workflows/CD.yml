@@ -3,7 +3,6 @@ on:
   push:
     branches:  
     - 'master'
-    - 'tfjs-node-fix'
 
 jobs:
   test:
@@ -20,7 +19,7 @@ jobs:
       - name: Build Images
         run: |
           docker build --build-arg API_KEY=${{ secrets.API_KEY }} --build-arg SERVICE_URL=${{ secrets.SERVICE_URL }} -t ${{ secrets.DOCKER_USERNAME }}/engg4000-client ./application
-          docker build --build-arg -t ${{ secrets.DOCKER_USERNAME }}/engg4000-api ./Service
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-api ./Service
           docker build -t ${{ secrets.DOCKER_USERNAME }}/engg4000-nginx ./nginx
       
       - name: List images
