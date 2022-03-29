@@ -10,7 +10,4 @@ COPY . .
 
 EXPOSE 3001
 
-# CMD ["npm", "run", "dev"]
 CMD ["pm2-runtime", "ecosystem.config.js"]
-# CMD ["pm2-runtime", "app.js", '--node-args="--max-old-space-size=16000"']
-# CMD ["node", "--max-old-space-size=16000", "app.js"`]

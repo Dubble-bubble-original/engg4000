@@ -801,6 +801,7 @@ exports.verifyImages = async (req, res) => {
 
       // Delete avatar image from storage
       fs.promises.unlink(avatarImage.filename);
+      tf.dispose();
       avatarImageData.dispose();
     }
 
