@@ -6,7 +6,7 @@ on:
     - 'tfjs-node-fix'
 
 jobs:
-  test:
+  Deployment:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Latest Repo
