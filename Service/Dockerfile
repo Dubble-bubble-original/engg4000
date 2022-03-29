@@ -10,4 +10,6 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["pm2-runtime", "app.js", "--max-memory-restart", "1G"]
+# CMD ["npm", "run", "dev"]
+# CMD ["pm2-runtime", "app.js", "--max-memory-restart", "1G"]
+CMD ["pm2-runtime", "app.js", "--node-args="--max-old-space-size=16000""]
