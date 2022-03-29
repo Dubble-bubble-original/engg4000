@@ -163,6 +163,7 @@ exports.convert = async (img) => {
     }
   }
 
+  logger.info('Memoery Before -: ', tf.memoryUsage());
   return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
 };
 

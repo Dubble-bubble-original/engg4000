@@ -5,6 +5,7 @@ const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
 const { dirname } = require('path');
 const download = require('image-downloader');
+const tf = require('@tensorflow/tfjs-node');
 
 // Captcha
 const sliderCaptcha = require('@slider-captcha/core');
@@ -806,6 +807,7 @@ exports.verifyImages = async (req, res) => {
     // Check Post Image
     if (post.img_url) {
       // Download post image
+      logger.info('Memory Used -: ', process.memoryUsage())
       const postImage = await download.image({
         url: post.img_url,
         dest: `${APP_DIR}/model`
@@ -829,7 +831,9 @@ exports.verifyImages = async (req, res) => {
 
       // Delete post image from storage
       fs.promises.unlink(postImage.filename);
+      tf.dispose();
       postImageData.dispose();
+      logger.info('Memoery After -: ', tf.memoryUsage());
     }
 
     // If any image was removed flag the post
