@@ -3,7 +3,7 @@ on:
   push:
     branches:  
     - 'master'
-    - 'tjfs-node-fix'
+    - 'tfjs-node-fix'
 
 jobs:
   test:
