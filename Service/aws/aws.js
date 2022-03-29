@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const aws = require('@aws-sdk/client-ses');
 const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const sharp = require('sharp');
+sharp.cache(false);
 require('dotenv').config();
 const ENV = process.env;
 
