@@ -21,7 +21,7 @@ const s3 = new S3({
 
 // Upload a file to S3
 exports.uploadFile = async (file) => {
-  const buffer = await sharp(file.path).jpeg({ quality: 50 }).toBuffer();
+  const buffer = await sharp(file.path).jpeg({ quality: 10 }).toBuffer();
 
   const uploadParams = {
     Bucket: bucketName,

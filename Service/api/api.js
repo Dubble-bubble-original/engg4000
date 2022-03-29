@@ -801,7 +801,6 @@ exports.verifyImages = async (req, res) => {
 
       // Delete avatar image from storage
       fs.promises.unlink(avatarImage.filename);
-      tf.dispose();
       avatarImageData.dispose();
     }
 
@@ -831,7 +830,6 @@ exports.verifyImages = async (req, res) => {
 
       // Delete post image from storage
       fs.promises.unlink(postImage.filename);
-      tf.dispose();
       postImageData.dispose();
     }
 
@@ -845,6 +843,7 @@ exports.verifyImages = async (req, res) => {
     return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
   }
 
+  tf.dispose();
   const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
 
   return res.status(200).send({ message: statusMessage });

@@ -27,7 +27,7 @@
             "image": "cartermaclennan/engg4000-api",
             "hostname": "api",
             "essential": false,
-            "memory": 300
+            "memory": 1024
         }
     ]
 }
