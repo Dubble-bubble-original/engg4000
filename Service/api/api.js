@@ -807,16 +807,24 @@ exports.verifyImages = async (req, res) => {
     // Check Post Image
     if (post.img_url) {
       // Download post image
-      const postImage = await download.image({
-        url: post.img_url,
-        dest: `${APP_DIR}/model`
+
+      const postImage = await axios.get(post.img_url, {
+        responseType: 'arraybuffer'
       });
 
-      // Convert Image
-      const postImageData = await UTILS.convertImage(postImage.filename);
+      const postImageData = await tf.node.decodeImage(postImage.data, 3);
+
+      // const postImage = await download.image({
+      //   url: post.img_url,
+      //   dest: `${APP_DIR}/model`
+      // });
+
+      // // Convert Image
+      // const postImageData = await UTILS.convertImage(postImage.filename);
 
       // Call model to check image
       const postImageResults = await model.classify(postImageData);
+      postImageData.dispose();
 
       // Delete post image if needed
       if (UTILS.checkImage(postImageResults)) {
@@ -828,9 +836,8 @@ exports.verifyImages = async (req, res) => {
         }
       }
 
-      // Delete post image from storage
-      fs.promises.unlink(postImage.filename);
-      postImageData.dispose();
+      // // Delete post image from storage
+      // fs.promises.unlink(postImage.filename);
     }
 
     // If any image was removed flag the post
@@ -843,7 +850,6 @@ exports.verifyImages = async (req, res) => {
     return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
   }
 
-  tf.dispose();
   const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
 
   return res.status(200).send({ message: statusMessage });
