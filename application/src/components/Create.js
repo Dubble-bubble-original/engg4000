@@ -204,10 +204,12 @@ function Create(props) {
         captchaRef.current.reset();
         setCaptchaToken(null);
         setError(createError.captcha);
+        setIsPublishing(false);
       }
       else {
         // General error
         setError(result?.message ?? createError.general);
+        setIsPublishing(false);
       }
     }
   }
