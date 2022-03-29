@@ -295,6 +295,7 @@ function Create(props) {
     setEmail('');
     setEmailResult(null);
     setEmailLoading(false);
+    setIsPublishing(false);
   }
 
   return (
