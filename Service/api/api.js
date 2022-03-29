@@ -807,7 +807,7 @@ exports.verifyImages = async (req, res) => {
     // Check Post Image
     if (post.img_url) {
       // Download post image
-      logger.info('Memory Used -: ', process.memory())
+      logger.info('Memory Used -: ', tf.memory())
       const postImage = await download.image({
         url: post.img_url,
         dest: `${APP_DIR}/model`
