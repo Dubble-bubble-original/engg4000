@@ -70,6 +70,7 @@ function Create(props) {
   const [captchaErrorMsg, setCaptchaErrorMsg] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [created, setCreated] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [accessKey, setAccessKey] = useState('');
   const [createErrorMsg, setCreateErrorMsg] = useState('');
   const [email, setEmail] = useState('');
@@ -159,6 +160,8 @@ function Create(props) {
   }
 
   const createPost = async () => {
+    setIsPublishing(true);
+
     // Upload images (if any)
     let imgResult = null;
     if (avatarImg || picture) {
@@ -191,6 +194,7 @@ function Create(props) {
       // Success
       setAccessKey(result.post.access_key);
       setCreated(true);
+      setIsPublishing(false);
       // Check Images
       checkImages(result.post.access_key);
     }
@@ -297,7 +301,7 @@ function Create(props) {
         <div className="h4 mb-0">Follow the steps below to create a new post</div>
       </Container>
 
-      <If condition={!created}>
+      <If condition={!created && !isPublishing}>
         <Then>
           <Form noValidate onSubmit={preventSubmit}>
 
@@ -465,7 +469,7 @@ function Create(props) {
                 <Button
                   data-testid="publish"
                   className="mt-3"
-                  disabled={!termsAgree || !isCaptchaValid() || !isPostValid()}
+                  disabled={!termsAgree || !isCaptchaValid() || !isPostValid() || isPublishing}
                   onClick={openModal}
                 >
                   Publish
@@ -476,58 +480,67 @@ function Create(props) {
           </Form>
         </Then>
         <Else>
-          <Container className="outer-container" data-testid="feedback-section">
-            <Alert variant="success" data-testid="feedback-success">
-              <MdOutlineCheckCircle/> Post created successfully.
-            </Alert>
-            <div><b>Access code:</b> <span data-testid="access-key">{accessKey}</span> <CopyButton value={accessKey}/></div>
-            <Form.Text>
-              This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!<br/>
-              <br/>
-              You may enter your email below to send yourself a copy of the access code via email.<br/>
-            </Form.Text>
-            <br/>
-            <Form noValidate onSubmit={preventSubmit} validated={!!email} ref={emailFormRef}>
-              <Form.Group>
-                <Form.Label>Email <Optional/></Form.Label>
-                <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
-                  <Col style={{maxWidth: '400px'}} className="flex-grow-1">
-                    <Form.Control
-                      type="email"
-                      placeholder="my.email@org.com"
-                      value={email}
-                      onChange={(e)=> {setEmail(e.target.value)}}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid email address.
-                    </Form.Control.Feedback>
-                  </Col>
-                  <Col xs="auto" sm="auto">
-                    <If condition={emailLoading}>
-                      <Then><LoadingSpinner /></Then>
-                      <Else><Button onClick={sendEmail} type="submit">Send Email</Button></Else>
-                    </If>
-                  </Col>
-                </Row>
-              </Form.Group>
-            </Form>
-            <br/>
-            <When condition={emailResult && !emailLoading}>
-              <If condition={emailResult==='sent'}>
-                <Then>
-                  <Alert variant="success">
-                    <MdOutlineCheckCircle/> Email sent successfully. <br/>Please check your spam folder if you don&apos;t see it in your inbox.
-                  </Alert>
-                </Then>
-                <Else>
-                  <Alert variant="danger">
-                    <MdErrorOutline/> {emailResult}
-                  </Alert>
-                </Else>
-              </If>
-            </When>
-            <Button onClick={resetPage}>Create a New Post</Button>
-          </Container>
+          <If condition={isPublishing}>
+            <Then>
+              <Container className="outer-container" ref={errorFeedbackRef}>
+                <LoadingSpinner size="10rem"/>
+              </Container>
+            </Then>
+            <Else>
+              <Container className="outer-container" data-testid="feedback-section">
+                <Alert variant="success" data-testid="feedback-success">
+                  <MdOutlineCheckCircle/> Post created successfully.
+                </Alert>
+                <div><b>Access code:</b> <span data-testid="access-key">{accessKey}</span> <CopyButton value={accessKey}/></div>
+                <Form.Text>
+                  This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!<br/>
+                  <br/>
+                  You may enter your email below to send yourself a copy of the access code via email.<br/>
+                </Form.Text>
+                <br/>
+                <Form noValidate onSubmit={preventSubmit} validated={!!email} ref={emailFormRef}>
+                  <Form.Group>
+                    <Form.Label>Email <Optional/></Form.Label>
+                    <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
+                      <Col style={{maxWidth: '400px'}} className="flex-grow-1">
+                        <Form.Control
+                          type="email"
+                          placeholder="my.email@org.com"
+                          value={email}
+                          onChange={(e)=> {setEmail(e.target.value)}}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a valid email address.
+                        </Form.Control.Feedback>
+                      </Col>
+                      <Col xs="auto" sm="auto">
+                        <If condition={emailLoading}>
+                          <Then><LoadingSpinner /></Then>
+                          <Else><Button onClick={sendEmail} type="submit">Send Email</Button></Else>
+                        </If>
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                </Form>
+                <br/>
+                <When condition={emailResult && !emailLoading}>
+                  <If condition={emailResult==='sent'}>
+                    <Then>
+                      <Alert variant="success">
+                        <MdOutlineCheckCircle/> Email sent successfully. <br/>Please check your spam folder if you don&apos;t see it in your inbox.
+                      </Alert>
+                    </Then>
+                    <Else>
+                      <Alert variant="danger">
+                        <MdErrorOutline/> {emailResult}
+                      </Alert>
+                    </Else>
+                  </If>
+                </When>
+                <Button onClick={resetPage}>Create a New Post</Button>
+              </Container>
+            </Else>
+          </If>
         </Else>
       </If>
 
@@ -538,7 +551,7 @@ function Create(props) {
           </Alert>
         </Container>
       </When>
-      
+
       <ConfirmationModal
         title="Confirmation"
         acceptString="Publish"

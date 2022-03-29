@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Form, Button, CloseButton } from 'react-bootstrap';
 import PropTypes from 'prop-types'
 
-const MAX_FILE_SIZE = 14.5 * 1000 * 1000; // 14.5 MB
+const MAX_FILE_SIZE = 5 * 1000 * 1000; // 5 MB
 
 function ImageUploadButton(props) {
   const [invalidFileMsg, setInvalidFileMsg] = useState(null);
@@ -40,7 +40,7 @@ function ImageUploadButton(props) {
 
   const checkFileSize = (inputElement, file) => {
     if (file.size > MAX_FILE_SIZE) {
-      setInvalidFileMsg('File must not be larger than 15 MB');
+      setInvalidFileMsg('File must not be larger than 5 MB');
       clearFileUpload();
       return false;
     }
