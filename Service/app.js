@@ -8,7 +8,6 @@ const APP = EXPRESS();
 const nsfw = require('nsfwjs');
 const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
-const v8 = require('v8');
 const bodyParser = require('body-parser');
 const printServiceBanner = require('./banner/banner');
 const db = require('./db/dbUtils');
@@ -87,9 +86,6 @@ global.logger = WINSTON.createLogger({
 logger.add(new WINSTON.transports.Console({}));
 // }
 logger.info('Service logger initialized');
-const totalHeapSize = v8.getHeapStatistics().total_available_size;
-const totalHeapSizeInGB = (totalHeapSize / 1024 / 1024 / 1024).toFixed(2);
-logger.info(`Total Heap size (bytes) -: ${totalHeapSize}, (GB ~${totalHeapSizeInGB})`);
 
 // Global error handler
 APP.use(function(err, req, res, next) {

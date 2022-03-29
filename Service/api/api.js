@@ -785,7 +785,7 @@ exports.verifyImages = async (req, res) => {
       });
 
       // Convert Image
-      const avatarImageData = await UTILS.convert(avatarImage.filename);
+      const avatarImageData = await UTILS.convertImage(avatarImage.filename);
 
       // Call model to check image
       const avatarImageResults = await model.classify(avatarImageData);
@@ -807,14 +807,13 @@ exports.verifyImages = async (req, res) => {
     // Check Post Image
     if (post.img_url) {
       // Download post image
-      logger.info('Memory Used -: ', tf.memory())
       const postImage = await download.image({
         url: post.img_url,
         dest: `${APP_DIR}/model`
       });
 
       // Convert Image
-      const postImageData = await UTILS.convert(postImage.filename);
+      const postImageData = await UTILS.convertImage(postImage.filename);
 
       // Call model to check image
       const postImageResults = await model.classify(postImageData);
@@ -833,7 +832,6 @@ exports.verifyImages = async (req, res) => {
       fs.promises.unlink(postImage.filename);
       tf.dispose();
       postImageData.dispose();
-      logger.info('Memoery After -: ', tf.memory());
     }
 
     // If any image was removed flag the post
