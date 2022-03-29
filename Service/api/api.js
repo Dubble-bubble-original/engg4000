@@ -3,8 +3,6 @@ const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
-const { dirname } = require('path');
-const download = require('image-downloader');
 const tf = require('@tensorflow/tfjs-node');
 
 // Captcha
@@ -27,7 +25,6 @@ const BUCKET_URL = 'https://senior-design-img-bucket.s3.amazonaws.com/';
 const INTERNAL_SERVER_ERROR_MSG = 'An Unknown Error Occurred';
 const INVALID_REQUEST_ERROR_MSG = 'Invalid Request Body Format';
 const GEOCODE_API = 'https://maps.googleapis.com/maps/api/geocode/json';
-const APP_DIR = dirname(require.main.filename);
 
 exports.createAuthToken = (req, res) => {
   const uuid = uuidv4();
@@ -778,17 +775,17 @@ exports.verifyImages = async (req, res) => {
   try {
     // Check Avatar Image
     if (post.author.avatar_url) {
-      // Download Avatar Image
-      const avatarImage = await download.image({
-        url: post.author.avatar_url,
-        dest: `${APP_DIR}/model`
+      // Get Avatar Image
+      const avatarImage = await axios.get(post.author.avatar_url, {
+        responseType: 'arraybuffer'
       });
 
-      // Convert Image
-      const avatarImageData = await UTILS.convertImage(avatarImage.filename);
+      // Get Image Data
+      const avatarImageData = await tf.node.decodeImage(avatarImage.data, 3);
 
       // Call model to check image
       const avatarImageResults = await model.classify(avatarImageData);
+      avatarImageData.dispose();
 
       if (UTILS.checkImage(avatarImageResults)) {
         // Delete Image
@@ -806,21 +803,13 @@ exports.verifyImages = async (req, res) => {
 
     // Check Post Image
     if (post.img_url) {
-      // Download post image
-
+      // Get Post Image
       const postImage = await axios.get(post.img_url, {
         responseType: 'arraybuffer'
       });
 
+      // Get Image Data
       const postImageData = await tf.node.decodeImage(postImage.data, 3);
-
-      // const postImage = await download.image({
-      //   url: post.img_url,
-      //   dest: `${APP_DIR}/model`
-      // });
-
-      // // Convert Image
-      // const postImageData = await UTILS.convertImage(postImage.filename);
 
       // Call model to check image
       const postImageResults = await model.classify(postImageData);
@@ -835,9 +824,6 @@ exports.verifyImages = async (req, res) => {
           logger.error(INTERNAL_SERVER_ERROR_MSG);
         }
       }
-
-      // // Delete post image from storage
-      // fs.promises.unlink(postImage.filename);
     }
 
     // If any image was removed flag the post
@@ -847,7 +833,11 @@ exports.verifyImages = async (req, res) => {
   }
   catch (err) {
     logger.error(err.message);
-    return res.status(500).send({ message: `${INTERNAL_SERVER_ERROR_MSG}` });
+    return res.status(500).send({ message: `${err.message}` });
+  }
+  finally {
+    // Dispose any memory being used by tensorflow.
+    tf.dispose();
   }
 
   const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
