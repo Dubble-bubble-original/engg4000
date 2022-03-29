@@ -807,7 +807,7 @@ exports.verifyImages = async (req, res) => {
     // Check Post Image
     if (post.img_url) {
       // Download post image
-      logger.info('Memory Used -: ', process.memoryUsage())
+      logger.info('Memory Used -: ', process.memory())
       const postImage = await download.image({
         url: post.img_url,
         dest: `${APP_DIR}/model`
@@ -833,7 +833,7 @@ exports.verifyImages = async (req, res) => {
       fs.promises.unlink(postImage.filename);
       tf.dispose();
       postImageData.dispose();
-      logger.info('Memoery After -: ', tf.memoryUsage());
+      logger.info('Memoery After -: ', tf.memory());
     }
 
     // If any image was removed flag the post
