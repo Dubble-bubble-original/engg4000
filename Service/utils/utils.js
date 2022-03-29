@@ -2,7 +2,6 @@
 const fs = require('fs');
 const imageDecoder = require('image-decode');
 const tf = require('@tensorflow/tfjs-node');
-
 const Filter = require('bad-words');
 const filter = new Filter();
 
@@ -147,24 +146,23 @@ exports.setPostExplicitFlag = async (query) => {
     });
 };
 
-// Convert the image to UInt8 Byte array
-exports.convert = async (img) => {
-  // Decoded image in UInt8 Byte array
-  const imgData = await fs.readFileSync(img);
-  const image = await imageDecoder(imgData);
+// Convert the image to UInt32 Byte array
+exports.convertImage = async (image) => {
+  // Decoded image in UInt32 Byte array
+  const imageData = await fs.readFileSync(image);
+  const imageDecoded = await imageDecoder(imageData);
 
   const numChannels = 3;
-  const numPixels = image.width * image.height;
+  const numPixels = imageDecoded.width * imageDecoded.height;
   const values = new Int32Array(numPixels * numChannels);
 
   for (let i = 0; i < numPixels; i++) {
     for (let c = 0; c < numChannels; ++c) {
-      values[i * numChannels + c] = image.data[i * 4 + c];
+      values[i * numChannels + c] = imageDecoded.data[i * 4 + c];
     }
   }
 
-  logger.info('Memoery Before -: ', tf.memory());
-  return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
+  return tf.tensor3d(values, [imageDecoded.height, imageDecoded.width, numChannels], 'int32');
 };
 
 // Returns true if the image has to be deleted
