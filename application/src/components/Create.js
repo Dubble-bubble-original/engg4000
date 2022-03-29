@@ -203,13 +203,13 @@ function Create(props) {
         // Invalid captcha token
         captchaRef.current.reset();
         setCaptchaToken(null);
-        setError(createError.captcha);
         setIsPublishing(false);
+        setError(createError.captcha);
       }
       else {
         // General error
-        setError(result?.message ?? createError.general);
         setIsPublishing(false);
+        setError(result?.message ?? createError.general);
       }
     }
   }
