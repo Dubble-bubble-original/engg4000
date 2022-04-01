@@ -36,8 +36,6 @@
     "express": "^4.17.1",
     "express-rate-limit": "^6.2.0",
     "express-session": "^1.17.2",
-    "image-decode": "^1.2.2",
-    "image-downloader": "^4.0.3",
     "mongodb": "^4.4.0",
     "mongoose": "^6.0.7",
     "multer": "^1.4.3",
@@ -45,6 +43,7 @@
     "nodemon": "^2.0.12",
     "nsfwjs": "^2.4.1",
     "pm2": "^5.1.2",
+    "sharp": "^0.30.3",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },

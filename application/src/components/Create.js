@@ -203,10 +203,12 @@ function Create(props) {
         // Invalid captcha token
         captchaRef.current.reset();
         setCaptchaToken(null);
+        setIsPublishing(false);
         setError(createError.captcha);
       }
       else {
         // General error
+        setIsPublishing(false);
         setError(result?.message ?? createError.general);
       }
     }
@@ -293,6 +295,7 @@ function Create(props) {
     setEmail('');
     setEmailResult(null);
     setEmailLoading(false);
+    setIsPublishing(false);
   }
 
   return (
