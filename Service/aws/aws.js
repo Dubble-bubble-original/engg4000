@@ -2,7 +2,8 @@ const S3 = require('aws-sdk/clients/s3');
 const nodemailer = require('nodemailer');
 const aws = require('@aws-sdk/client-ses');
 const { defaultProvider } = require('@aws-sdk/credential-provider-node');
-const fs = require('fs');
+const sharp = require('sharp');
+sharp.cache(false);
 require('dotenv').config();
 const ENV = process.env;
 
@@ -21,11 +22,11 @@ const s3 = new S3({
 
 // Upload a file to S3
 exports.uploadFile = async (file) => {
-  const fileStream = fs.createReadStream(file.path);
+  const buffer = await sharp(file.path).jpeg({ quality: 50 }).toBuffer();
 
   const uploadParams = {
     Bucket: bucketName,
-    Body: fileStream,
+    Body: buffer,
     Key: file.filename
   };
 

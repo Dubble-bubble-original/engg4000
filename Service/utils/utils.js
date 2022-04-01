@@ -1,8 +1,5 @@
 // Packages
 const fs = require('fs');
-const imageDecoder = require('image-decode');
-const tf = require('@tensorflow/tfjs-node');
-
 const Filter = require('bad-words');
 const filter = new Filter();
 
@@ -147,25 +144,6 @@ exports.setPostExplicitFlag = async (query) => {
     });
 };
 
-// Convert the image to UInt8 Byte array
-exports.convert = async (img) => {
-  // Decoded image in UInt8 Byte array
-  const imgData = await fs.readFileSync(img);
-  const image = await imageDecoder(imgData);
-
-  const numChannels = 3;
-  const numPixels = image.width * image.height;
-  const values = new Int32Array(numPixels * numChannels);
-
-  for (let i = 0; i < numPixels; i++) {
-    for (let c = 0; c < numChannels; ++c) {
-      values[i * numChannels + c] = image.data[i * 4 + c];
-    }
-  }
-
-  return tf.tensor3d(values, [image.height, image.width, numChannels], 'int32');
-};
-
 // Returns true if the image has to be deleted
 exports.checkImage = (predictions) => {
   const results = {};
@@ -175,7 +153,7 @@ exports.checkImage = (predictions) => {
   });
 
   // Return true if image needs to be deleted
-  if (results.Neutral + results.Sexy < (results.Drawing + results.Porn + results.Hentai)) {
+  if ((results.Neutral + results.Drawing + results.Sexy) < (results.Porn + results.Hentai)) {
     return true;
   }
   return false;

@@ -20,7 +20,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 // API
 import { createFullPost, postImages, deleteImage, sendAccessKeyEmail, checkImages } from '../api/api.js';
-import { geocodePosition } from './maps/Geocoder.js';
+import { geocodePosition, DEFAULT_LOCATION_STRING } from './maps/Geocoder.js';
 
 function Number(props) {
   return (
@@ -70,6 +70,7 @@ function Create(props) {
   const [captchaErrorMsg, setCaptchaErrorMsg] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [created, setCreated] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [accessKey, setAccessKey] = useState('');
   const [createErrorMsg, setCreateErrorMsg] = useState('');
   const [email, setEmail] = useState('');
@@ -118,9 +119,14 @@ function Create(props) {
       img_url: getImageURL(picture),
       date_created: new Date().toISOString(),
       location: position,
-      location_string: locationString,
+      location_string: getLocationString(),
       true_location: isTruePosition
     };
+  }
+
+  const getLocationString = () => {
+    // Return default if location string is not defined or empty
+    return locationString ? locationString : DEFAULT_LOCATION_STRING;
   }
 
   const getImageURL = (image) => {
@@ -134,6 +140,11 @@ function Create(props) {
   const captchaSuccess = (token) => {
     setCaptchaErrorMsg(null);
     setCaptchaToken(token);
+  }
+  const isCaptchaValid = () => {
+    // Ignore the captcha requirement in dev (required for our UI test)
+    if (process.env.NODE_ENV === 'development') return true;
+    else return captchaToken;
   }
 
   const preventSubmit = (event) => {
@@ -149,6 +160,8 @@ function Create(props) {
   }
 
   const createPost = async () => {
+    setIsPublishing(true);
+
     // Upload images (if any)
     let imgResult = null;
     if (avatarImg || picture) {
@@ -181,6 +194,7 @@ function Create(props) {
       // Success
       setAccessKey(result.post.access_key);
       setCreated(true);
+      setIsPublishing(false);
       // Check Images
       checkImages(result.post.access_key);
     }
@@ -189,10 +203,12 @@ function Create(props) {
         // Invalid captcha token
         captchaRef.current.reset();
         setCaptchaToken(null);
+        setIsPublishing(false);
         setError(createError.captcha);
       }
       else {
         // General error
+        setIsPublishing(false);
         setError(result?.message ?? createError.general);
       }
     }
@@ -279,6 +295,7 @@ function Create(props) {
     setEmail('');
     setEmailResult(null);
     setEmailLoading(false);
+    setIsPublishing(false);
   }
 
   return (
@@ -287,13 +304,13 @@ function Create(props) {
         <div className="h4 mb-0">Follow the steps below to create a new post</div>
       </Container>
 
-      <If condition={!created}>
+      <If condition={!created && !isPublishing}>
         <Then>
           <Form noValidate onSubmit={preventSubmit}>
 
             <Section num="1" title="Location">
               <div>Show us the location of your adventure!</div>
-              <div className="mt-3 mb-3" style={{width:'100%', height:'350px'}}>
+              <div className="mt-3 mb-3" style={{width:'100%', height:'350px'}} data-testid="location-picker-map">
                 <LocationPickerMap onPositionChange={setPosition} setIsTruePosition={setIsTruePosition} />
               </div>
               <InputGroup hidden={position === null}>
@@ -306,6 +323,7 @@ function Create(props) {
                 </InputGroup.Text>
               </InputGroup>
               <Alert
+                data-testid="location-error"
                 variant="danger"
                 className="mb-0 mt-3"
                 hidden={position !== null && !positionErrorMsg}
@@ -326,6 +344,7 @@ function Create(props) {
                       type="text"
                       placeholder="What do people call you?"
                       value={name}
+                      data-testid="name-input"
                       onChange={(e)=> {setName(e.target.value)}}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -360,6 +379,7 @@ function Create(props) {
                     type="text"
                     placeholder="Give a title to your post"
                     value={title}
+                    data-testid="title-input"
                     onChange={(e)=> {setTitle(e.target.value)}}
                   />
                   <Form.Control.Feedback type="invalid">
@@ -376,6 +396,7 @@ function Create(props) {
                   rows={6}
                   placeholder="Share your thoughts!"
                   value={body}
+                  data-testid="body-input"
                   onChange={(e)=> {setBody(e.target.value)}}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -389,6 +410,7 @@ function Create(props) {
               <Form.Group className="mt-3">
                 <TagButtonGroup tags={tags} setTags={setTags}/>
                 <Alert
+                  data-testid="tags-error"
                   variant="danger"
                   className="mb-0 mt-3"
                   hidden={!invalidTagsMsg}
@@ -419,6 +441,7 @@ function Create(props) {
             <Section num="6" title="Preview">
               <div>See how your post will look before you publish!</div>
               <Alert
+                data-testid="preview-error"
                 variant="danger"
                 className="mb-0 mt-3"
                 hidden={isPostValid()}
@@ -428,7 +451,7 @@ function Create(props) {
             </Section>
 
             <When condition={isPostValid()}>
-              <Post postData={getPostData()}/>
+              <Post postData={getPostData()} data-testid="preview-post"/>
 
               <Section num="7" title="Publish">
                 <div className="mb-3">By publishing this post you are agreeing to our <TermsLink setShowTerms={props.setShowTerms}/>.</div>
@@ -447,8 +470,9 @@ function Create(props) {
                   </Alert>
                 </div>
                 <Button
+                  data-testid="publish"
                   className="mt-3"
-                  disabled={!termsAgree || !captchaToken || !isPostValid()}
+                  disabled={!termsAgree || !isCaptchaValid() || !isPostValid() || isPublishing}
                   onClick={openModal}
                 >
                   Publish
@@ -459,58 +483,67 @@ function Create(props) {
           </Form>
         </Then>
         <Else>
-          <Container className="outer-container">
-            <Alert variant="success">
-              <MdOutlineCheckCircle/> Post created successfully.
-            </Alert>
-            <div><b>Access code:</b> {accessKey} <CopyButton value={accessKey}/></div>
-            <Form.Text>
-              This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!<br/>
-              <br/>
-              You may enter your email below to send yourself a copy of the access code via email.<br/>
-            </Form.Text>
-            <br/>
-            <Form noValidate onSubmit={preventSubmit} validated={!!email} ref={emailFormRef}>
-              <Form.Group>
-                <Form.Label>Email <Optional/></Form.Label>
-                <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
-                  <Col style={{maxWidth: '400px'}} className="flex-grow-1">
-                    <Form.Control
-                      type="email"
-                      placeholder="my.email@org.com"
-                      value={email}
-                      onChange={(e)=> {setEmail(e.target.value)}}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid email address.
-                    </Form.Control.Feedback>
-                  </Col>
-                  <Col xs="auto" sm="auto">
-                    <If condition={emailLoading}>
-                      <Then><LoadingSpinner /></Then>
-                      <Else><Button onClick={sendEmail} type="submit">Send Email</Button></Else>
-                    </If>
-                  </Col>
-                </Row>
-              </Form.Group>
-            </Form>
-            <br/>
-            <When condition={emailResult && !emailLoading}>
-              <If condition={emailResult==='sent'}>
-                <Then>
-                  <Alert variant="success">
-                    <MdOutlineCheckCircle/> Email sent successfully. <br/>Please check your spam folder if you don&apos;t see it in your inbox.
-                  </Alert>
-                </Then>
-                <Else>
-                  <Alert variant="danger">
-                    <MdErrorOutline/> {emailResult}
-                  </Alert>
-                </Else>
-              </If>
-            </When>
-            <Button onClick={resetPage}>Create a New Post</Button>
-          </Container>
+          <If condition={isPublishing}>
+            <Then>
+              <Container className="outer-container" ref={errorFeedbackRef}>
+                <LoadingSpinner size="10rem"/>
+              </Container>
+            </Then>
+            <Else>
+              <Container className="outer-container" data-testid="feedback-section">
+                <Alert variant="success" data-testid="feedback-success">
+                  <MdOutlineCheckCircle/> Post created successfully.
+                </Alert>
+                <div><b>Access code:</b> <span data-testid="access-key">{accessKey}</span> <CopyButton value={accessKey}/></div>
+                <Form.Text>
+                  This access code can be used to delete the post you just created. Make sure to take note of it, as you won{'\''}t be able to see it again!<br/>
+                  <br/>
+                  You may enter your email below to send yourself a copy of the access code via email.<br/>
+                </Form.Text>
+                <br/>
+                <Form noValidate onSubmit={preventSubmit} validated={!!email} ref={emailFormRef}>
+                  <Form.Group>
+                    <Form.Label>Email <Optional/></Form.Label>
+                    <Row xs={1} sm={2} style={{rowGap: '0.75rem'}}>
+                      <Col style={{maxWidth: '400px'}} className="flex-grow-1">
+                        <Form.Control
+                          type="email"
+                          placeholder="my.email@org.com"
+                          value={email}
+                          onChange={(e)=> {setEmail(e.target.value)}}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a valid email address.
+                        </Form.Control.Feedback>
+                      </Col>
+                      <Col xs="auto" sm="auto">
+                        <If condition={emailLoading}>
+                          <Then><LoadingSpinner /></Then>
+                          <Else><Button onClick={sendEmail} type="submit">Send Email</Button></Else>
+                        </If>
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                </Form>
+                <br/>
+                <When condition={emailResult && !emailLoading}>
+                  <If condition={emailResult==='sent'}>
+                    <Then>
+                      <Alert variant="success">
+                        <MdOutlineCheckCircle/> Email sent successfully. <br/>Please check your spam folder if you don&apos;t see it in your inbox.
+                      </Alert>
+                    </Then>
+                    <Else>
+                      <Alert variant="danger">
+                        <MdErrorOutline/> {emailResult}
+                      </Alert>
+                    </Else>
+                  </If>
+                </When>
+                <Button onClick={resetPage}>Create a New Post</Button>
+              </Container>
+            </Else>
+          </If>
         </Else>
       </If>
 
@@ -521,7 +554,7 @@ function Create(props) {
           </Alert>
         </Container>
       </When>
-      
+
       <ConfirmationModal
         title="Confirmation"
         acceptString="Publish"

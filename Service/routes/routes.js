@@ -9,7 +9,7 @@ const ENV = process.env;
 // Multer setup (used to upload files to the server)
 const multer = require('multer');
 const upload = multer({
-  limits: { fileSize: 15000000 }, // 15MB
+  limits: { fileSize: 5 * 1000 * 1000 }, // 5MB
   dest: './uploads'
 });
 

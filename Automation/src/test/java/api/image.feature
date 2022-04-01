@@ -67,14 +67,6 @@ Feature: image endpoints tests
     Then status 401
     And match response.message contains 'Invalid Authentication Token Provided'
 
-    # Get the new image (Compare the image and response as byte arrays)
-    Given path 'image/' + img_id
-    And header token = auth_token
-    And bytes img_data = read('../data/img_avatar.png')
-    When method get
-    Then status 200
-    And match responseBytes == img_data
-
     # Delete the image with invalid auth_token
     Given path 'image/' + img_id
     And header token = 'Invalid_Token'

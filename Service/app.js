@@ -6,7 +6,8 @@ const EXPRESS = require('express');
 const session = require('express-session');
 const APP = EXPRESS();
 const nsfw = require('nsfwjs');
-const fs = require('fs');
+const tf = require('@tensorflow/tfjs-node');
+const bodyParser = require('body-parser');
 const printServiceBanner = require('./banner/banner');
 const db = require('./db/dbUtils');
 
@@ -17,16 +18,16 @@ printServiceBanner();
 require('dotenv').config();
 const ENV = process.env;
 
-// Create a temp directory to store model images
-if (!fs.existsSync('./model')) {
-  fs.mkdirSync('./model', {
-    recursive: true
-  });
-}
-
 // API Middleware
-APP.use(EXPRESS.json({ limit: '2mb' }));
-APP.use(EXPRESS.urlencoded({ limit: '2mb', extended: true }));
+APP.use(bodyParser.urlencoded({
+  extended: true,
+  limit: '12mb',
+  parameterLimit: 100000
+}));
+APP.use(bodyParser.json({
+  limit: '2mb',
+  parameterLimit: 100000
+}));
 APP.use(session({
   secret: ENV.SESSION_SECRET,
   resave: false,
@@ -45,6 +46,10 @@ const corsOptions = {
   origin: ENV.FRONTEND_URL
 };
 
+if (ENV.NODE_ENV !== 'dev') {
+  // enable production mode
+  tf.enableProdMode();
+}
 // nsfw model
 const loadModel = async () => {
   global.model = await nsfw.load();

@@ -3,7 +3,7 @@ const axios = require('axios');
 const uuidv4 = require('uuid').v4;
 const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
-const download = require('image-downloader');
+const tf = require('@tensorflow/tfjs-node');
 
 // Captcha
 const sliderCaptcha = require('@slider-captcha/core');
@@ -775,17 +775,17 @@ exports.verifyImages = async (req, res) => {
   try {
     // Check Avatar Image
     if (post.author.avatar_url) {
-      // Download Avatar Image
-      const avatarImage = await download.image({
-        url: post.author.avatar_url,
-        dest: './model'
+      // Get Avatar Image
+      const avatarImage = await axios.get(post.author.avatar_url, {
+        responseType: 'arraybuffer'
       });
 
-      // Convert Image
-      const avatarImageData = await UTILS.convert(avatarImage.filename);
+      // Get Image Data
+      const avatarImageData = await tf.node.decodeImage(avatarImage.data, 3);
 
       // Call model to check image
       const avatarImageResults = await model.classify(avatarImageData);
+      avatarImageData.dispose();
 
       if (UTILS.checkImage(avatarImageResults)) {
         // Delete Image
@@ -803,17 +803,17 @@ exports.verifyImages = async (req, res) => {
 
     // Check Post Image
     if (post.img_url) {
-      // Download post image
-      const postImage = await download.image({
-        url: post.img_url,
-        dest: './model'
+      // Get Post Image
+      const postImage = await axios.get(post.img_url, {
+        responseType: 'arraybuffer'
       });
 
-      // Convert Image
-      const postImageData = await UTILS.convert(postImage.filename);
+      // Get Image Data
+      const postImageData = await tf.node.decodeImage(postImage.data, 3);
 
       // Call model to check image
       const postImageResults = await model.classify(postImageData);
+      postImageData.dispose();
 
       // Delete post image if needed
       if (UTILS.checkImage(postImageResults)) {
@@ -824,10 +824,6 @@ exports.verifyImages = async (req, res) => {
           logger.error(INTERNAL_SERVER_ERROR_MSG);
         }
       }
-
-      // Delete post image from storage
-      fs.promises.unlink(postImage.filename);
-      postImageData.dispose();
     }
 
     // If any image was removed flag the post
@@ -837,7 +833,11 @@ exports.verifyImages = async (req, res) => {
   }
   catch (err) {
     logger.error(err.message);
-    return res.status(500).send({ message: INTERNAL_SERVER_ERROR_MSG });
+    return res.status(500).send({ message: `${err.message}` });
+  }
+  finally {
+    // Dispose any memory being used by tensorflow.
+    tf.dispose();
   }
 
   const statusMessage = imageRemoved ? 'Successfully removed explicit images' : 'No explicit images found';
