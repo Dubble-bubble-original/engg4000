@@ -40,7 +40,7 @@ function MainPage() {
       <Routes>
         <Route path="/home" element={<Home/>}/>
         <Route path="/search" element={<Search/>}/>
-        <Route path="/create" element={<Create/>}/>
+        <Route path="/create" element={<Create setShowTerms={setShowTerms}/>}/>
         <Route path="/delete" element={<Delete/>}/>
       </Routes>
     </div>
