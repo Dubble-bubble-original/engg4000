@@ -1,5 +1,10 @@
 # Production Ready Web Application
 
+## Important:
+This application is not to be deployed to any publicly available address on behalf of the contributors.\
+It is nothing more than a proof of concept completed in the context of a project-based course.\
+The contributors are not responsible or liable for the use of this software.
+
 ## Contributors
 Nathaniel Caron\
 Carter James MacLennan\
